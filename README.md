@@ -35,7 +35,7 @@ follow this tutorial
 http://vladikk.com/2013/09/12/serving-flask-with-nginx-on-ubuntu/
 
 #Build assets
-run this to build assets
+run this to build assets (in /website/pill)
 ```
 browserify -t [ babelify ] assets/static/js/main.js -o assets/static/bundle.js
 ```
