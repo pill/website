@@ -3,18 +3,23 @@ import os
 from flask import Flask
 from flask import render_template
 
-from pill import db
+from pill.services import posts as post_service
 
 app = Flask(
     __name__,
-    static_folder='assets/static',
+    static_folder='assets/client',
     template_folder='assets/templates')
 
 @app.route('/')
 def index():
-    #COLLECTION = DB['test']
-    #COLLECTION.update({'test' : 'onetwo'}, {'test' : 'onetwo'}, upsert=True)
-    return render_template('index.html')
+    query = {}
+    posts = post_service.get_posts(query)
+    return render_template('index.html', **{'posts' : posts})
+
+@app.route('/office')
+def admin():
+    query = {}
+    return render_template('index.html', **{})
 
 @app.route('/static/<path:path>')
 def static_proxy(path):
