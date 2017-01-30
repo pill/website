@@ -13,3 +13,7 @@ export function makeStore() {
   const store = createStoreWithMiddleware(rootReducer)
   return store
 }
+
+export function initialState() {
+  posts: {}
+}

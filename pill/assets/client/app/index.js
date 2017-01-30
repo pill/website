@@ -22,11 +22,14 @@ class App extends React.Component {
   }
 
   _office = () => {
-    return (<div>Office</div>)
+    return (<div>
+              <h1>Office</h1>
+            </div>)
   }
 
   componentWillMount() {
     // make store
+    const store = makeStore()
 
   }
 
@@ -46,4 +49,6 @@ const el = document.getElementById('app')
 let attrs = {}
 Array.prototype.slice.call(el.attributes).map(item => {attrs[item.name] = item.value})
 // init react js app
-render(<App {...attrs} />, el)
+render(
+  <App {...attrs} />, el
+)

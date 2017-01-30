@@ -122,7 +122,11 @@
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        'Office'
+	        _react2.default.createElement(
+	          'h1',
+	          null,
+	          'Office'
+	        )
 	      );
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
@@ -131,7 +135,7 @@
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      // make store
-	
+	      var store = (0, _reduxStore.makeStore)();
 	    }
 	  }, {
 	    key: 'render',
@@ -20392,6 +20396,7 @@
 	  value: true
 	});
 	exports.makeStore = makeStore;
+	exports.initialState = initialState;
 	
 	var _redux = __webpack_require__(/*! redux */ 161);
 	
@@ -20414,6 +20419,10 @@
 	  var rootReducer = (0, _redux.combineReducers)(reducers);
 	  var store = createStoreWithMiddleware(rootReducer);
 	  return store;
+	}
+	
+	function initialState() {
+	  posts: {}
 	}
 
 /***/ },
@@ -23861,7 +23870,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.posts = posts;
+	exports.default = posts;
 	function posts() {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 	  var action = arguments[1];

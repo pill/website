@@ -1,0 +1,1 @@
+export const POSTS_REQUESTED = 'POSTS_REQUESTED'
