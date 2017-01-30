@@ -24,7 +24,7 @@ Add to virtualenv .pth ( ~/.virtualenvs/phil/lib/python2.7/site-packages/phil.pt
 /Users/pavery/work/avery/website:
 ```
 
-local testing (in `/website directory`)
+local server testing (in `/website directory`)
 ```
 workon phil
 python -m pill.server
@@ -35,7 +35,7 @@ follow this tutorial
 http://vladikk.com/2013/09/12/serving-flask-with-nginx-on-ubuntu/
 
 #Build assets
-run this to build assets (in /website/pill)
+run this to build assets with webpack (in /website/pill)
 ```
-browserify -t [ babelify ] assets/static/js/main.js -o assets/static/bundle.js
+node run dev
 ```

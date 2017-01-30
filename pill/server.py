@@ -14,12 +14,19 @@ app = Flask(
 def index():
     query = {}
     posts = post_service.get_posts(query)
-    return render_template('index.html', **{'posts' : posts})
+    context = {
+        'section': 'index',
+        'posts' : posts
+    }
+    return render_template('index.html', **context)
 
 @app.route('/office')
 def admin():
     query = {}
-    return render_template('index.html', **{})
+    context = {
+        'section': 'office'
+    }
+    return render_template('index.html', **context)
 
 @app.route('/static/<path:path>')
 def static_proxy(path):
