@@ -28,6 +28,12 @@ def admin():
     }
     return render_template('index.html', **context)
 
+from flask import request
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return 'This route does not exist {}'.format(request.url), 404
+
 @app.route('/static/<path:path>')
 def static_proxy(path):
     # send_static_file will guess the correct MIME type
