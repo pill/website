@@ -2,6 +2,7 @@ import os
 
 from flask import Flask
 from flask import render_template
+from flask import request
 
 from pill.services import posts as post_service
 
@@ -38,6 +39,10 @@ def page_not_found(error):
 def static_proxy(path):
     # send_static_file will guess the correct MIME type
     return app.send_static_file(os.path.join('static', path))
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return 'This route does not exist {}'.format(request.url), 404
 
 if __name__ == "__main__":
     app.debug = True

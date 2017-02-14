@@ -6,7 +6,7 @@ import {render} from 'react-dom'
 export class PostsList extends React.Component {
 
   render() {
-    return (<h1>Posts List</h1>)
+    return (<h1>Posts...</h1>)
   }
 
 }

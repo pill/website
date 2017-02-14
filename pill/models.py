@@ -3,7 +3,6 @@
 class Model(object):
     pass
 
-
 class Post(Model):
 
     def __init__(self, *args, **kwargs):

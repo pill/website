@@ -1,46 +1,24 @@
 'use strict'
 
 import React from 'react'
-import {render} from 'react-dom'
-import {PostsList} from './components/posts'
+import { render } from 'react-dom'
+
+import { Main } from './containers/main'
 import { makeStore } from './redux-store'
+import { Provider } from 'react-redux'
+
 
 class App extends React.Component {
 
-  _index = () => {
-    return (<div>
-              <h1>Phil's Site</h1>
-              <h2>Technologies so far</h2>
-              <ul>
-                  <li>Flask</li>
-                  <li>MongoDB</li>
-                  <li>React.js</li>
-              </ul>
-              <PostsList></PostsList>
-            </div>
-            )
-  }
-
-  _office = () => {
-    return (<div>
-              <h1>Office</h1>
-            </div>)
-  }
-
   componentWillMount() {
-    // make store
     const store = makeStore()
-
+    this.setState({store: store})
   }
 
   render() {
-    switch(this.props.section){
-      case 'office':
-        return this._office()
-      case 'index':
-      default:
-        return this._index()
-    }
+    return (<Provider store={this.state.store}>
+              <Main {...this.props}/>
+            </Provider>)
   }
 }
 
