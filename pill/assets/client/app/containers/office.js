@@ -7,7 +7,9 @@ import * as officeActions from '../actions/office'
 
 class Office extends Component {
   render() {
-    return (<div>Office</div>)
+    return (
+      <div>Office</div>
+    )
   }
 }
 
