@@ -3,7 +3,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 
-import { Main } from './containers/main'
+import { MainContainer } from './containers/main'
 import { makeStore } from './redux-store'
 import { Provider } from 'react-redux'
 
@@ -17,7 +17,7 @@ class App extends React.Component {
 
   render() {
     return (<Provider store={this.state.store}>
-              <Main {...this.props}/>
+              <MainContainer {...this.props}/>
             </Provider>)
   }
 }

@@ -1,1 +1,4 @@
+'use strict'
+
+export const REQUEST_CREATE_POST = 'REQUEST_CREATE_POST'
 export const POSTS_REQUESTED = 'POSTS_REQUESTED'

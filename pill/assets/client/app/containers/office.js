@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import * as officeActions from '../actions/office'
 
 
-class Office extends Component {
+export class OfficeContainer extends Component {
   render() {
     return (
       <div>Office</div>
@@ -27,5 +27,5 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NbhdSearchContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(OfficeContainer)
 

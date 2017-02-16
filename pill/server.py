@@ -16,7 +16,7 @@ def index():
     query = {}
     posts = post_service.get_posts(query)
     context = {
-        'section': 'index',
+        'section': 'main',
         'posts' : posts
     }
     return render_template('index.html', **context)
@@ -29,7 +29,13 @@ def admin():
     }
     return render_template('index.html', **context)
 
-from flask import request
+@app.route('/posts')
+def posts():
+    query = {}
+    context = {
+        'section': 'posts'
+    }
+    return render_template('index.html', **context)
 
 @app.errorhandler(404)
 def page_not_found(error):
