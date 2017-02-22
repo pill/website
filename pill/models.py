@@ -13,4 +13,9 @@ class Post(Model):
 class User(Model):
 
     def __init__(self, *args, **kwargs):
-        self.username = kwargs.get('username')
+        self.username = kwargs.get('username', '')
+        self.password = kwargs.get('password', '')
+        # security token
+        self.token = kwargs.get('token', '')
+        self.salt = kwargs.get('salt', '')
+        self.password_hash = kwargs.get('password_hash', '')

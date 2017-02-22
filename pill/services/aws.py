@@ -6,7 +6,6 @@ from boto.s3.key import Key
 from pill.services.base import BaseService
 from pill.settings import conf
 
-
 log = logging.getLogger(__file__)
 
 class AwsService(BaseService):

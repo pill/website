@@ -11,12 +11,7 @@ export class HomeContainer extends Component {
     return (
       <div>
         <h1>Phil's Site</h1>
-        <h2>Technologies so far</h2>
-        <ul>
-            <li>Flask</li>
-            <li>MongoDB</li>
-            <li>React.js</li>
-        </ul>
+        <h2>Blog</h2>
         <PostsList></PostsList>
       </div>
     )

@@ -6,9 +6,32 @@ import * as officeActions from '../actions/office'
 
 
 export class OfficeContainer extends Component {
+
+  _errors = () => {
+    if (this.props['error']) {
+      return (
+        <div>errors {this.props['error']}</div>
+      )
+    }
+    return ''
+  }
+
   render() {
     return (
-      <div>Office</div>
+      <div>
+        <h1>Office</h1>
+        {this._errors()}
+        <form method="post">
+            <div>username: <input type="text" name="username" /></div>
+            <div>password: <input type="password" name="password" /></div>
+            <div style={{
+              textAlign : 'right',
+              width:'200px',
+              marginTop:'10px'}}>
+              <input style={{ width: '100%'}} type="submit" value="Login" />
+            </div>
+        </form>
+      </div>
     )
   }
 }

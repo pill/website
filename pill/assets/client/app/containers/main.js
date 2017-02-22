@@ -14,12 +14,13 @@ export class MainContainer extends React.Component {
 
     switch(this.props.section){
       case 'office':
-        res.push(<OfficeContainer key="officeContainer"/>)
+        res.push(<OfficeContainer key="officeContainer" {...this.props}/>)
         break
       case 'main':
       case 'posts':
+      case 'work':
       default:
-        res.push(<HomeContainer key="homeContainer" />)
+        res.push(<HomeContainer key="homeContainer" {...this.props}/>)
     }
     return (<div>{res}</div>)
   }

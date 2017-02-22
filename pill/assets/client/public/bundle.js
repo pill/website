@@ -59,7 +59,7 @@
 	
 	var _main = __webpack_require__(/*! ./containers/main */ 159);
 	
-	var _reduxStore = __webpack_require__(/*! ./redux-store */ 204);
+	var _reduxStore = __webpack_require__(/*! ./redux-store */ 205);
 	
 	var _reactRedux = __webpack_require__(/*! react-redux */ 182);
 	
@@ -20291,6 +20291,8 @@
 	});
 	exports.MainContainer = undefined;
 	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(/*! react */ 1);
@@ -20299,9 +20301,9 @@
 	
 	var _home = __webpack_require__(/*! ./home */ 160);
 	
-	var _office = __webpack_require__(/*! ./office */ 201);
+	var _office = __webpack_require__(/*! ./office */ 202);
 	
-	var _navbar = __webpack_require__(/*! ../components/navbar */ 203);
+	var _navbar = __webpack_require__(/*! ../components/navbar */ 204);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -20329,12 +20331,13 @@
 	
 	      switch (this.props.section) {
 	        case 'office':
-	          res.push(_react2.default.createElement(_office.OfficeContainer, { key: 'officeContainer' }));
+	          res.push(_react2.default.createElement(_office.OfficeContainer, _extends({ key: 'officeContainer' }, this.props)));
 	          break;
 	        case 'main':
 	        case 'posts':
+	        case 'work':
 	        default:
-	          res.push(_react2.default.createElement(_home.HomeContainer, { key: 'homeContainer' }));
+	          res.push(_react2.default.createElement(_home.HomeContainer, _extends({ key: 'homeContainer' }, this.props)));
 	      }
 	      return _react2.default.createElement(
 	        'div',
@@ -20377,7 +20380,7 @@
 	
 	var homeActions = _interopRequireWildcard(_home);
 	
-	var _posts = __webpack_require__(/*! ../components/posts */ 219);
+	var _posts = __webpack_require__(/*! ../components/posts */ 201);
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
@@ -20413,26 +20416,7 @@
 	        _react2.default.createElement(
 	          'h2',
 	          null,
-	          'Technologies so far'
-	        ),
-	        _react2.default.createElement(
-	          'ul',
-	          null,
-	          _react2.default.createElement(
-	            'li',
-	            null,
-	            'Flask'
-	          ),
-	          _react2.default.createElement(
-	            'li',
-	            null,
-	            'MongoDB'
-	          ),
-	          _react2.default.createElement(
-	            'li',
-	            null,
-	            'React.js'
-	          )
+	          'Blog'
 	        ),
 	        _react2.default.createElement(_posts.PostsList, null)
 	      );
@@ -22848,6 +22832,59 @@
 
 /***/ },
 /* 201 */
+/*!***********************************************!*\
+  !*** ./assets/client/app/components/posts.js ***!
+  \***********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.PostsList = undefined;
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 158);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var PostsList = exports.PostsList = function (_React$Component) {
+	  _inherits(PostsList, _React$Component);
+	
+	  function PostsList() {
+	    _classCallCheck(this, PostsList);
+	
+	    return _possibleConstructorReturn(this, (PostsList.__proto__ || Object.getPrototypeOf(PostsList)).apply(this, arguments));
+	  }
+	
+	  _createClass(PostsList, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        'posts...'
+	      );
+	    }
+	  }]);
+	
+	  return PostsList;
+	}(_react2.default.Component);
+
+/***/ },
+/* 202 */
 /*!************************************************!*\
   !*** ./assets/client/app/containers/office.js ***!
   \************************************************/
@@ -22872,7 +22909,7 @@
 	
 	var _reactRedux = __webpack_require__(/*! react-redux */ 182);
 	
-	var _office = __webpack_require__(/*! ../actions/office */ 202);
+	var _office = __webpack_require__(/*! ../actions/office */ 203);
 	
 	var officeActions = _interopRequireWildcard(_office);
 	
@@ -22891,9 +22928,27 @@
 	  _inherits(OfficeContainer, _Component);
 	
 	  function OfficeContainer() {
+	    var _ref;
+	
+	    var _temp, _this, _ret;
+	
 	    _classCallCheck(this, OfficeContainer);
 	
-	    return _possibleConstructorReturn(this, (OfficeContainer.__proto__ || Object.getPrototypeOf(OfficeContainer)).apply(this, arguments));
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+	
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = OfficeContainer.__proto__ || Object.getPrototypeOf(OfficeContainer)).call.apply(_ref, [this].concat(args))), _this), _this._errors = function () {
+	      if (_this.props['error']) {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          'errors ',
+	          _this.props['error']
+	        );
+	      }
+	      return '';
+	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
 	
 	  _createClass(OfficeContainer, [{
@@ -22902,7 +22957,36 @@
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        'Office'
+	        _react2.default.createElement(
+	          'h1',
+	          null,
+	          'Office'
+	        ),
+	        this._errors(),
+	        _react2.default.createElement(
+	          'form',
+	          { method: 'post' },
+	          _react2.default.createElement(
+	            'div',
+	            null,
+	            'username: ',
+	            _react2.default.createElement('input', { type: 'text', name: 'username' })
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            null,
+	            'password: ',
+	            _react2.default.createElement('input', { type: 'password', name: 'password' })
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { style: {
+	                textAlign: 'right',
+	                width: '200px',
+	                marginTop: '10px' } },
+	            _react2.default.createElement('input', { style: { width: '100%' }, type: 'submit', value: 'Login' })
+	          )
+	        )
 	      );
 	    }
 	  }]);
@@ -22929,7 +23013,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(OfficeContainer);
 
 /***/ },
-/* 202 */
+/* 203 */
 /*!*********************************************!*\
   !*** ./assets/client/app/actions/office.js ***!
   \*********************************************/
@@ -22958,7 +23042,7 @@
 	}
 
 /***/ },
-/* 203 */
+/* 204 */
 /*!************************************************!*\
   !*** ./assets/client/app/components/navbar.js ***!
   \************************************************/
@@ -23007,10 +23091,17 @@
 	          { href: '/' },
 	          'Home'
 	        ),
+	        '\xA0',
 	        _react2.default.createElement(
 	          'a',
 	          { href: '/posts' },
 	          'Posts'
+	        ),
+	        '\xA0',
+	        _react2.default.createElement(
+	          'a',
+	          { href: '/login' },
+	          'Login'
 	        )
 	      );
 	    }
@@ -23020,7 +23111,7 @@
 	}(_react2.default.Component);
 
 /***/ },
-/* 204 */
+/* 205 */
 /*!******************************************!*\
   !*** ./assets/client/app/redux-store.js ***!
   \******************************************/
@@ -23036,11 +23127,11 @@
 	
 	var _redux = __webpack_require__(/*! redux */ 161);
 	
-	var _reduxSaga = __webpack_require__(/*! redux-saga */ 205);
+	var _reduxSaga = __webpack_require__(/*! redux-saga */ 206);
 	
 	var _reduxSaga2 = _interopRequireDefault(_reduxSaga);
 	
-	var _reducers = __webpack_require__(/*! ./reducers */ 217);
+	var _reducers = __webpack_require__(/*! ./reducers */ 218);
 	
 	var reducers = _interopRequireWildcard(_reducers);
 	
@@ -23062,7 +23153,7 @@
 	}
 
 /***/ },
-/* 205 */
+/* 206 */
 /*!***********************************!*\
   !*** ./~/redux-saga/lib/index.js ***!
   \***********************************/
@@ -23075,7 +23166,7 @@
 	});
 	exports.utils = exports.effects = exports.CANCEL = exports.delay = exports.throttle = exports.takeLatest = exports.takeEvery = exports.buffers = exports.channel = exports.eventChannel = exports.END = exports.runSaga = undefined;
 	
-	var _runSaga = __webpack_require__(/*! ./internal/runSaga */ 206);
+	var _runSaga = __webpack_require__(/*! ./internal/runSaga */ 207);
 	
 	Object.defineProperty(exports, 'runSaga', {
 	  enumerable: true,
@@ -23084,7 +23175,7 @@
 	  }
 	});
 	
-	var _channel = __webpack_require__(/*! ./internal/channel */ 212);
+	var _channel = __webpack_require__(/*! ./internal/channel */ 213);
 	
 	Object.defineProperty(exports, 'END', {
 	  enumerable: true,
@@ -23105,7 +23196,7 @@
 	  }
 	});
 	
-	var _buffers = __webpack_require__(/*! ./internal/buffers */ 213);
+	var _buffers = __webpack_require__(/*! ./internal/buffers */ 214);
 	
 	Object.defineProperty(exports, 'buffers', {
 	  enumerable: true,
@@ -23114,7 +23205,7 @@
 	  }
 	});
 	
-	var _sagaHelpers = __webpack_require__(/*! ./internal/sagaHelpers */ 211);
+	var _sagaHelpers = __webpack_require__(/*! ./internal/sagaHelpers */ 212);
 	
 	Object.defineProperty(exports, 'takeEvery', {
 	  enumerable: true,
@@ -23135,7 +23226,7 @@
 	  }
 	});
 	
-	var _utils = __webpack_require__(/*! ./internal/utils */ 207);
+	var _utils = __webpack_require__(/*! ./internal/utils */ 208);
 	
 	Object.defineProperty(exports, 'delay', {
 	  enumerable: true,
@@ -23150,15 +23241,15 @@
 	  }
 	});
 	
-	var _middleware = __webpack_require__(/*! ./internal/middleware */ 214);
+	var _middleware = __webpack_require__(/*! ./internal/middleware */ 215);
 	
 	var _middleware2 = _interopRequireDefault(_middleware);
 	
-	var _effects = __webpack_require__(/*! ./effects */ 215);
+	var _effects = __webpack_require__(/*! ./effects */ 216);
 	
 	var effects = _interopRequireWildcard(_effects);
 	
-	var _utils2 = __webpack_require__(/*! ./utils */ 216);
+	var _utils2 = __webpack_require__(/*! ./utils */ 217);
 	
 	var utils = _interopRequireWildcard(_utils2);
 	
@@ -23171,7 +23262,7 @@
 	exports.utils = utils;
 
 /***/ },
-/* 206 */
+/* 207 */
 /*!**********************************************!*\
   !*** ./~/redux-saga/lib/internal/runSaga.js ***!
   \**********************************************/
@@ -23184,9 +23275,9 @@
 	});
 	exports.runSaga = runSaga;
 	
-	var _utils = __webpack_require__(/*! ./utils */ 207);
+	var _utils = __webpack_require__(/*! ./utils */ 208);
 	
-	var _proc = __webpack_require__(/*! ./proc */ 208);
+	var _proc = __webpack_require__(/*! ./proc */ 209);
 	
 	var _proc2 = _interopRequireDefault(_proc);
 	
@@ -23218,7 +23309,7 @@
 	}
 
 /***/ },
-/* 207 */
+/* 208 */
 /*!********************************************!*\
   !*** ./~/redux-saga/lib/internal/utils.js ***!
   \********************************************/
@@ -23462,7 +23553,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../process/browser.js */ 4)))
 
 /***/ },
-/* 208 */
+/* 209 */
 /*!*******************************************!*\
   !*** ./~/redux-saga/lib/internal/proc.js ***!
   \*******************************************/
@@ -23476,15 +23567,15 @@
 	exports.TASK_CANCEL = exports.CHANNEL_END = exports.NOT_ITERATOR_ERROR = undefined;
 	exports.default = proc;
 	
-	var _utils = __webpack_require__(/*! ./utils */ 207);
+	var _utils = __webpack_require__(/*! ./utils */ 208);
 	
-	var _scheduler = __webpack_require__(/*! ./scheduler */ 209);
+	var _scheduler = __webpack_require__(/*! ./scheduler */ 210);
 	
-	var _io = __webpack_require__(/*! ./io */ 210);
+	var _io = __webpack_require__(/*! ./io */ 211);
 	
-	var _channel = __webpack_require__(/*! ./channel */ 212);
+	var _channel = __webpack_require__(/*! ./channel */ 213);
 	
-	var _buffers = __webpack_require__(/*! ./buffers */ 213);
+	var _buffers = __webpack_require__(/*! ./buffers */ 214);
 	
 	function _defineEnumerableProperties(obj, descs) { for (var key in descs) { var desc = descs[key]; desc.configurable = desc.enumerable = true; if ("value" in desc) desc.writable = true; Object.defineProperty(obj, key, desc); } return obj; }
 	
@@ -24202,7 +24293,7 @@
 	}
 
 /***/ },
-/* 209 */
+/* 210 */
 /*!************************************************!*\
   !*** ./~/redux-saga/lib/internal/scheduler.js ***!
   \************************************************/
@@ -24271,7 +24362,7 @@
 	}
 
 /***/ },
-/* 210 */
+/* 211 */
 /*!*****************************************!*\
   !*** ./~/redux-saga/lib/internal/io.js ***!
   \*****************************************/
@@ -24304,9 +24395,9 @@
 	exports.takeLatest = takeLatest;
 	exports.throttle = throttle;
 	
-	var _utils = __webpack_require__(/*! ./utils */ 207);
+	var _utils = __webpack_require__(/*! ./utils */ 208);
 	
-	var _sagaHelpers = __webpack_require__(/*! ./sagaHelpers */ 211);
+	var _sagaHelpers = __webpack_require__(/*! ./sagaHelpers */ 212);
 	
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
@@ -24549,7 +24640,7 @@
 	};
 
 /***/ },
-/* 211 */
+/* 212 */
 /*!**************************************************!*\
   !*** ./~/redux-saga/lib/internal/sagaHelpers.js ***!
   \**************************************************/
@@ -24568,13 +24659,13 @@
 	exports.takeLatestHelper = takeLatestHelper;
 	exports.throttleHelper = throttleHelper;
 	
-	var _channel = __webpack_require__(/*! ./channel */ 212);
+	var _channel = __webpack_require__(/*! ./channel */ 213);
 	
-	var _utils = __webpack_require__(/*! ./utils */ 207);
+	var _utils = __webpack_require__(/*! ./utils */ 208);
 	
-	var _io = __webpack_require__(/*! ./io */ 210);
+	var _io = __webpack_require__(/*! ./io */ 211);
 	
-	var _buffers = __webpack_require__(/*! ./buffers */ 213);
+	var _buffers = __webpack_require__(/*! ./buffers */ 214);
 	
 	var done = { done: true, value: undefined };
 	var qEnd = {};
@@ -24733,7 +24824,7 @@
 	var throttle = exports.throttle = (0, _utils.deprecate)(throttleHelper, deprecationWarning('throttle'));
 
 /***/ },
-/* 212 */
+/* 213 */
 /*!**********************************************!*\
   !*** ./~/redux-saga/lib/internal/channel.js ***!
   \**********************************************/
@@ -24753,11 +24844,11 @@
 	exports.eventChannel = eventChannel;
 	exports.stdChannel = stdChannel;
 	
-	var _utils = __webpack_require__(/*! ./utils */ 207);
+	var _utils = __webpack_require__(/*! ./utils */ 208);
 	
-	var _buffers = __webpack_require__(/*! ./buffers */ 213);
+	var _buffers = __webpack_require__(/*! ./buffers */ 214);
 	
-	var _scheduler = __webpack_require__(/*! ./scheduler */ 209);
+	var _scheduler = __webpack_require__(/*! ./scheduler */ 210);
 	
 	var CHANNEL_END_TYPE = '@@redux-saga/CHANNEL_END';
 	var END = exports.END = { type: CHANNEL_END_TYPE };
@@ -24946,7 +25037,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../process/browser.js */ 4)))
 
 /***/ },
-/* 213 */
+/* 214 */
 /*!**********************************************!*\
   !*** ./~/redux-saga/lib/internal/buffers.js ***!
   \**********************************************/
@@ -24959,7 +25050,7 @@
 	});
 	exports.buffers = exports.BUFFER_OVERFLOW = undefined;
 	
-	var _utils = __webpack_require__(/*! ./utils */ 207);
+	var _utils = __webpack_require__(/*! ./utils */ 208);
 	
 	var BUFFER_OVERFLOW = exports.BUFFER_OVERFLOW = 'Channel\'s Buffer overflow!';
 	
@@ -25062,7 +25153,7 @@
 	};
 
 /***/ },
-/* 214 */
+/* 215 */
 /*!*************************************************!*\
   !*** ./~/redux-saga/lib/internal/middleware.js ***!
   \*************************************************/
@@ -25075,13 +25166,13 @@
 	});
 	exports.default = sagaMiddlewareFactory;
 	
-	var _utils = __webpack_require__(/*! ./utils */ 207);
+	var _utils = __webpack_require__(/*! ./utils */ 208);
 	
-	var _proc = __webpack_require__(/*! ./proc */ 208);
+	var _proc = __webpack_require__(/*! ./proc */ 209);
 	
 	var _proc2 = _interopRequireDefault(_proc);
 	
-	var _channel = __webpack_require__(/*! ./channel */ 212);
+	var _channel = __webpack_require__(/*! ./channel */ 213);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -25178,7 +25269,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../../process/browser.js */ 4)))
 
 /***/ },
-/* 215 */
+/* 216 */
 /*!*************************************!*\
   !*** ./~/redux-saga/lib/effects.js ***!
   \*************************************/
@@ -25190,7 +25281,7 @@
 	  value: true
 	});
 	
-	var _io = __webpack_require__(/*! ./internal/io */ 210);
+	var _io = __webpack_require__(/*! ./internal/io */ 211);
 	
 	Object.defineProperty(exports, 'take', {
 	  enumerable: true,
@@ -25302,7 +25393,7 @@
 	});
 
 /***/ },
-/* 216 */
+/* 217 */
 /*!***********************************!*\
   !*** ./~/redux-saga/lib/utils.js ***!
   \***********************************/
@@ -25314,7 +25405,7 @@
 	  value: true
 	});
 	
-	var _utils = __webpack_require__(/*! ./internal/utils */ 207);
+	var _utils = __webpack_require__(/*! ./internal/utils */ 208);
 	
 	Object.defineProperty(exports, 'TASK', {
 	  enumerable: true,
@@ -25359,7 +25450,7 @@
 	  }
 	});
 	
-	var _io = __webpack_require__(/*! ./internal/io */ 210);
+	var _io = __webpack_require__(/*! ./internal/io */ 211);
 	
 	Object.defineProperty(exports, 'asEffect', {
 	  enumerable: true,
@@ -25368,7 +25459,7 @@
 	  }
 	});
 	
-	var _proc = __webpack_require__(/*! ./internal/proc */ 208);
+	var _proc = __webpack_require__(/*! ./internal/proc */ 209);
 	
 	Object.defineProperty(exports, 'CHANNEL_END', {
 	  enumerable: true,
@@ -25378,7 +25469,7 @@
 	});
 
 /***/ },
-/* 217 */
+/* 218 */
 /*!*********************************************!*\
   !*** ./assets/client/app/reducers/index.js ***!
   \*********************************************/
@@ -25391,7 +25482,7 @@
 	});
 	exports.posts = undefined;
 	
-	var _posts = __webpack_require__(/*! ./posts */ 218);
+	var _posts = __webpack_require__(/*! ./posts */ 219);
 	
 	var _posts2 = _interopRequireDefault(_posts);
 	
@@ -25400,7 +25491,7 @@
 	exports.posts = _posts2.default;
 
 /***/ },
-/* 218 */
+/* 219 */
 /*!*********************************************!*\
   !*** ./assets/client/app/reducers/posts.js ***!
   \*********************************************/
@@ -25421,59 +25512,6 @@
 	      return state;
 	  }
 	}
-
-/***/ },
-/* 219 */
-/*!***********************************************!*\
-  !*** ./assets/client/app/components/posts.js ***!
-  \***********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.PostsList = undefined;
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 158);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var PostsList = exports.PostsList = function (_React$Component) {
-	  _inherits(PostsList, _React$Component);
-	
-	  function PostsList() {
-	    _classCallCheck(this, PostsList);
-	
-	    return _possibleConstructorReturn(this, (PostsList.__proto__ || Object.getPrototypeOf(PostsList)).apply(this, arguments));
-	  }
-	
-	  _createClass(PostsList, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'h1',
-	        null,
-	        'Posts...'
-	      );
-	    }
-	  }]);
-	
-	  return PostsList;
-	}(_react2.default.Component);
 
 /***/ }
 /******/ ]);
