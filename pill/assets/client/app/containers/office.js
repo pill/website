@@ -10,9 +10,7 @@ import { Office } from '../components/office'
 // map global state to component properties
 function mapStateToProps(state) {
   return {
-    state: {
-      officeTest : 'testin'
-    }
+    state: {}
   }
 }
 
