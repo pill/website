@@ -2,6 +2,7 @@
 
 import { takeEvery } from 'redux-saga'
 import { select, put, call } from 'redux-saga/effects'
+import * as Api from '../lib/api'
 
 import * as types from '../actions/action-types'
 
@@ -23,5 +24,6 @@ export function* loginRequestedWatcher() {
 //==========
 
 export function* loginRequestedWorker(action) {
-  console.log("login requested!")
+  const { username, password } = action.payload
+  const response = yield call(Api.login, username, password)
 }

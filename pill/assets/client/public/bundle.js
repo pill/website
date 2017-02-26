@@ -36011,6 +36011,10 @@
 	
 	var _effects = __webpack_require__(/*! redux-saga/effects */ 554);
 	
+	var _api = __webpack_require__(/*! ../lib/api */ 559);
+	
+	var Api = _interopRequireWildcard(_api);
+	
 	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
 	
 	var types = _interopRequireWildcard(_actionTypes);
@@ -36045,13 +36049,20 @@
 	//==========
 	
 	function loginRequestedWorker(action) {
+	  var _action$payload, username, password, response;
+	
 	  return regeneratorRuntime.wrap(function loginRequestedWorker$(_context2) {
 	    while (1) {
 	      switch (_context2.prev = _context2.next) {
 	        case 0:
-	          console.log("login requested!");
+	          _action$payload = action.payload, username = _action$payload.username, password = _action$payload.password;
+	          _context2.next = 3;
+	          return (0, _effects.call)(Api.login, username, password);
 	
-	        case 1:
+	        case 3:
+	          response = _context2.sent;
+	
+	        case 4:
 	        case 'end':
 	          return _context2.stop();
 	      }
@@ -36103,6 +36114,101 @@
 	      return state;
 	  }
 	}
+
+/***/ },
+/* 559 */
+/*!**************************************!*\
+  !*** ./assets/client/app/lib/api.js ***!
+  \**************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.login = login;
+	
+	var _conf = __webpack_require__(/*! ../conf */ 552);
+	
+	var _conf2 = _interopRequireDefault(_conf);
+	
+	var _isBoolean = __webpack_require__(/*! lodash/isBoolean */ 560);
+	
+	var _isBoolean2 = _interopRequireDefault(_isBoolean);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var HOST = 'http://127.0.0.1:8080';
+	//import * as C from '../constants'
+	
+	var BASE_API_URL = HOST + '/api/v1';
+	var ENDPOINTS = {
+	  login: BASE_API_URL + '/login'
+	};
+	
+	function _parseResponse(response, context) {
+	  console.log("parsed response", response);
+	  return response.json();
+	}
+	
+	function _handleError(error) {
+	  console.log('error', error);
+	}
+	
+	function login(username, password) {
+	  var body = { username: username, password: password };
+	  return fetch(ENDPOINTS.login, {
+	    method: 'POST',
+	    headers: {
+	      'Accept': 'application/json',
+	      'Content-Type': 'application/json'
+	    },
+	    body: JSON.stringify(body)
+	  }).then(function (response) {
+	    return _parseResponse(response);
+	  }).catch(function (error) {
+	    return _handleError(error);
+	  });
+	}
+
+/***/ },
+/* 560 */
+/*!*******************************!*\
+  !*** ./~/lodash/isBoolean.js ***!
+  \*******************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 461),
+	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 469);
+	
+	/** `Object#toString` result references. */
+	var boolTag = '[object Boolean]';
+	
+	/**
+	 * Checks if `value` is classified as a boolean primitive or object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a boolean, else `false`.
+	 * @example
+	 *
+	 * _.isBoolean(false);
+	 * // => true
+	 *
+	 * _.isBoolean(null);
+	 * // => false
+	 */
+	function isBoolean(value) {
+	  return value === true || value === false ||
+	    (isObjectLike(value) && baseGetTag(value) == boolTag);
+	}
+	
+	module.exports = isBoolean;
+
 
 /***/ }
 /******/ ]);

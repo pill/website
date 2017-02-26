@@ -76,13 +76,15 @@ def page_not_found(error):
 
 @app.route('/api/v1/login', methods=['POST'])
 def login():
+
     status = 200
     error = ''
     token = ''
     if request.method == 'POST':
+        data = request.get_json()
         user =  S['user'].get_db_user({
-            'username':request.form['username'],
-            'password':request.form['password']
+            'username':data['username'],
+            'password':data['password']
         })
         if not user:
             error = 'User not found'
