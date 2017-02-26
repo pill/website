@@ -11,7 +11,7 @@ export class Navbar extends React.Component {
               &nbsp;
               <a href="/posts">Posts</a>
               &nbsp;
-              <a href="/login">Login</a>
+              <a href="/work">Work</a>
             </div>)
   }
 

@@ -13,13 +13,17 @@ class UserService(BaseService):
 
     def get_db_user(self, userdata):
         # userdata is a dict with user attrs
+        # db_user returned with userdata overlaid
         assert userdata
         user = None
         cursor = conn['users'].find({'username': userdata['username']})
-        db_user_data = cursor.next()
-        if db_user_data:
-            db_user_data.update(userdata)
-            user = models.User(**db_user_data)
+        try:
+            db_user_data = cursor.next()
+            if db_user_data:
+                db_user_data.update(userdata)
+                user = models.User(**db_user_data)
+        except:
+            log.debug('user not found')
         return user
 
     def encrypt_password(self, user):
@@ -31,10 +35,7 @@ class UserService(BaseService):
         return is_valid
 
     def check_password(self, user):
-        print user.salt
-        print user.password
         password_hash = self._encrypt_password(user.salt, user.password)
-        print password_hash
         return password_hash == user.password_hash
 
     def _encrypt_password(self, salt, password):
