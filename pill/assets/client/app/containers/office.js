@@ -9,8 +9,11 @@ import { Office } from '../components/office'
 
 // map global state to component properties
 function mapStateToProps(state) {
+  console.log('maps state to props', state)
   return {
-    state: {}
+    state: {
+        user: state.user
+    }
   }
 }
 

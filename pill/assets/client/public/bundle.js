@@ -31787,8 +31787,11 @@
 	
 	// map global state to component properties
 	function mapStateToProps(state) {
+	  console.log('maps state to props', state);
 	  return {
-	    state: {}
+	    state: {
+	      user: state.user
+	    }
 	  };
 	}
 	
@@ -33276,50 +33279,34 @@
 	      return '';
 	    }, _this._submitLogin = function (e) {
 	      e.preventDefault();
-	
-	      console.log("do submit API call...", _this.props);
-	      // emit action
 	      if (!_this.state) {
 	        console.log("You didn't type anything!");
 	        return;
 	      }
 	      _this.props.actions.requestLogin(_this.state.username, _this.state.password);
-	      // fetch API call login
-	      // set token in global state
-	      // or show error
 	    }, _this._handleUsernameChange = function (e) {
 	      _this.setState({ username: e.target.value });
 	    }, _this._handlePasswordChange = function (e) {
 	      _this.setState({ password: e.target.value });
-	    }, _temp), _possibleConstructorReturn(_this, _ret);
-	  }
-	
-	  _createClass(Office, [{
-	    key: 'render',
-	    value: function render() {
+	    }, _this._loginForm = function () {
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(
-	          'h1',
-	          null,
-	          'Office'
-	        ),
-	        this._errors(),
+	        _this._errors(),
 	        _react2.default.createElement(
 	          'form',
-	          { method: 'post', onSubmit: this._submitLogin },
+	          { method: 'post', onSubmit: _this._submitLogin },
 	          _react2.default.createElement(
 	            'div',
 	            null,
 	            'username:',
-	            _react2.default.createElement('input', { type: 'text', name: 'username', onChange: this._handleUsernameChange })
+	            _react2.default.createElement('input', { type: 'text', name: 'username', onChange: _this._handleUsernameChange })
 	          ),
 	          _react2.default.createElement(
 	            'div',
 	            null,
 	            'password:',
-	            _react2.default.createElement('input', { type: 'password', name: 'password', onChange: this._handlePasswordChange })
+	            _react2.default.createElement('input', { type: 'password', name: 'password', onChange: _this._handlePasswordChange })
 	          ),
 	          _react2.default.createElement(
 	            'div',
@@ -33330,6 +33317,35 @@
 	            _react2.default.createElement('input', { style: { width: '100%' }, type: 'submit', value: 'Login' })
 	          )
 	        )
+	      );
+	    }, _this._postForm = function () {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        'post form'
+	      );
+	    }, _temp), _possibleConstructorReturn(_this, _ret);
+	  }
+	
+	  _createClass(Office, [{
+	    key: 'render',
+	    value: function render() {
+	      var isLoggedIn = this.props.state.user.token;
+	      var res = void 0;
+	      if (!isLoggedIn) {
+	        res = this._loginForm();
+	      } else {
+	        res = this._postForm();
+	      }
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'h1',
+	          null,
+	          'Office'
+	        ),
+	        res
 	      );
 	    }
 	  }]);
@@ -33418,8 +33434,8 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.initialState = undefined;
 	exports.makeStore = makeStore;
-	exports.initialState = initialState;
 	
 	var _redux = __webpack_require__(/*! redux */ 458);
 	
@@ -33455,9 +33471,13 @@
 	  return store;
 	}
 	
-	function initialState() {
-	  posts: {}
-	}
+	var initialState = exports.initialState = {
+	  posts: {},
+	  user: {
+	    username: '',
+	    token: ''
+	  }
+	};
 
 /***/ },
 /* 539 */
@@ -36279,10 +36299,12 @@
 	
 	var types = _interopRequireWildcard(_actionTypes);
 	
+	var _reduxStore = __webpack_require__(/*! ../redux-store */ 538);
+	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function user() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _reduxStore.initialState.user;
 	  var action = arguments[1];
 	
 	  switch (action.type) {

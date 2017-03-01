@@ -20,6 +20,10 @@ export function makeStore() {
   return store
 }
 
-export function initialState() {
-  posts: {}
+export const initialState = {
+  posts: {},
+  user: {
+    username: '',
+    token: ''
+  }
 }

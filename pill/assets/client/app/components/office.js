@@ -13,17 +13,11 @@ export class Office extends Component {
 
   _submitLogin = (e) => {
     e.preventDefault()
-
-    console.log("do submit API call...", this.props)
-    // emit action
     if (!this.state) {
       console.log("You didn't type anything!")
       return
     }
     this.props.actions.requestLogin(this.state.username, this.state.password)
-    // fetch API call login
-    // set token in global state
-    // or show error
   }
 
   _handleUsernameChange = (e) => {
@@ -34,10 +28,9 @@ export class Office extends Component {
      this.setState({password: e.target.value})
   }
 
-  render() {
+  _loginForm = () => {
     return (
       <div>
-        <h1>Office</h1>
         {this._errors()}
         <form method="post" onSubmit={this._submitLogin} >
             <div>username:
@@ -53,6 +46,29 @@ export class Office extends Component {
               <input style={{ width: '100%'}} type="submit" value="Login" />
             </div>
         </form>
+      </div>
+    )
+  }
+
+  _postForm = () => {
+    return (
+      <div>post form</div>
+    )
+  }
+
+  render() {
+    const isLoggedIn = this.props.state.user.token
+    let res
+    if (!isLoggedIn) {
+      res = this._loginForm()
+    }
+    else {
+      res = this._postForm()
+    }
+    return (
+      <div>
+        <h1>Office</h1>
+        {res}
       </div>
     )
   }
