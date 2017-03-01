@@ -31688,6 +31688,11 @@
 	
 	var LOGIN_REQUESTED = exports.LOGIN_REQUESTED = 'LOGIN_REQUESTED';
 	var LOGIN_SUCCESS = exports.LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+	var LOGIN_ERROR = exports.LOGIN_ERROR = 'LOGIN_ERROR';
+	
+	var LOGOUT_REQUESTED = exports.LOGOUT_REQUESTED = 'LOGOUT_REQUESTED';
+	var LOGOUT_SUCCESS = exports.LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+	var LOGOUT_ERROR = exports.LOGOUT_ERROR = 'LOGOUT_ERROR';
 
 /***/ },
 /* 498 */
@@ -31839,6 +31844,8 @@
 	  value: true
 	});
 	exports.requestLogin = requestLogin;
+	exports.loginSuccess = loginSuccess;
+	exports.loginError = loginError;
 	
 	var _actionTypes = __webpack_require__(/*! ./action-types */ 497);
 	
@@ -31851,6 +31858,14 @@
 	// === Action Creators ===
 	function requestLogin(username, password) {
 	  return (0, _util.createAction)(types.LOGIN_REQUESTED, { username: username, password: password });
+	}
+	
+	function loginSuccess(username, token) {
+	  return (0, _util.createAction)(types.LOGIN_SUCCESS, { username: username, token: token });
+	}
+	
+	function loginError(error) {
+	  return (0, _util.createAction)(types.LOGIN_ERROR, { error: error });
 	}
 
 /***/ },
@@ -33264,6 +33279,10 @@
 	
 	      console.log("do submit API call...", _this.props);
 	      // emit action
+	      if (!_this.state) {
+	        console.log("You didn't type anything!");
+	        return;
+	      }
 	      _this.props.actions.requestLogin(_this.state.username, _this.state.password);
 	      // fetch API call login
 	      // set token in global state
@@ -33416,7 +33435,7 @@
 	
 	var _sagas2 = _interopRequireDefault(_sagas);
 	
-	var _reducers = __webpack_require__(/*! ./reducers */ 557);
+	var _reducers = __webpack_require__(/*! ./reducers */ 559);
 	
 	var reducers = _interopRequireWildcard(_reducers);
 	
@@ -36011,13 +36030,15 @@
 	
 	var _effects = __webpack_require__(/*! redux-saga/effects */ 554);
 	
-	var _api = __webpack_require__(/*! ../lib/api */ 559);
+	var _api = __webpack_require__(/*! ../lib/api */ 557);
 	
 	var Api = _interopRequireWildcard(_api);
 	
 	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
 	
 	var types = _interopRequireWildcard(_actionTypes);
+	
+	var _login = __webpack_require__(/*! ../actions/login */ 501);
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
@@ -36049,7 +36070,7 @@
 	//==========
 	
 	function loginRequestedWorker(action) {
-	  var _action$payload, username, password, response;
+	  var _action$payload, username, password, response, _response$json, _username, token, error;
 	
 	  return regeneratorRuntime.wrap(function loginRequestedWorker$(_context2) {
 	    while (1) {
@@ -36062,7 +36083,27 @@
 	        case 3:
 	          response = _context2.sent;
 	
-	        case 4:
+	          if (!(response.status === 200)) {
+	            _context2.next = 8;
+	            break;
+	          }
+	
+	          // set token
+	          _response$json = response.json, _username = _response$json.username, token = _response$json.token;
+	          _context2.next = 8;
+	          return (0, _effects.put)((0, _login.loginSuccess)(_username, token));
+	
+	        case 8:
+	          if (!(response.status === 400)) {
+	            _context2.next = 12;
+	            break;
+	          }
+	
+	          error = response.json.error;
+	          _context2.next = 12;
+	          return (0, _effects.put)((0, _login.loginError)(error));
+	
+	        case 12:
 	        case 'end':
 	          return _context2.stop();
 	      }
@@ -36072,51 +36113,6 @@
 
 /***/ },
 /* 557 */
-/*!*********************************************!*\
-  !*** ./assets/client/app/reducers/index.js ***!
-  \*********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.posts = undefined;
-	
-	var _posts = __webpack_require__(/*! ./posts */ 558);
-	
-	var _posts2 = _interopRequireDefault(_posts);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.posts = _posts2.default;
-
-/***/ },
-/* 558 */
-/*!*********************************************!*\
-  !*** ./assets/client/app/reducers/posts.js ***!
-  \*********************************************/
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = posts;
-	function posts() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-	  var action = arguments[1];
-	
-	  switch (action.type) {
-	    default:
-	      return state;
-	  }
-	}
-
-/***/ },
-/* 559 */
 /*!**************************************!*\
   !*** ./assets/client/app/lib/api.js ***!
   \**************************************/
@@ -36133,7 +36129,7 @@
 	
 	var _conf2 = _interopRequireDefault(_conf);
 	
-	var _isBoolean = __webpack_require__(/*! lodash/isBoolean */ 560);
+	var _isBoolean = __webpack_require__(/*! lodash/isBoolean */ 558);
 	
 	var _isBoolean2 = _interopRequireDefault(_isBoolean);
 	
@@ -36148,8 +36144,10 @@
 	};
 	
 	function _parseResponse(response, context) {
-	  console.log("parsed response", response);
-	  return response.json();
+	  // TODO: handle status codes
+	  return response.json().then(function (jsonObj) {
+	    return { json: jsonObj, status: response.status };
+	  });
 	}
 	
 	function _handleError(error) {
@@ -36173,7 +36171,7 @@
 	}
 
 /***/ },
-/* 560 */
+/* 558 */
 /*!*******************************!*\
   !*** ./~/lodash/isBoolean.js ***!
   \*******************************/
@@ -36209,6 +36207,99 @@
 	
 	module.exports = isBoolean;
 
+
+/***/ },
+/* 559 */
+/*!*********************************************!*\
+  !*** ./assets/client/app/reducers/index.js ***!
+  \*********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.user = exports.posts = undefined;
+	
+	var _posts = __webpack_require__(/*! ./posts */ 560);
+	
+	var _posts2 = _interopRequireDefault(_posts);
+	
+	var _user = __webpack_require__(/*! ./user */ 561);
+	
+	var _user2 = _interopRequireDefault(_user);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.posts = _posts2.default;
+	exports.user = _user2.default;
+
+/***/ },
+/* 560 */
+/*!*********************************************!*\
+  !*** ./assets/client/app/reducers/posts.js ***!
+  \*********************************************/
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = posts;
+	function posts() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	    default:
+	      return state;
+	  }
+	}
+
+/***/ },
+/* 561 */
+/*!********************************************!*\
+  !*** ./assets/client/app/reducers/user.js ***!
+  \********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	exports.default = user;
+	
+	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function user() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	    case types.LOGIN_SUCCESS:
+	      console.log('login success');
+	      var _action$payload = action.payload,
+	          username = _action$payload.username,
+	          token = _action$payload.token;
+	
+	      return _extends({}, state, {
+	        username: username,
+	        token: token
+	      });
+	    default:
+	      return state;
+	  }
+	}
 
 /***/ }
 /******/ ]);

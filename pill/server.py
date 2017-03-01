@@ -11,6 +11,7 @@ from pill.services import (
     post as post_service,
     user as user_service
 )
+from pill import util
 
 app = Flask(
     __name__,
@@ -90,12 +91,12 @@ def login():
             error = 'User not found'
             status = 400
         else:
-            is_valid = S['user'].validate_password(user)
+            is_valid = S['user'].login(user)
             if not is_valid:
                 error = 'Bad username/password'
                 status = 400
             else:
-                session['token'] = 'token'
+                session['token'] = util.gen_random_string()
                 token = session['token']
 
     data = {

@@ -1,11 +1,13 @@
 import hashlib
 import uuid
 import logging
+from bson.objectid import ObjectId
 
 from pill import models
 from pill.db import conn
 from pill.services.base import BaseService
 from pill.settings import conf
+from pill import util
 
 log = logging.getLogger(__file__)
 
@@ -20,11 +22,27 @@ class UserService(BaseService):
         try:
             db_user_data = cursor.next()
             if db_user_data:
+                # if token in db_user_data:
+                #     # don't add token until login
+                #     db_user_data.pop('token')
                 db_user_data.update(userdata)
                 user = models.User(**db_user_data)
         except:
             log.debug('user not found')
         return user
+
+    def login(self, user):
+        is_valid = self.validate_password(user)
+        if is_valid:
+            self.get_db_user(user.to_dict())
+            #user.token = util.gen_random_string()
+            #user_dict = user.to_dict()
+            # conn['users'].update(
+            #     {'_id': ObjectId(user._id)},
+            #     {'$set': user_dict}
+            # )
+        return user
+
 
     def encrypt_password(self, user):
         user.salt = uuid.uuid4().hex

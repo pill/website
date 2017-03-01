@@ -16,6 +16,10 @@ export class Office extends Component {
 
     console.log("do submit API call...", this.props)
     // emit action
+    if (!this.state) {
+      console.log("You didn't type anything!")
+      return
+    }
     this.props.actions.requestLogin(this.state.username, this.state.password)
     // fetch API call login
     // set token in global state
