@@ -28,10 +28,10 @@ S['user'] = user_service.UserService()
 #=============
 # Routes
 #=============
+
 @app.route('/')
 def index():
     query = {}
-
     posts = S['post'].get_posts(query)
     context = {
         'section': 'main',
@@ -41,25 +41,28 @@ def index():
 
 @app.route('/office', methods=['GET', 'POST'])
 def admin():
-    context = {
-        'section': 'office'
-    }
+    print("hitting admin")
+    user = None
+    user_token = session.get('user_token')
+    print("token is: {}".format(user_token))
+    if user_token:
+        user = S['user'].get_user_by_token(user_token)
+    context = {'section': 'office'}
+    # TODO: use @authenticated decorator
+    if user:
+        context['user'] = user.to_dict(keys=['_id', 'username', 'user_token'])
     return render_template('index.html', **context)
 
 @app.route('/posts')
 def posts():
     query = {}
-    context = {
-        'section': 'posts'
-    }
+    context = {'section': 'posts'}
     return render_template('index.html', **context)
 
 @app.route('/work')
 def work():
     query = {}
-    context = {
-        'section': 'work'
-    }
+    context = {'section': 'work'}
     return render_template('index.html', **context)
 
 @app.route('/static/<path:path>')
@@ -77,30 +80,34 @@ def page_not_found(error):
 
 @app.route('/api/v1/login', methods=['POST'])
 def login():
-
+    print('requesting login')
     status = 200
     error = ''
-    token = ''
+    user_token = ''
+    username = ''
     if request.method == 'POST':
         data = request.get_json()
+        # user, but did not verify user_token
         user =  S['user'].get_db_user({
-            'username':data['username'],
-            'password':data['password']
+            'username':data.get('username'),
+            'password':data.get('password')
         })
         if not user:
             error = 'User not found'
             status = 400
         else:
-            is_valid = S['user'].login(user)
-            if not is_valid:
+            logged_in_user = S['user'].login(user)
+            if not logged_in_user:
                 error = 'Bad username/password'
                 status = 400
             else:
-                session['token'] = util.gen_random_string()
-                token = session['token']
-
+                # this issues a new session
+                session['user_token'] = util.gen_random_string()
+                user_token = session['user_token']
+                username = user.username
     data = {
-        'token': token,
+        'user_token': user_token,
+        'username': username,
         'error': error
     }
     resp = jsonify(data)
@@ -110,7 +117,7 @@ def login():
 @app.route('/api/v1/logout', methods=['POST'])
 def logout():
     # remove the username from the session if it's there
-    session.pop('token', None)
+    session.pop('user_token', None)
     return redirect(url_for('index'))
 
 

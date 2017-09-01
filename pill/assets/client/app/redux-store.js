@@ -14,7 +14,7 @@ export function makeStore() {
   const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore)
   const rootReducer = combineReducers(reducers)
   const store = createStoreWithMiddleware(rootReducer)
-
+  // start redux saga
   sagaMiddleware.run(rootSaga)
 
   return store
@@ -24,6 +24,6 @@ export const initialState = {
   posts: {},
   user: {
     username: '',
-    token: ''
+    user_token: ''
   }
 }

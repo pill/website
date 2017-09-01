@@ -8,8 +8,8 @@ export function requestLogin(username, password) {
   return createAction(types.LOGIN_REQUESTED, { username, password })
 }
 
-export function loginSuccess(username, token) {
-  return createAction(types.LOGIN_SUCCESS, { username, token })
+export function loginSuccess(username, user_token) {
+  return createAction(types.LOGIN_SUCCESS, { username, user_token })
 }
 
 export function loginError(error) {

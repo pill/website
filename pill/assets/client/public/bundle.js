@@ -31863,8 +31863,8 @@
 	  return (0, _util.createAction)(types.LOGIN_REQUESTED, { username: username, password: password });
 	}
 	
-	function loginSuccess(username, token) {
-	  return (0, _util.createAction)(types.LOGIN_SUCCESS, { username: username, token: token });
+	function loginSuccess(username, user_token) {
+	  return (0, _util.createAction)(types.LOGIN_SUCCESS, { username: username, user_token: user_token });
 	}
 	
 	function loginError(error) {
@@ -33288,10 +33288,20 @@
 	      _this.setState({ username: e.target.value });
 	    }, _this._handlePasswordChange = function (e) {
 	      _this.setState({ password: e.target.value });
+	    }, _this._is_logged_in = function () {
+	      if (_this.props['user_token']) {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          'I\'m logged in'
+	        );
+	      }
+	      return _react2.default.createElement('div', null);
 	    }, _this._loginForm = function () {
 	      return _react2.default.createElement(
 	        'div',
 	        null,
+	        _this._is_logged_in(),
 	        _this._errors(),
 	        _react2.default.createElement(
 	          'form',
@@ -33330,7 +33340,7 @@
 	  _createClass(Office, [{
 	    key: 'render',
 	    value: function render() {
-	      var isLoggedIn = this.props.state.user.token;
+	      var isLoggedIn = this.props.state.user.user_token;
 	      var res = void 0;
 	      if (!isLoggedIn) {
 	        res = this._loginForm();
@@ -33465,7 +33475,7 @@
 	  var createStoreWithMiddleware = _redux.applyMiddleware.apply(undefined, middlewares)(_redux.createStore);
 	  var rootReducer = (0, _redux.combineReducers)(reducers);
 	  var store = createStoreWithMiddleware(rootReducer);
-	
+	  // start redux saga
 	  sagaMiddleware.run(_sagas2.default);
 	
 	  return store;
@@ -33475,7 +33485,7 @@
 	  posts: {},
 	  user: {
 	    username: '',
-	    token: ''
+	    user_token: ''
 	  }
 	};
 
@@ -36090,7 +36100,7 @@
 	//==========
 	
 	function loginRequestedWorker(action) {
-	  var _action$payload, username, password, response, _response$json, _username, token, error;
+	  var _action$payload, username, password, response, _response$json, _username, user_token, error;
 	
 	  return regeneratorRuntime.wrap(function loginRequestedWorker$(_context2) {
 	    while (1) {
@@ -36109,9 +36119,9 @@
 	          }
 	
 	          // set token
-	          _response$json = response.json, _username = _response$json.username, token = _response$json.token;
+	          _response$json = response.json, _username = _response$json.username, user_token = _response$json.user_token;
 	          _context2.next = 8;
-	          return (0, _effects.put)((0, _login.loginSuccess)(_username, token));
+	          return (0, _effects.put)((0, _login.loginSuccess)(_username, user_token));
 	
 	        case 8:
 	          if (!(response.status === 400)) {
@@ -36312,11 +36322,11 @@
 	      console.log('login success');
 	      var _action$payload = action.payload,
 	          username = _action$payload.username,
-	          token = _action$payload.token;
+	          user_token = _action$payload.user_token;
 	
 	      return _extends({}, state, {
 	        username: username,
-	        token: token
+	        user_token: user_token
 	      });
 	    default:
 	      return state;

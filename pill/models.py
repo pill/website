@@ -16,12 +16,14 @@ class User(Model):
         self.username = kwargs.get('username', '')
         self.password = kwargs.get('password', '')
         # security token
-        self.token = kwargs.get('token', '')
+        self.user_token = kwargs.get('user_token', '')
         self.salt = kwargs.get('salt', '')
         self.password_hash = kwargs.get('password_hash', '')
 
-    def to_dict(self):
+    def to_dict(self, keys=None):
         # never put clear text password in here
-        keys = ['_id', 'username', 'token', 'salt', 'password_hash']
+        if not keys:
+            keys = ['_id', 'username', 'user_token', 'salt', 'password_hash']
+
         return {k : getattr(self, k) for k in keys}
 

@@ -28,9 +28,22 @@ export class Office extends Component {
      this.setState({password: e.target.value})
   }
 
+  _is_logged_in = () => {
+    if (this.props['user_token']) {
+      return (
+        <div>
+          I'm logged in
+        </div>
+      )
+    }
+    return (<div></div>)
+  }
+
   _loginForm = () => {
     return (
+
       <div>
+        {this._is_logged_in()}
         {this._errors()}
         <form method="post" onSubmit={this._submitLogin} >
             <div>username:
@@ -57,7 +70,7 @@ export class Office extends Component {
   }
 
   render() {
-    const isLoggedIn = this.props.state.user.token
+    const isLoggedIn = this.props.state.user.user_token
     let res
     if (!isLoggedIn) {
       res = this._loginForm()

@@ -5,11 +5,11 @@ export default function user(state=initialState.user, action) {
   switch (action.type) {
     case types.LOGIN_SUCCESS:
       console.log('login success')
-      const { username, token } = action.payload
+      const { username, user_token } = action.payload
       return {
         ... state,
         username: username,
-        token: token
+        user_token: user_token
       }
     default:
       return state

@@ -29,8 +29,8 @@ export function* loginRequestedWorker(action) {
 
   if (response.status === 200) {
     // set token
-    const { username, token } = response.json
-    yield put(loginSuccess(username, token))
+    const { username, user_token } = response.json
+    yield put(loginSuccess(username, user_token))
   }
 
   if (response.status === 400) {

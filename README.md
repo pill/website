@@ -1,4 +1,4 @@
-#Website
+# Website
 Install virtualenv, virtualenvwrapper
 https://virtualenvwrapper.readthedocs.io/en/latest/
 ```
@@ -30,12 +30,12 @@ workon phil
 python -m pill.server
 ```
 
-#Setup Flask/uWSGI on the ubuntu server
+# Setup Flask/uWSGI on the ubuntu server
 follow this tutorial
 http://vladikk.com/2013/09/12/serving-flask-with-nginx-on-ubuntu/
 
-#Build assets
+# Build assets
 run this to build assets with webpack (in /website/pill)
 ```
-node run dev
+npm run dev
 ```
