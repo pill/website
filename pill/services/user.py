@@ -32,7 +32,6 @@ class UserService(BaseService):
         assert userdata
         user = None
         cursor = conn['users'].find({'username': userdata['username']})
-        import pdb; pdb.set_trace()
         try:
             db_user_data = cursor.next()
             if db_user_data:

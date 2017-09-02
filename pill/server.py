@@ -28,7 +28,6 @@ S['user'] = user_service.UserService()
 #=============
 # Routes
 #=============
-
 @app.route('/')
 def index():
     query = {}
@@ -103,6 +102,7 @@ def login():
             else:
                 # this issues a new session
                 session['user_token'] = util.gen_random_string()
+                print("set token to {}".format(session['user_token']))
                 user_token = session['user_token']
                 username = user.username
     data = {
