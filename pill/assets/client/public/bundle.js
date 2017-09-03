@@ -33239,8 +33239,6 @@
 	});
 	exports.Office = undefined;
 	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
 	var _react = __webpack_require__(/*! react */ 299);
 	
 	var _react2 = _interopRequireDefault(_react);
@@ -33288,20 +33286,12 @@
 	      _this.setState({ username: e.target.value });
 	    }, _this._handlePasswordChange = function (e) {
 	      _this.setState({ password: e.target.value });
-	    }, _this._is_logged_in = function () {
-	      if (_this.props['user_token']) {
-	        return _react2.default.createElement(
-	          'div',
-	          null,
-	          'I\'m logged in'
-	        );
-	      }
-	      return _react2.default.createElement('div', null);
+	    }, _this._isLoggedIn = function () {
+	      return !!_this.props['user_token'];
 	    }, _this._loginForm = function () {
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _this._is_logged_in(),
 	        _this._errors(),
 	        _react2.default.createElement(
 	          'form',
@@ -33334,18 +33324,14 @@
 	        null,
 	        'post form'
 	      );
-	    }, _temp), _possibleConstructorReturn(_this, _ret);
-	  }
+	    }, _this.render = function () {
 	
-	  _createClass(Office, [{
-	    key: 'render',
-	    value: function render() {
-	      var isLoggedIn = this.props.state.user.user_token;
+	      var isLoggedIn = _this._isLoggedIn();
 	      var res = void 0;
 	      if (!isLoggedIn) {
-	        res = this._loginForm();
+	        res = _this._loginForm();
 	      } else {
-	        res = this._postForm();
+	        res = _this._postForm();
 	      }
 	      return _react2.default.createElement(
 	        'div',
@@ -33357,8 +33343,8 @@
 	        ),
 	        res
 	      );
-	    }
-	  }]);
+	    }, _temp), _possibleConstructorReturn(_this, _ret);
+	  }
 
 	  return Office;
 	}(_react.Component);
@@ -35864,12 +35850,15 @@
   \***********************************/
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	var Conf = {
+	  //host: 'http://localhost',
+	  host: 'http://127.0.0.1',
+	  port: '8080',
 	  logging: {
 	    enabled: true,
 	    collapse: false
@@ -36165,7 +36154,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var HOST = 'http://127.0.0.1:8080';
+	var HOST = _conf2.default.host + ':' + _conf2.default.port;
 	//import * as C from '../constants'
 	
 	var BASE_API_URL = HOST + '/api/v1';
@@ -36192,7 +36181,8 @@
 	      'Accept': 'application/json',
 	      'Content-Type': 'application/json'
 	    },
-	    body: JSON.stringify(body)
+	    body: JSON.stringify(body),
+	    credentials: 'include'
 	  }).then(function (response) {
 	    return _parseResponse(response);
 	  }).catch(function (error) {
@@ -36319,7 +36309,6 @@
 	
 	  switch (action.type) {
 	    case types.LOGIN_SUCCESS:
-	      console.log('login success');
 	      var _action$payload = action.payload,
 	          username = _action$payload.username,
 	          user_token = _action$payload.user_token;

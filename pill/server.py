@@ -4,7 +4,9 @@ import logging
 
 from flask import Flask
 from flask import render_template
-from flask import request, session, jsonify
+from flask import (
+    request, session, jsonify, make_response, redirect, url_for
+)
 
 from pill import models
 from pill.services import (
@@ -40,17 +42,19 @@ def index():
 
 @app.route('/office', methods=['GET', 'POST'])
 def admin():
-    print("hitting admin")
+
     user = None
     user_token = session.get('user_token')
-    print("token is: {}".format(user_token))
     if user_token:
         user = S['user'].get_user_by_token(user_token)
+
     context = {'section': 'office'}
     # TODO: use @authenticated decorator
     if user:
         context['user'] = user.to_dict(keys=['_id', 'username', 'user_token'])
-    return render_template('index.html', **context)
+
+    resp = make_response(render_template('index.html', **context))
+    return resp
 
 @app.route('/posts')
 def posts():
@@ -79,7 +83,6 @@ def page_not_found(error):
 
 @app.route('/api/v1/login', methods=['POST'])
 def login():
-    print('requesting login')
     status = 200
     error = ''
     user_token = ''
@@ -95,16 +98,17 @@ def login():
             error = 'User not found'
             status = 400
         else:
+            # this issues a new session if successful
             logged_in_user = S['user'].login(user)
             if not logged_in_user:
                 error = 'Bad username/password'
                 status = 400
             else:
-                # this issues a new session
-                session['user_token'] = util.gen_random_string()
-                print("set token to {}".format(session['user_token']))
+                session['user_token'] = logged_in_user.user_token
+                # for the response
                 user_token = session['user_token']
                 username = user.username
+
     data = {
         'user_token': user_token,
         'username': username,
@@ -114,15 +118,21 @@ def login():
     resp.status_code = status
     return resp
 
-@app.route('/api/v1/logout', methods=['POST'])
+@app.route('/logout', methods=['GET'])
 def logout():
     # remove the username from the session if it's there
     session.pop('user_token', None)
     return redirect(url_for('index'))
 
+app.secret_key = '\xb3\xf1\xe8\xdc\x0fQ\xd6\xdc]\x8c\\\xea\xb4lL\x84o\xe9\xe3\xf8\xda\x1f\xfc\x16'
+app.debug = True
+# app.config.update(dict(
+#     # SERVER_NAME = 'localhost:8080',
+#     # SESSION_COOKIE_NAME = '127.0.0.1:8080',
+#     # SESSION_COOKIE_DOMAIN = '127.0.0.1:8080'
+# ))
 
-app.secret_key = '\x7f\x8aJB\xe1Pt\x0cr\xfe4\xc8\x03h\x0c\x83$\x90Q\xc8\xf7YXA'
 
-if __name__ == "__main__":
-    app.debug = True
-    app.run(host='0.0.0.0', port=8080)
+# if __name__ == "__main__":
+#     app.debug = True
+#     app.run(host='0.0.0.0', port=8080)

@@ -45,6 +45,7 @@ class UserService(BaseService):
         return user
 
     def login(self, user):
+        print ("login")
         is_valid = self.validate_password(user)
         if is_valid:
             user = self.get_db_user(user.to_dict())
