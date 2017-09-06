@@ -36,7 +36,6 @@ export class Office extends Component {
 
   _loginForm = () => {
     return (
-
       <div>
         {this._errors()}
         <form method="post" onSubmit={this._submitLogin} >
@@ -46,27 +45,39 @@ export class Office extends Component {
             <div>password:
               <input type="password" name="password" onChange={this._handlePasswordChange} />
             </div>
-            <div style={{
-              textAlign : 'right',
-              width:'200px',
-              marginTop:'10px'}}>
-              <input style={{ width: '100%'}} type="submit" value="Login" />
+            <div>
+              <input style={styles.submitButton} type="submit" value="Login" />
             </div>
         </form>
       </div>
     )
   }
 
+  _handlePostSubmit = () => {
+    console.log('submit form!')
+  }
+
   _postForm = () => {
     return (
-      <div>post form</div>
+      <div>
+        <form>
+          <textarea name="post_text" style={styles.postText}></textarea>
+          <select name="publish_status">
+            <option value="published">Draft</option>
+            <option value="published">Published</option>
+          </select>
+          <div style={styles.submitButton}>
+            <input type="button" name="post_submit" value="Post It" onClick={this._handlePostSubmit}/>
+          </div>
+        </form>
+      </div>
     )
   }
 
   render = () => {
     // loading indicator
     if (this.props.state.app.loading) {
-      return (<div style={{'marginTop':'5em'}}>loading...</div>)
+      return (<div style={styles.loading}><em>Loading...</em></div>)
     }
 
     // app is loaded, show login or post form
@@ -81,10 +92,15 @@ export class Office extends Component {
 
     return (
       <div>
-        <h1>Office</h1>
+        <h1>Write a post {this.props.state.user.username}!</h1>
         {res}
       </div>
     )
   }
+}
 
+const styles = {
+  loading: {'marginTop':'5em'},
+  postText: {width:'50%', height:'10em', display:'block', marginBottom:'1em'},
+  submitButton: { marginTop:'1em'}
 }

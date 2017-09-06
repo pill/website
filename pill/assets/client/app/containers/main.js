@@ -14,7 +14,7 @@ export class MainContainer extends Component {
     const { state, actions } = this.props
     const res = []
     // always place navbar on top
-    res.push(<Navbar key="navbar"/>)
+    res.push(<Navbar state={state} actions={actions} key="navbar"/>)
     switch(this.props.section) {
       case 'office':
         res.push(<OfficeContainer state={state} actions={actions} key="officeContainer" {...this.props}/>)
@@ -23,7 +23,7 @@ export class MainContainer extends Component {
       case 'posts':
       case 'work':
       default:
-        res.push(<HomeContainer key="homeContainer" {...this.props}/>)
+        res.push(<HomeContainer state={state} actions={actions} key="homeContainer" {...this.props}/>)
     }
     return (
       <div>{res}</div>

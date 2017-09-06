@@ -29206,7 +29206,7 @@
 	
 	      var res = [];
 	      // always place navbar on top
-	      res.push(_react2.default.createElement(_navbar.Navbar, { key: 'navbar' }));
+	      res.push(_react2.default.createElement(_navbar.Navbar, { state: state, actions: actions, key: 'navbar' }));
 	      switch (this.props.section) {
 	        case 'office':
 	          res.push(_react2.default.createElement(_office2.default, _extends({ state: state, actions: actions, key: 'officeContainer' }, this.props)));
@@ -29215,7 +29215,7 @@
 	        case 'posts':
 	        case 'work':
 	        default:
-	          res.push(_react2.default.createElement(_home2.default, _extends({ key: 'homeContainer' }, this.props)));
+	          res.push(_react2.default.createElement(_home2.default, _extends({ state: state, actions: actions, key: 'homeContainer' }, this.props)));
 	      }
 	      return _react2.default.createElement(
 	        'div',
@@ -33363,27 +33363,53 @@
 	          ),
 	          _react2.default.createElement(
 	            'div',
-	            { style: {
-	                textAlign: 'right',
-	                width: '200px',
-	                marginTop: '10px' } },
-	            _react2.default.createElement('input', { style: { width: '100%' }, type: 'submit', value: 'Login' })
+	            null,
+	            _react2.default.createElement('input', { style: styles.submitButton, type: 'submit', value: 'Login' })
 	          )
 	        )
 	      );
+	    }, _this._handlePostSubmit = function () {
+	      console.log('submit form!');
 	    }, _this._postForm = function () {
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        'post form'
+	        _react2.default.createElement(
+	          'form',
+	          null,
+	          _react2.default.createElement('textarea', { name: 'post_text', style: styles.postText }),
+	          _react2.default.createElement(
+	            'select',
+	            { name: 'publish_status' },
+	            _react2.default.createElement(
+	              'option',
+	              { value: 'published' },
+	              'Draft'
+	            ),
+	            _react2.default.createElement(
+	              'option',
+	              { value: 'published' },
+	              'Published'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { style: styles.submitButton },
+	            _react2.default.createElement('input', { type: 'button', name: 'post_submit', value: 'Post It', onClick: _this._handlePostSubmit })
+	          )
+	        )
 	      );
 	    }, _this.render = function () {
 	      // loading indicator
 	      if (_this.props.state.app.loading) {
 	        return _react2.default.createElement(
 	          'div',
-	          { style: { 'marginTop': '5em' } },
-	          'loading...'
+	          { style: styles.loading },
+	          _react2.default.createElement(
+	            'em',
+	            null,
+	            'Loading...'
+	          )
 	        );
 	      }
 	
@@ -33402,15 +33428,23 @@
 	        _react2.default.createElement(
 	          'h1',
 	          null,
-	          'Office'
+	          'Write a post ',
+	          _this.props.state.user.username,
+	          '!'
 	        ),
 	        res
 	      );
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
-
+	
 	  return Office;
 	}(_react.Component);
+	
+	var styles = {
+	  loading: { 'marginTop': '5em' },
+	  postText: { width: '50%', height: '10em', display: 'block', marginBottom: '1em' },
+	  submitButton: { marginTop: '1em' }
+	};
 
 /***/ },
 /* 537 */
@@ -33510,7 +33544,7 @@
 	
 	var _sagas2 = _interopRequireDefault(_sagas);
 	
-	var _reducers = __webpack_require__(/*! ./reducers */ 559);
+	var _reducers = __webpack_require__(/*! ./reducers */ 561);
 	
 	var reducers = _interopRequireWildcard(_reducers);
 	
@@ -35954,7 +35988,7 @@
 	
 	var _login = __webpack_require__(/*! ./login */ 556);
 	
-	var _app = __webpack_require__(/*! ./app */ 562);
+	var _app = __webpack_require__(/*! ./app */ 559);
 	
 	var _marked = [periodicTask, root].map(regeneratorRuntime.mark);
 	
@@ -36315,115 +36349,6 @@
 
 /***/ },
 /* 559 */
-/*!*********************************************!*\
-  !*** ./assets/client/app/reducers/index.js ***!
-  \*********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.user = exports.posts = exports.app = undefined;
-	
-	var _app = __webpack_require__(/*! ./app */ 564);
-	
-	var _app2 = _interopRequireDefault(_app);
-	
-	var _posts = __webpack_require__(/*! ./posts */ 560);
-	
-	var _posts2 = _interopRequireDefault(_posts);
-	
-	var _user = __webpack_require__(/*! ./user */ 561);
-	
-	var _user2 = _interopRequireDefault(_user);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	exports.app = _app2.default;
-	exports.posts = _posts2.default;
-	exports.user = _user2.default;
-
-/***/ },
-/* 560 */
-/*!*********************************************!*\
-  !*** ./assets/client/app/reducers/posts.js ***!
-  \*********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = posts;
-	
-	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
-	
-	var types = _interopRequireWildcard(_actionTypes);
-	
-	var _reduxStore = __webpack_require__(/*! ../redux-store */ 538);
-	
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-	
-	function posts() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-	  var action = arguments[1];
-	
-	  switch (action.type) {
-	    default:
-	      return state;
-	  }
-	}
-
-/***/ },
-/* 561 */
-/*!********************************************!*\
-  !*** ./assets/client/app/reducers/user.js ***!
-  \********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-	
-	exports.default = user;
-	
-	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
-	
-	var types = _interopRequireWildcard(_actionTypes);
-	
-	var _reduxStore = __webpack_require__(/*! ../redux-store */ 538);
-	
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-	
-	function user() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _reduxStore.initialState.user;
-	  var action = arguments[1];
-	
-	  switch (action.type) {
-	    case types.LOGIN_SUCCESS:
-	    case types.AUTH_CHECK_SUCCESS:
-	      var _action$payload = action.payload,
-	          username = _action$payload.username,
-	          user_token = _action$payload.user_token;
-	
-	      return _extends({}, state, {
-	        username: username,
-	        user_token: user_token
-	      });
-	    default:
-	      return state;
-	  }
-	}
-
-/***/ },
-/* 562 */
 /*!****************************************!*\
   !*** ./assets/client/app/sagas/app.js ***!
   \****************************************/
@@ -36450,7 +36375,7 @@
 	
 	var types = _interopRequireWildcard(_actionTypes);
 	
-	var _app = __webpack_require__(/*! ../actions/app */ 563);
+	var _app = __webpack_require__(/*! ../actions/app */ 560);
 	
 	var _login = __webpack_require__(/*! ../actions/login */ 501);
 	
@@ -36524,7 +36449,7 @@
 	}
 
 /***/ },
-/* 563 */
+/* 560 */
 /*!******************************************!*\
   !*** ./assets/client/app/actions/app.js ***!
   \******************************************/
@@ -36551,7 +36476,39 @@
 	}
 
 /***/ },
-/* 564 */
+/* 561 */
+/*!*********************************************!*\
+  !*** ./assets/client/app/reducers/index.js ***!
+  \*********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.user = exports.posts = exports.app = undefined;
+	
+	var _app = __webpack_require__(/*! ./app */ 562);
+	
+	var _app2 = _interopRequireDefault(_app);
+	
+	var _posts = __webpack_require__(/*! ./posts */ 563);
+	
+	var _posts2 = _interopRequireDefault(_posts);
+	
+	var _user = __webpack_require__(/*! ./user */ 564);
+	
+	var _user2 = _interopRequireDefault(_user);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.app = _app2.default;
+	exports.posts = _posts2.default;
+	exports.user = _user2.default;
+
+/***/ },
+/* 562 */
 /*!*******************************************!*\
   !*** ./assets/client/app/reducers/app.js ***!
   \*******************************************/
@@ -36587,6 +36544,83 @@
 	    case types.APP_INIT_COMPLETE:
 	      return _extends({}, state, {
 	        loading: false
+	      });
+	    default:
+	      return state;
+	  }
+	}
+
+/***/ },
+/* 563 */
+/*!*********************************************!*\
+  !*** ./assets/client/app/reducers/posts.js ***!
+  \*********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = posts;
+	
+	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	var _reduxStore = __webpack_require__(/*! ../redux-store */ 538);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function posts() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	    default:
+	      return state;
+	  }
+	}
+
+/***/ },
+/* 564 */
+/*!********************************************!*\
+  !*** ./assets/client/app/reducers/user.js ***!
+  \********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	exports.default = user;
+	
+	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	var _reduxStore = __webpack_require__(/*! ../redux-store */ 538);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function user() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _reduxStore.initialState.user;
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	    case types.LOGIN_SUCCESS:
+	    case types.AUTH_CHECK_SUCCESS:
+	      var _action$payload = action.payload,
+	          username = _action$payload.username,
+	          user_token = _action$payload.user_token;
+	
+	      return _extends({}, state, {
+	        username: username,
+	        user_token: user_token
 	      });
 	    default:
 	      return state;
