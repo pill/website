@@ -9,6 +9,7 @@ import * as loginActions from '../actions/login'
 import { Office } from '../components/office'
 
 // map global state to component properties
+// that the component may be interested in
 function mapStateToProps(state) {
   return {
     state: {

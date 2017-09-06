@@ -54,7 +54,7 @@ export class Office extends Component {
   }
 
   _handlePostSubmit = () => {
-    console.log('submit form!')
+    this.props.actions.createPost()
   }
 
   _postForm = () => {

@@ -31728,7 +31728,7 @@
 	var APP_INIT_COMPLETE = exports.APP_INIT_COMPLETE = 'APP_INIT_COMPLETE';
 	var AUTH_CHECK_SUCCESS = exports.AUTH_CHECK_SUCCESS = 'AUTH_CHECK_SUCCESS';
 	
-	var REQUEST_CREATE_POST = exports.REQUEST_CREATE_POST = 'REQUEST_CREATE_POST';
+	var POST_CREATE_REQUESTED = exports.POST_CREATE_REQUESTED = 'POST_CREATE_REQUESTED';
 	var POSTS_REQUESTED = exports.POSTS_REQUESTED = 'POSTS_REQUESTED';
 	
 	var LOGIN_REQUESTED = exports.LOGIN_REQUESTED = 'LOGIN_REQUESTED';
@@ -31830,6 +31830,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// map global state to component properties
+	// that the component may be interested in
 	function mapStateToProps(state) {
 	  return {
 	    state: {
@@ -31862,6 +31863,8 @@
 	  value: true
 	});
 	exports.createPost = createPost;
+	exports.createPostSuccess = createPostSuccess;
+	exports.createPostError = createPostError;
 	
 	var _actionTypes = __webpack_require__(/*! ./action-types */ 497);
 	
@@ -31873,8 +31876,22 @@
 	
 	function createPost(post_data) {
 	  return {
-	    type: types.REQUEST_CREATE_POST,
+	    type: types.POST_CREATE_REQUESTED,
 	    payload: { post_data: post_data }
+	  };
+	}
+	
+	function createPostSuccess(post_data) {
+	  return {
+	    type: types.POST_CREATE_SUCCESS,
+	    payload: { post_data: post_data }
+	  };
+	}
+	
+	function createPostError(error) {
+	  return {
+	    type: types.POST_CREATE_ERROR,
+	    payload: { error: error }
 	  };
 	}
 
@@ -33369,7 +33386,7 @@
 	        )
 	      );
 	    }, _this._handlePostSubmit = function () {
-	      console.log('submit form!');
+	      _this.props.actions.createPost();
 	    }, _this._postForm = function () {
 	      return _react2.default.createElement(
 	        'div',
