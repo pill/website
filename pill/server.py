@@ -83,6 +83,10 @@ def page_not_found(error):
 
 @app.route('/api/v1/login', methods=['POST'])
 def login():
+    """
+    Checks username/password
+    Logs user in and issues session token if successful
+    """
     status = 200
     error = ''
     user_token = ''
@@ -118,7 +122,26 @@ def login():
     resp.status_code = status
     return resp
 
-@app.route('/logout', methods=['GET'])
+@app.route('/api/v1/auth_check', methods=['GET'])
+def auth_check():
+    """
+    Returns the user if authenticated, else None
+    """
+    status = 200
+    # TODO: use exception
+    error = ''
+    user = S['user'].get_user_by_token(session.get('user_token'))
+    if user:
+        user = user.to_dict(keys=['username', 'user_token'])
+    data = {
+        'user' : user,
+        'error' : error
+    }
+    resp = jsonify(data)
+    resp.status_code = status
+    return resp
+
+@app.route('/api/v1/logout', methods=['GET'])
 def logout():
     # remove the username from the session if it's there
     session.pop('user_token', None)

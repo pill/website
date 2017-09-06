@@ -7,12 +7,21 @@ import { MainContainer } from './containers/main'
 import { makeStore } from './redux-store'
 import { Provider } from 'react-redux'
 
+import * as types from './actions/action-types'
 
 class App extends React.Component {
 
   componentWillMount() {
+    // TODO: check login
     const store = makeStore()
     this.setState({store: store})
+
+    // will check login etc.
+    // get proper state from server
+    store.dispatch({
+      type: types.APP_INIT_STARTED,
+      payload: {}
+    })
   }
 
   render() {

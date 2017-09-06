@@ -17,6 +17,7 @@ export class Office extends Component {
       console.log("You didn't type anything!")
       return
     }
+    // local component state
     this.props.actions.requestLogin(this.state.username, this.state.password)
   }
 
@@ -29,7 +30,8 @@ export class Office extends Component {
   }
 
   _isLoggedIn = () => {
-    return !!this.props['user_token']
+    // redux state
+    return !!this.props.state.user.user_token
   }
 
   _loginForm = () => {
@@ -62,15 +64,21 @@ export class Office extends Component {
   }
 
   render = () => {
+    // loading indicator
+    if (this.props.state.app.loading) {
+      return (<div style={{'marginTop':'5em'}}>loading...</div>)
+    }
 
-    const isLoggedIn = this._isLoggedIn()
+    // app is loaded, show login or post form
     let res
+    const isLoggedIn = this._isLoggedIn()
     if (!isLoggedIn) {
       res = this._loginForm()
     }
     else {
       res = this._postForm()
     }
+
     return (
       <div>
         <h1>Office</h1>

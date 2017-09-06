@@ -1,4 +1,5 @@
-// office.js
+'use strict'
+
 import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -9,10 +10,10 @@ import { Office } from '../components/office'
 
 // map global state to component properties
 function mapStateToProps(state) {
-  console.log('maps state to props', state)
   return {
     state: {
-        user: state.user
+        user: state.user,
+        app: state.app
     }
   }
 }

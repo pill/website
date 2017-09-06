@@ -15,11 +15,16 @@ class UserService(BaseService):
 
     def get_user_by_token(self, user_token):
         # used on most calls to attach authenticated user
-        assert user_token
+        if not user_token:
+            return None
+
         user = None
         cursor = conn['users'].find({'user_token': user_token})
         try:
             db_user_data = cursor.next()
+            # TODO: make transient fields
+            db_user_data.pop('salt')
+            db_user_data.pop('password_hash')
             if db_user_data:
                 user = models.User(**db_user_data)
         except:

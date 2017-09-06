@@ -11,7 +11,8 @@ import { loginSuccess, loginError } from '../actions/login'
 //==========
 
 const loginWatchers = [
-  loginRequestedWatcher
+  loginRequestedWatcher,
+  // userAuthWatcher
 ]
 export { loginWatchers }
 
@@ -37,6 +38,4 @@ export function* loginRequestedWorker(action) {
     const { error } = response.json
     yield put(loginError(error))
   }
-
-  // TODO: other codes
 }

@@ -9105,6 +9105,12 @@
 	
 	var _reactRedux = __webpack_require__(/*! react-redux */ 479);
 	
+	var _actionTypes = __webpack_require__(/*! ./actions/action-types */ 497);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -9125,8 +9131,16 @@
 	  _createClass(App, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
+	      // TODO: check login
 	      var store = (0, _reduxStore.makeStore)();
 	      this.setState({ store: store });
+	
+	      // will check login etc.
+	      // get proper state from server
+	      store.dispatch({
+	        type: types.APP_INIT_STARTED,
+	        payload: {}
+	      });
 	    }
 	  }, {
 	    key: 'render',
@@ -29162,6 +29176,10 @@
 	
 	var _navbar = __webpack_require__(/*! ../components/navbar */ 537);
 	
+	var _redux = __webpack_require__(/*! redux */ 458);
+	
+	var _reactRedux = __webpack_require__(/*! react-redux */ 479);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -29170,8 +29188,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var MainContainer = exports.MainContainer = function (_React$Component) {
-	  _inherits(MainContainer, _React$Component);
+	var MainContainer = exports.MainContainer = function (_Component) {
+	  _inherits(MainContainer, _Component);
 	
 	  function MainContainer() {
 	    _classCallCheck(this, MainContainer);
@@ -29182,12 +29200,16 @@
 	  _createClass(MainContainer, [{
 	    key: 'render',
 	    value: function render() {
+	      var _props = this.props,
+	          state = _props.state,
+	          actions = _props.actions;
+	
 	      var res = [];
 	      // always place navbar on top
 	      res.push(_react2.default.createElement(_navbar.Navbar, { key: 'navbar' }));
 	      switch (this.props.section) {
 	        case 'office':
-	          res.push(_react2.default.createElement(_office2.default, _extends({ key: 'officeContainer' }, this.props)));
+	          res.push(_react2.default.createElement(_office2.default, _extends({ state: state, actions: actions, key: 'officeContainer' }, this.props)));
 	          break;
 	        case 'main':
 	        case 'posts':
@@ -29204,7 +29226,25 @@
 	  }]);
 	
 	  return MainContainer;
-	}(_react2.default.Component);
+	}(_react.Component);
+	
+	// map global state to component properties
+	
+	
+	function mapStateToProps(state) {
+	  return {
+	    state: state
+	  };
+	}
+	
+	// map global state to component properties
+	function mapDispatchToProps(dispatch) {
+	  return {
+	    actions: (0, _redux.bindActionCreators)({}, dispatch)
+	  };
+	}
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(MainContainer);
 
 /***/ },
 /* 457 */
@@ -29246,8 +29286,7 @@
 	
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // office.js
-	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var HomeContainer = exports.HomeContainer = function (_Component) {
 	  _inherits(HomeContainer, _Component);
@@ -31680,9 +31719,15 @@
 
 	'use strict';
 	
+	// startup stuff
+	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	var APP_INIT_STARTED = exports.APP_INIT_STARTED = 'APP_INIT_STARTED';
+	var APP_INIT_COMPLETE = exports.APP_INIT_COMPLETE = 'APP_INIT_COMPLETE';
+	var AUTH_CHECK_SUCCESS = exports.AUTH_CHECK_SUCCESS = 'AUTH_CHECK_SUCCESS';
+	
 	var REQUEST_CREATE_POST = exports.REQUEST_CREATE_POST = 'REQUEST_CREATE_POST';
 	var POSTS_REQUESTED = exports.POSTS_REQUESTED = 'POSTS_REQUESTED';
 	
@@ -31760,8 +31805,7 @@
 	  value: true
 	});
 	
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; // office.js
-	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
 	var _react = __webpack_require__(/*! react */ 299);
 	
@@ -31787,10 +31831,10 @@
 	
 	// map global state to component properties
 	function mapStateToProps(state) {
-	  console.log('maps state to props', state);
 	  return {
 	    state: {
-	      user: state.user
+	      user: state.user,
+	      app: state.app
 	    }
 	  };
 	}
@@ -31849,6 +31893,7 @@
 	exports.requestLogin = requestLogin;
 	exports.loginSuccess = loginSuccess;
 	exports.loginError = loginError;
+	exports.authCheckSuccess = authCheckSuccess;
 	
 	var _actionTypes = __webpack_require__(/*! ./action-types */ 497);
 	
@@ -31869,6 +31914,12 @@
 	
 	function loginError(error) {
 	  return (0, _util.createAction)(types.LOGIN_ERROR, { error: error });
+	}
+	
+	function authCheckSuccess(username, user_token) {
+	  // ex. used if you refesh a page, so there's no explicit login action
+	  // to set the user state so we call this
+	  return (0, _util.createAction)(types.AUTH_CHECK_SUCCESS, { username: username, user_token: user_token });
 	}
 
 /***/ },
@@ -33281,13 +33332,15 @@
 	        console.log("You didn't type anything!");
 	        return;
 	      }
+	      // local component state
 	      _this.props.actions.requestLogin(_this.state.username, _this.state.password);
 	    }, _this._handleUsernameChange = function (e) {
 	      _this.setState({ username: e.target.value });
 	    }, _this._handlePasswordChange = function (e) {
 	      _this.setState({ password: e.target.value });
 	    }, _this._isLoggedIn = function () {
-	      return !!_this.props['user_token'];
+	      // redux state
+	      return !!_this.props.state.user.user_token;
 	    }, _this._loginForm = function () {
 	      return _react2.default.createElement(
 	        'div',
@@ -33325,14 +33378,24 @@
 	        'post form'
 	      );
 	    }, _this.render = function () {
+	      // loading indicator
+	      if (_this.props.state.app.loading) {
+	        return _react2.default.createElement(
+	          'div',
+	          { style: { 'marginTop': '5em' } },
+	          'loading...'
+	        );
+	      }
 	
-	      var isLoggedIn = _this._isLoggedIn();
+	      // app is loaded, show login or post form
 	      var res = void 0;
+	      var isLoggedIn = _this._isLoggedIn();
 	      if (!isLoggedIn) {
 	        res = _this._loginForm();
 	      } else {
 	        res = _this._postForm();
 	      }
+	
 	      return _react2.default.createElement(
 	        'div',
 	        null,
@@ -33468,6 +33531,9 @@
 	}
 	
 	var initialState = exports.initialState = {
+	  app: {
+	    loading: false
+	  },
 	  posts: {},
 	  user: {
 	    username: '',
@@ -35888,6 +35954,8 @@
 	
 	var _login = __webpack_require__(/*! ./login */ 556);
 	
+	var _app = __webpack_require__(/*! ./app */ 562);
+	
 	var _marked = [periodicTask, root].map(regeneratorRuntime.mark);
 	
 	function forkList(watcherList) {
@@ -35938,10 +36006,7 @@
 	      switch (_context2.prev = _context2.next) {
 	        case 0:
 	          _context2.prev = 0;
-	          allWatchers = [forkList(_login.loginWatchers)
-	          // forkList(actionSheetWatchers),
-	
-	          ];
+	          allWatchers = [forkList(_login.loginWatchers), forkList(_app.appWatchers)];
 	          _context2.next = 4;
 	          return allWatchers;
 	
@@ -36143,6 +36208,7 @@
 	  value: true
 	});
 	exports.login = login;
+	exports.authCheck = authCheck;
 	
 	var _conf = __webpack_require__(/*! ../conf */ 552);
 	
@@ -36159,7 +36225,8 @@
 	
 	var BASE_API_URL = HOST + '/api/v1';
 	var ENDPOINTS = {
-	  login: BASE_API_URL + '/login'
+	  login: BASE_API_URL + '/login',
+	  authCheck: BASE_API_URL + '/auth_check'
 	};
 	
 	function _parseResponse(response, context) {
@@ -36182,6 +36249,24 @@
 	      'Content-Type': 'application/json'
 	    },
 	    body: JSON.stringify(body),
+	    credentials: 'include' // always need this for cookies to work
+	  }).then(function (response) {
+	    return _parseResponse(response);
+	  }).catch(function (error) {
+	    return _handleError(error);
+	  });
+	}
+	
+	function authCheck() {
+	  // checks if current user is authenticated
+	  // using flask session
+	  var body = {};
+	  return fetch(ENDPOINTS.authCheck, {
+	    method: 'GET',
+	    headers: {
+	      'Accept': 'application/json',
+	      'Content-Type': 'application/json'
+	    },
 	    credentials: 'include'
 	  }).then(function (response) {
 	    return _parseResponse(response);
@@ -36240,7 +36325,11 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.user = exports.posts = undefined;
+	exports.user = exports.posts = exports.app = undefined;
+	
+	var _app = __webpack_require__(/*! ./app */ 564);
+	
+	var _app2 = _interopRequireDefault(_app);
 	
 	var _posts = __webpack_require__(/*! ./posts */ 560);
 	
@@ -36252,6 +36341,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	exports.app = _app2.default;
 	exports.posts = _posts2.default;
 	exports.user = _user2.default;
 
@@ -36260,14 +36350,23 @@
 /*!*********************************************!*\
   !*** ./assets/client/app/reducers/posts.js ***!
   \*********************************************/
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.default = posts;
+	
+	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	var _reduxStore = __webpack_require__(/*! ../redux-store */ 538);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
 	function posts() {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 	  var action = arguments[1];
@@ -36309,6 +36408,7 @@
 	
 	  switch (action.type) {
 	    case types.LOGIN_SUCCESS:
+	    case types.AUTH_CHECK_SUCCESS:
 	      var _action$payload = action.payload,
 	          username = _action$payload.username,
 	          user_token = _action$payload.user_token;
@@ -36316,6 +36416,177 @@
 	      return _extends({}, state, {
 	        username: username,
 	        user_token: user_token
+	      });
+	    default:
+	      return state;
+	  }
+	}
+
+/***/ },
+/* 562 */
+/*!****************************************!*\
+  !*** ./assets/client/app/sagas/app.js ***!
+  \****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.appWatchers = undefined;
+	exports.appInitWatcher = appInitWatcher;
+	exports.appInitWorker = appInitWorker;
+	
+	var _reduxSaga = __webpack_require__(/*! redux-saga */ 539);
+	
+	var _effects = __webpack_require__(/*! redux-saga/effects */ 554);
+	
+	var _api = __webpack_require__(/*! ../lib/api */ 557);
+	
+	var Api = _interopRequireWildcard(_api);
+	
+	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	var _app = __webpack_require__(/*! ../actions/app */ 563);
+	
+	var _login = __webpack_require__(/*! ../actions/login */ 501);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	var _marked = [appInitWatcher, appInitWorker].map(regeneratorRuntime.mark);
+	
+	//==========
+	// Watchers
+	//==========
+	
+	var appWatchers = [appInitWatcher];
+	exports.appWatchers = appWatchers;
+	function appInitWatcher() {
+	  return regeneratorRuntime.wrap(function appInitWatcher$(_context) {
+	    while (1) {
+	      switch (_context.prev = _context.next) {
+	        case 0:
+	          return _context.delegateYield((0, _reduxSaga.takeEvery)(types.APP_INIT_STARTED, appInitWorker), 't0', 1);
+	
+	        case 1:
+	        case 'end':
+	          return _context.stop();
+	      }
+	    }
+	  }, _marked[0], this);
+	}
+	
+	//==========
+	// Workers
+	//==========
+	
+	function appInitWorker(action) {
+	  var response, _response$json$user, username, user_token;
+	
+	  return regeneratorRuntime.wrap(function appInitWorker$(_context2) {
+	    while (1) {
+	      switch (_context2.prev = _context2.next) {
+	        case 0:
+	          _context2.next = 2;
+	          return (0, _effects.call)(Api.authCheck);
+	
+	        case 2:
+	          response = _context2.sent;
+	
+	          if (!(response.status === 200)) {
+	            _context2.next = 8;
+	            break;
+	          }
+	
+	          if (!response.json.user) {
+	            _context2.next = 8;
+	            break;
+	          }
+	
+	          // sets auth token
+	          _response$json$user = response.json.user, username = _response$json$user.username, user_token = _response$json$user.user_token;
+	          _context2.next = 8;
+	          return (0, _effects.put)((0, _login.authCheckSuccess)(username, user_token));
+	
+	        case 8:
+	          _context2.next = 10;
+	          return (0, _effects.put)((0, _app.appInitComplete)());
+	
+	        case 10:
+	        case 'end':
+	          return _context2.stop();
+	      }
+	    }
+	  }, _marked[1], this);
+	}
+
+/***/ },
+/* 563 */
+/*!******************************************!*\
+  !*** ./assets/client/app/actions/app.js ***!
+  \******************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.appInitComplete = appInitComplete;
+	
+	var _actionTypes = __webpack_require__(/*! ./action-types */ 497);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function appInitComplete() {
+	  return {
+	    type: types.APP_INIT_COMPLETE,
+	    payload: {}
+	  };
+	}
+
+/***/ },
+/* 564 */
+/*!*******************************************!*\
+  !*** ./assets/client/app/reducers/app.js ***!
+  \*******************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	exports.default = posts;
+	
+	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	var _reduxStore = __webpack_require__(/*! ../redux-store */ 538);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function posts() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _reduxStore.initialState.app;
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	    case types.APP_INIT_STARTED:
+	      return _extends({}, state, {
+	        loading: true
+	      });
+	    case types.APP_INIT_COMPLETE:
+	      return _extends({}, state, {
+	        loading: false
 	      });
 	    default:
 	      return state;

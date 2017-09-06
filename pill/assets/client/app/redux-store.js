@@ -21,6 +21,9 @@ export function makeStore() {
 }
 
 export const initialState = {
+  app: {
+    loading: false
+  },
   posts: {},
   user: {
     username: '',

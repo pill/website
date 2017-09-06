@@ -1,5 +1,10 @@
 'use strict'
 
+// startup stuff
+export const APP_INIT_STARTED = 'APP_INIT_STARTED'
+export const APP_INIT_COMPLETE = 'APP_INIT_COMPLETE'
+export const AUTH_CHECK_SUCCESS = 'AUTH_CHECK_SUCCESS'
+
 export const REQUEST_CREATE_POST = 'REQUEST_CREATE_POST'
 export const POSTS_REQUESTED = 'POSTS_REQUESTED'
 

@@ -1,19 +1,23 @@
 'use strict'
 
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 import HomeContainer from './home'
 import OfficeContainer from './office'
 import { Navbar } from '../components/navbar'
 
-export class MainContainer extends React.Component {
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+
+export class MainContainer extends Component {
 
   render() {
+    const { state, actions } = this.props
     const res = []
     // always place navbar on top
     res.push(<Navbar key="navbar"/>)
     switch(this.props.section) {
       case 'office':
-        res.push(<OfficeContainer key="officeContainer" {...this.props}/>)
+        res.push(<OfficeContainer state={state} actions={actions} key="officeContainer" {...this.props}/>)
         break
       case 'main':
       case 'posts':
@@ -21,6 +25,25 @@ export class MainContainer extends React.Component {
       default:
         res.push(<HomeContainer key="homeContainer" {...this.props}/>)
     }
-    return (<div>{res}</div>)
+    return (
+      <div>{res}</div>
+    )
   }
 }
+
+// map global state to component properties
+function mapStateToProps(state) {
+  return {
+    state: state
+  }
+}
+
+// map global state to component properties
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({}, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainContainer)
+
