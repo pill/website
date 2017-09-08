@@ -11,8 +11,7 @@ import { loginSuccess, loginError } from '../actions/login'
 //==========
 
 const loginWatchers = [
-  loginRequestedWatcher,
-  // userAuthWatcher
+  loginRequestedWatcher
 ]
 export { loginWatchers }
 

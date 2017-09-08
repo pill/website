@@ -19,7 +19,6 @@ export function* periodicTask(task, timeout) {
   }
 }
 
-
 export default function* root() {
   // Run all watchers in parallel
   try {

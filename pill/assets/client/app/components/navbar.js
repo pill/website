@@ -9,7 +9,7 @@ export class Navbar extends React.Component {
     return (<div>
               <a href="/">Home</a>
               &nbsp;
-              <a href="/posts">Posts</a>
+              <a href="/blog">Blog</a>
               &nbsp;
               <a href="/work">Work</a>
             </div>)

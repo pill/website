@@ -15,12 +15,14 @@ export class MainContainer extends Component {
     const res = []
     // always place navbar on top
     res.push(<Navbar state={state} actions={actions} key="navbar"/>)
+
+    // main content can vary by section
     switch(this.props.section) {
       case 'office':
         res.push(<OfficeContainer state={state} actions={actions} key="officeContainer" {...this.props}/>)
         break
       case 'main':
-      case 'posts':
+      case 'blog':
       case 'work':
       default:
         res.push(<HomeContainer state={state} actions={actions} key="homeContainer" {...this.props}/>)

@@ -24,6 +24,7 @@ export function* appInitWatcher() {
 //==========
 
 export function* appInitWorker(action) {
+  // does things to initialize the app
 
   // check if user is authenticated
   // if yes update user state (user_token)

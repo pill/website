@@ -29207,12 +29207,14 @@
 	      var res = [];
 	      // always place navbar on top
 	      res.push(_react2.default.createElement(_navbar.Navbar, { state: state, actions: actions, key: 'navbar' }));
+	
+	      // main content can vary by section
 	      switch (this.props.section) {
 	        case 'office':
 	          res.push(_react2.default.createElement(_office2.default, _extends({ state: state, actions: actions, key: 'officeContainer' }, this.props)));
 	          break;
 	        case 'main':
-	        case 'posts':
+	        case 'blog':
 	        case 'work':
 	        default:
 	          res.push(_react2.default.createElement(_home2.default, _extends({ state: state, actions: actions, key: 'homeContainer' }, this.props)));
@@ -33300,12 +33302,14 @@
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
 	exports.Office = undefined;
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
 	var _react = __webpack_require__(/*! react */ 299);
 	
@@ -33333,16 +33337,39 @@
 	      args[_key] = arguments[_key];
 	    }
 	
-	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Office.__proto__ || Object.getPrototypeOf(Office)).call.apply(_ref, [this].concat(args))), _this), _this._errors = function () {
-	      if (_this.props['error']) {
-	        return _react2.default.createElement(
-	          'div',
-	          null,
-	          'errors ',
-	          _this.props['error']
-	        );
-	      }
-	      return '';
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Office.__proto__ || Object.getPrototypeOf(Office)).call.apply(_ref, [this].concat(args))), _this), _this._isLoggedIn = function () {
+	      // redux state
+	      return !!_this.props.state.user.user_token;
+	    }, _this._loginForm = function () {
+	      return _react2.default.createElement(
+	        "div",
+	        null,
+	        _react2.default.createElement(
+	          "form",
+	          { method: "post", onSubmit: _this._submitLogin },
+	          _react2.default.createElement(
+	            "div",
+	            null,
+	            "username:",
+	            _react2.default.createElement("input", { type: "text", onChange: _this._handleUsernameChange })
+	          ),
+	          _react2.default.createElement(
+	            "div",
+	            null,
+	            "password:",
+	            _react2.default.createElement("input", { type: "password", onChange: _this._handlePasswordChange })
+	          ),
+	          _react2.default.createElement(
+	            "div",
+	            null,
+	            _react2.default.createElement("input", { style: styles.submitButton, type: "submit", value: "Login" })
+	          )
+	        )
+	      );
+	    }, _this._handleUsernameChange = function (e) {
+	      return _this.setState({ username: e.target.value });
+	    }, _this._handlePasswordChange = function (e) {
+	      return _this.setState({ password: e.target.value });
 	    }, _this._submitLogin = function (e) {
 	      e.preventDefault();
 	      if (!_this.state) {
@@ -33351,116 +33378,145 @@
 	      }
 	      // local component state
 	      _this.props.actions.requestLogin(_this.state.username, _this.state.password);
-	    }, _this._handleUsernameChange = function (e) {
-	      _this.setState({ username: e.target.value });
-	    }, _this._handlePasswordChange = function (e) {
-	      _this.setState({ password: e.target.value });
-	    }, _this._isLoggedIn = function () {
-	      // redux state
-	      return !!_this.props.state.user.user_token;
-	    }, _this._loginForm = function () {
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _this._errors(),
-	        _react2.default.createElement(
-	          'form',
-	          { method: 'post', onSubmit: _this._submitLogin },
-	          _react2.default.createElement(
-	            'div',
-	            null,
-	            'username:',
-	            _react2.default.createElement('input', { type: 'text', name: 'username', onChange: _this._handleUsernameChange })
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            null,
-	            'password:',
-	            _react2.default.createElement('input', { type: 'password', name: 'password', onChange: _this._handlePasswordChange })
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            null,
-	            _react2.default.createElement('input', { style: styles.submitButton, type: 'submit', value: 'Login' })
-	          )
-	        )
-	      );
-	    }, _this._handlePostSubmit = function () {
-	      _this.props.actions.createPost();
 	    }, _this._postForm = function () {
 	      return _react2.default.createElement(
-	        'div',
+	        "div",
 	        null,
 	        _react2.default.createElement(
-	          'form',
+	          "form",
 	          null,
-	          _react2.default.createElement('textarea', { name: 'post_text', style: styles.postText }),
 	          _react2.default.createElement(
-	            'select',
-	            { name: 'publish_status' },
+	            "label",
+	            { style: _extends({}, styles.label, styles.block) },
+	            "Title"
+	          ),
+	          _react2.default.createElement("input", { style: styles.textInput, type: "text", onChange: _this._titleChange }),
+	          _react2.default.createElement(
+	            "label",
+	            { style: _extends({}, styles.label, styles.block) },
+	            "Body"
+	          ),
+	          _react2.default.createElement("textarea", { style: styles.postText, onChange: _this._bodyChange }),
+	          _react2.default.createElement(
+	            "select",
+	            { id: "publish_status", onChange: _this._publishStatusChange },
 	            _react2.default.createElement(
-	              'option',
-	              { value: 'published' },
-	              'Draft'
+	              "option",
+	              { value: "draft" },
+	              "Draft"
 	            ),
 	            _react2.default.createElement(
-	              'option',
-	              { value: 'published' },
-	              'Published'
+	              "option",
+	              { value: "published" },
+	              "Published"
 	            )
 	          ),
 	          _react2.default.createElement(
-	            'div',
+	            "div",
 	            { style: styles.submitButton },
-	            _react2.default.createElement('input', { type: 'button', name: 'post_submit', value: 'Post It', onClick: _this._handlePostSubmit })
+	            _react2.default.createElement("input", { type: "button", value: "Post It", onClick: _this._handlePostSubmit })
 	          )
 	        )
+	      );
+	    }, _this._titleChange = function (e) {
+	      return _this.setState({ 'title': e.target.value });
+	    }, _this._bodyChange = function (e) {
+	      return _this.setState({ 'body': e.target.value });
+	    }, _this._publishStatusChange = function (e) {
+	      return _this.setState({ 'publish_status': e.target.value });
+	    }, _this._handlePostSubmit = function (e) {
+	      e.preventDefault();
+	      if (!_this.state) {
+	        console.log("You didn't type anything!");
+	        return;
+	      }
+	      // TODO: validation
+	
+	      var _ref2 = _this.state || {},
+	          title = _ref2.title,
+	          body = _ref2.body,
+	          publish_status = _ref2.publish_status;
+	
+	      _this.props.actions.createPost({ title: title, body: body, publish_status: publish_status });
+	    }, _this._postList = function () {
+	      return _react2.default.createElement(
+	        "div",
+	        null,
+	        "post list"
 	      );
 	    }, _this.render = function () {
 	      // loading indicator
 	      if (_this.props.state.app.loading) {
 	        return _react2.default.createElement(
-	          'div',
+	          "div",
 	          { style: styles.loading },
 	          _react2.default.createElement(
-	            'em',
+	            "em",
 	            null,
-	            'Loading...'
+	            "Loading..."
 	          )
 	        );
 	      }
 	
-	      // app is loaded, show login or post form
-	      var res = void 0;
+	      // app is loaded, show login, post list, post form (new or edit)
+	      var content = void 0,
+	          title = void 0;
 	      var isLoggedIn = _this._isLoggedIn();
 	      if (!isLoggedIn) {
-	        res = _this._loginForm();
-	      } else {
-	        res = _this._postForm();
+	        title = 'Login first!';
+	        content = _this._loginForm();
+	      } else if (_this.props.subsection === 'post_new') {
+	        // post section
+	        title = "Write a post " + _this.props.state.user.username + "!";
+	        content = _this._postForm();
+	      } else if (_this.props.subsection === 'post_edit') {
+	        // post section
+	        title = "Edit this post " + _this.props.state.user.username + "!";
+	        content = _this._postForm();
+	      } else if (_this.props.subsection === 'post_list') {
+	        title = "Here are your posts " + _this.props.state.user.username + "!";
+	        content = _this._postList();
 	      }
 	
 	      return _react2.default.createElement(
-	        'div',
+	        "div",
 	        null,
 	        _react2.default.createElement(
-	          'h1',
+	          "h1",
 	          null,
-	          'Write a post ',
-	          _this.props.state.user.username,
-	          '!'
+	          title
 	        ),
-	        res
+	        content
 	      );
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
+	  // ===========
+	  // login form
+	  // ===========
+	
+	
+	  // ===========
+	  // post form
+	  // ===========
+	
 	
 	  return Office;
 	}(_react.Component);
 	
 	var styles = {
 	  loading: { 'marginTop': '5em' },
-	  postText: { width: '50%', height: '10em', display: 'block', marginBottom: '1em' },
-	  submitButton: { marginTop: '1em' }
+	  postText: {
+	    width: '50%',
+	    height: '10em',
+	    display: 'block',
+	    marginTop: '1em',
+	    marginBottom: '1em'
+	  },
+	  textInput: { width: '50%', marginTop: '1em', marginBottom: '1em' },
+	  submitButton: { marginTop: '1em' },
+	
+	  block: { display: 'block' },
+	  label: { fontSize: '1em', fontWeight: 'bold' }
 	};
 
 /***/ },
@@ -33516,8 +33572,8 @@
 	        '\xA0',
 	        _react2.default.createElement(
 	          'a',
-	          { href: '/posts' },
-	          'Posts'
+	          { href: '/blog' },
+	          'Blog'
 	        ),
 	        '\xA0',
 	        _react2.default.createElement(
@@ -36102,7 +36158,9 @@
 	});
 	exports.postWatchers = undefined;
 	exports.postsRequestedWatcher = postsRequestedWatcher;
+	exports.createPostWatcher = createPostWatcher;
 	exports.postsRequestedWorker = postsRequestedWorker;
+	exports.createPostWorker = createPostWorker;
 	
 	var _reduxSaga = __webpack_require__(/*! redux-saga */ 539);
 	
@@ -36114,10 +36172,10 @@
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
-	var _marked = [postsRequestedWatcher, postsRequestedWorker].map(regeneratorRuntime.mark);
+	var _marked = [postsRequestedWatcher, createPostWatcher, postsRequestedWorker, createPostWorker].map(regeneratorRuntime.mark);
 	
 	// === Watchers ===
-	var postWatchers = [postsRequestedWatcher];
+	var postWatchers = [postsRequestedWatcher, createPostWatcher];
 	exports.postWatchers = postWatchers;
 	function postsRequestedWatcher() {
 	  return regeneratorRuntime.wrap(function postsRequestedWatcher$(_context) {
@@ -36131,18 +36189,55 @@
 	  }, _marked[0], this);
 	}
 	
-	// === Workers ===
-	
-	function postsRequestedWorker(action) {
-	  return regeneratorRuntime.wrap(function postsRequestedWorker$(_context2) {
+	function createPostWatcher() {
+	  return regeneratorRuntime.wrap(function createPostWatcher$(_context2) {
 	    while (1) {
 	      switch (_context2.prev = _context2.next) {
 	        case 0:
+	          return _context2.delegateYield((0, _reduxSaga.takeEvery)(types.POST_CREATE_REQUESTED, createPostWorker), 't0', 1);
+	
+	        case 1:
 	        case 'end':
 	          return _context2.stop();
 	      }
 	    }
 	  }, _marked[1], this);
+	}
+	
+	// === Workers ===
+	
+	function postsRequestedWorker(action) {
+	  return regeneratorRuntime.wrap(function postsRequestedWorker$(_context3) {
+	    while (1) {
+	      switch (_context3.prev = _context3.next) {
+	        case 0:
+	        case 'end':
+	          return _context3.stop();
+	      }
+	    }
+	  }, _marked[2], this);
+	}
+	
+	function createPostWorker(action) {
+	  var post_data, response;
+	  return regeneratorRuntime.wrap(function createPostWorker$(_context4) {
+	    while (1) {
+	      switch (_context4.prev = _context4.next) {
+	        case 0:
+	          console.log("requested create post", action.payload);
+	          post_data = action.payload.post_data;
+	          _context4.next = 4;
+	          return (0, _effects.call)(Api.createPost, post_data);
+	
+	        case 4:
+	          response = _context4.sent;
+	
+	        case 5:
+	        case 'end':
+	          return _context4.stop();
+	      }
+	    }
+	  }, _marked[3], this);
 	}
 
 /***/ },
@@ -36260,6 +36355,7 @@
 	});
 	exports.login = login;
 	exports.authCheck = authCheck;
+	exports.createPost = createPost;
 	
 	var _conf = __webpack_require__(/*! ../conf */ 552);
 	
@@ -36277,7 +36373,8 @@
 	var BASE_API_URL = HOST + '/api/v1';
 	var ENDPOINTS = {
 	  login: BASE_API_URL + '/login',
-	  authCheck: BASE_API_URL + '/auth_check'
+	  authCheck: BASE_API_URL + '/auth_check',
+	  createPost: BASE_API_URL + '/posts'
 	};
 	
 	function _parseResponse(response, context) {
@@ -36324,6 +36421,10 @@
 	  }).catch(function (error) {
 	    return _handleError(error);
 	  });
+	}
+	
+	function createPost(post_data) {
+	  return fetch(ENDPOINTS.createPost);
 	}
 
 /***/ },
