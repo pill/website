@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as officeActions from '../actions/office'
 import * as loginActions from '../actions/login'
-
 import { Office } from '../components/office'
 
 // map global state to component properties

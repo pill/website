@@ -14,12 +14,16 @@ log = logging.getLogger(__file__)
 class UserService(BaseService):
 
     def get_user_by_token(self, user_token):
-        # used on most calls to attach authenticated user
+        """
+        Gets a user by user_token, which is stored in
+        a Flask session variable. The token is never exposed
+        to the end user since session uses secure cookies.
+        """
         if not user_token:
             return None
 
         user = None
-        cursor = conn['users'].find({'user_token': user_token})
+        cursor = conn()['users'].find({'user_token': user_token})
         try:
             db_user_data = cursor.next()
             # TODO: make transient fields
@@ -36,14 +40,15 @@ class UserService(BaseService):
         # db_user returned with userdata overlaid
         assert userdata
         user = None
-        cursor = conn['users'].find({'username': userdata['username']})
+        cursor = conn()['users'].find({'username': userdata['username']})
         try:
             db_user_data = cursor.next()
             if db_user_data:
+                # don't add token until login!
                 if 'user_token' in db_user_data:
-                    # don't add token until login!
                     db_user_data.pop('user_token')
                 db_user_data.update(userdata)
+                # return a user Model
                 user = models.User(**db_user_data)
         except:
             log.debug('user not found')
@@ -56,7 +61,7 @@ class UserService(BaseService):
             user = self.get_db_user(user.to_dict())
             user.user_token = util.gen_random_string()
             user_dict = user.to_dict()
-            conn['users'].update(
+            conn()['users'].update(
                 {'_id': ObjectId(user._id)},
                 {'$set': user_dict}
             )

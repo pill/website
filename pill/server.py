@@ -15,11 +15,12 @@ from flask import (
 )
 
 from pill import models
+from pill import util
 from pill.services import (
     post as post_service,
     user as user_service
 )
-from pill import util
+
 
 app = Flask(
     __name__,
@@ -41,10 +42,10 @@ app.S.user = user_service.UserService()
 # admin
 #-------
 @app.route('/office', methods=['GET'])
-def admin_home():
+def office():
     context = {
         'section': 'office',
-        'subsection': 'post_list'
+        'subsection': 'index'
     }
     return render_template('index.html', **context)
 
@@ -131,7 +132,7 @@ def login():
     username = ''
     if request.method == 'POST':
         data = request.get_json()
-        # user, but did not verify user_token
+        # user, but did not verify username/password yet
         user =  app.S.user.get_db_user({
             'username':data.get('username'),
             'password':data.get('password')

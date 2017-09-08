@@ -29,11 +29,11 @@ export class Office extends Component {
   _handlePasswordChange = e => this.setState({password: e.target.value})
   _submitLogin = (e) => {
     e.preventDefault()
+    // local component state
     if (!this.state) {
       console.log("You didn't type anything!")
       return
     }
-    // local component state
     this.props.actions.requestLogin(this.state.username, this.state.password)
   }
 
@@ -76,10 +76,28 @@ export class Office extends Component {
     this.props.actions.createPost({ title, body, publish_status })
   }
 
+  // ===========
+  // post list
+  // ===========
   _postList = () => {
     return (
         <div>
           post list
+        </div>
+    )
+  }
+
+  // =============
+  // office index
+  // =============
+  _officeIndex = () => {
+    return (
+        <div>
+
+          <ul>
+            <li><a href="/office/posts">My Posts</a></li>
+            <li><a href="/office/posts/new">Write a Post</a></li>
+          </ul>
         </div>
     )
   }
@@ -111,9 +129,18 @@ export class Office extends Component {
       title = `Here are your posts ${this.props.state.user.username}!`
       content = this._postList()
     }
+    else if (this.props.subsection === 'index') {
+      title = `Site Admin`
+      content = this._officeIndex()
+    }
 
     return (
-      <div>
+      <div style={styles.officeNav}>
+        <a href="/office">Site Admin</a>
+        &nbsp;&middot;&nbsp;
+        <a href="/office/posts">My Posts</a>
+        &nbsp;&middot;&nbsp;
+        <a href="/office/posts/new">Write a Post</a>
         <h1>{title}</h1>
         {content}
       </div>
@@ -132,7 +159,7 @@ const styles = {
   },
   textInput: { width:'50%', marginTop: '1em', marginBottom: '1em'},
   submitButton: { marginTop:'1em'},
-
+  officeNav: { marginTop:'1em' },
   block: { display: 'block' },
   label: { fontSize: '1em', fontWeight: 'bold'}
 }

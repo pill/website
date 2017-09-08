@@ -31730,9 +31730,24 @@
 	var APP_INIT_COMPLETE = exports.APP_INIT_COMPLETE = 'APP_INIT_COMPLETE';
 	var AUTH_CHECK_SUCCESS = exports.AUTH_CHECK_SUCCESS = 'AUTH_CHECK_SUCCESS';
 	
+	// post CRUD stuff
 	var POST_CREATE_REQUESTED = exports.POST_CREATE_REQUESTED = 'POST_CREATE_REQUESTED';
-	var POSTS_REQUESTED = exports.POSTS_REQUESTED = 'POSTS_REQUESTED';
+	var POST_CREATE_SUCCESS = exports.POST_CREATE_SUCCESS = 'POST_CREATE_SUCCESS';
+	var POST_CREATE_ERROR = exports.POST_CREATE_ERROR = 'POST_CREATE_ERROR';
 	
+	var POST_DELETE_REQUESTED = exports.POST_DELETE_REQUESTED = 'POST_DELETE_REQUESTED';
+	var POST_DELETE_SUCCESS = exports.POST_DELETE_SUCCESS = 'POST_DELETE_SUCCESS';
+	var POST_DELETE_ERROR = exports.POST_DELETE_ERROR = 'POST_DELETE_ERROR';
+	
+	var POST_GET_REQUESTED = exports.POST_GET_REQUESTED = 'POST_GET_REQUESTED';
+	var POST_GET_SUCCESS = exports.POST_GET_SUCCESS = 'POST_GET_SUCCESS';
+	var POST_GET_ERROR = exports.POST_GET_ERROR = 'POST_GET_ERROR';
+	
+	var POSTS_GET_REQUESTED = exports.POSTS_GET_REQUESTED = 'POSTS_GET_REQUESTED';
+	var POSTS_GET_SUCCESS = exports.POSTS_GET_SUCCESS = 'POSTS_GET_SUCCESS';
+	var POSTS_GET_ERROR = exports.POSTS_GET_ERROR = 'POSTS_GET_ERROR';
+	
+	// authentication
 	var LOGIN_REQUESTED = exports.LOGIN_REQUESTED = 'LOGIN_REQUESTED';
 	var LOGIN_SUCCESS = exports.LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 	var LOGIN_ERROR = exports.LOGIN_ERROR = 'LOGIN_ERROR';
@@ -31867,6 +31882,12 @@
 	exports.createPost = createPost;
 	exports.createPostSuccess = createPostSuccess;
 	exports.createPostError = createPostError;
+	exports.deletePost = deletePost;
+	exports.deletePostSuccess = deletePostSuccess;
+	exports.deletePostError = deletePostError;
+	exports.getPosts = getPosts;
+	exports.getPostsSuccess = getPostsSuccess;
+	exports.getPostsError = getPostsError;
 	
 	var _actionTypes = __webpack_require__(/*! ./action-types */ 497);
 	
@@ -31874,26 +31895,48 @@
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
-	// import { createAction } from '../lib/util'
-	
 	function createPost(post_data) {
 	  return {
 	    type: types.POST_CREATE_REQUESTED,
 	    payload: { post_data: post_data }
 	  };
 	}
-	
 	function createPostSuccess(post_data) {
 	  return {
 	    type: types.POST_CREATE_SUCCESS,
 	    payload: { post_data: post_data }
 	  };
 	}
-	
 	function createPostError(error) {
 	  return {
 	    type: types.POST_CREATE_ERROR,
 	    payload: { error: error }
+	  };
+	}
+	
+	function deletePost(post_id) {}
+	function deletePostSuccess(post_id) {}
+	function deletePostError(post_id) {}
+	
+	function getPosts() {
+	  var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+	  var rpp = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+	
+	  return {
+	    type: types.POSTS_GET_REQUESTED,
+	    payload: { page: page, rpp: rpp }
+	  };
+	}
+	function getPostsSuccess(posts) {
+	  return {
+	    type: types.POSTS_GET_SUCCESS,
+	    payload: { posts: posts }
+	  };
+	}
+	function getPostsError(posts) {
+	  return {
+	    type: types.POSTS_GET_ERROR,
+	    payload: { posts: posts }
 	  };
 	}
 
@@ -31923,6 +31966,7 @@
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	// === Action Creators ===
+	
 	function requestLogin(username, password) {
 	  return (0, _util.createAction)(types.LOGIN_REQUESTED, { username: username, password: password });
 	}
@@ -33372,11 +33416,11 @@
 	      return _this.setState({ password: e.target.value });
 	    }, _this._submitLogin = function (e) {
 	      e.preventDefault();
+	      // local component state
 	      if (!_this.state) {
 	        console.log("You didn't type anything!");
 	        return;
 	      }
-	      // local component state
 	      _this.props.actions.requestLogin(_this.state.username, _this.state.password);
 	    }, _this._postForm = function () {
 	      return _react2.default.createElement(
@@ -33444,6 +33488,33 @@
 	        null,
 	        "post list"
 	      );
+	    }, _this._officeIndex = function () {
+	      return _react2.default.createElement(
+	        "div",
+	        null,
+	        _react2.default.createElement(
+	          "ul",
+	          null,
+	          _react2.default.createElement(
+	            "li",
+	            null,
+	            _react2.default.createElement(
+	              "a",
+	              { href: "/office/posts" },
+	              "My Posts"
+	            )
+	          ),
+	          _react2.default.createElement(
+	            "li",
+	            null,
+	            _react2.default.createElement(
+	              "a",
+	              { href: "/office/posts/new" },
+	              "Write a Post"
+	            )
+	          )
+	        )
+	      );
 	    }, _this.render = function () {
 	      // loading indicator
 	      if (_this.props.state.app.loading) {
@@ -33476,11 +33547,31 @@
 	      } else if (_this.props.subsection === 'post_list') {
 	        title = "Here are your posts " + _this.props.state.user.username + "!";
 	        content = _this._postList();
+	      } else if (_this.props.subsection === 'index') {
+	        title = "Site Admin";
+	        content = _this._officeIndex();
 	      }
 	
 	      return _react2.default.createElement(
 	        "div",
-	        null,
+	        { style: styles.officeNav },
+	        _react2.default.createElement(
+	          "a",
+	          { href: "/office" },
+	          "Site Admin"
+	        ),
+	        "\xA0\xB7\xA0",
+	        _react2.default.createElement(
+	          "a",
+	          { href: "/office/posts" },
+	          "My Posts"
+	        ),
+	        "\xA0\xB7\xA0",
+	        _react2.default.createElement(
+	          "a",
+	          { href: "/office/posts/new" },
+	          "Write a Post"
+	        ),
 	        _react2.default.createElement(
 	          "h1",
 	          null,
@@ -33500,6 +33591,16 @@
 	  // ===========
 	
 	
+	  // ===========
+	  // post list
+	  // ===========
+	
+	
+	  // =============
+	  // office index
+	  // =============
+	
+	
 	  return Office;
 	}(_react.Component);
 	
@@ -33514,7 +33615,7 @@
 	  },
 	  textInput: { width: '50%', marginTop: '1em', marginBottom: '1em' },
 	  submitButton: { marginTop: '1em' },
-	
+	  officeNav: { marginTop: '1em' },
 	  block: { display: 'block' },
 	  label: { fontSize: '1em', fontWeight: 'bold' }
 	};
@@ -33569,13 +33670,13 @@
 	          { href: '/' },
 	          'Home'
 	        ),
-	        '\xA0',
+	        '\xA0\xB7\xA0',
 	        _react2.default.createElement(
 	          'a',
 	          { href: '/blog' },
 	          'Blog'
 	        ),
-	        '\xA0',
+	        '\xA0\xB7\xA0',
 	        _react2.default.createElement(
 	          'a',
 	          { href: '/work' },
