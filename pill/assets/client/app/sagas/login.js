@@ -26,7 +26,6 @@ export function* loginRequestedWatcher() {
 export function* loginRequestedWorker(action) {
   const { username, password } = action.payload
   const response = yield call(Api.login, username, password)
-
   if (response.status === 200) {
     // set token
     const { username, user_token } = response.json

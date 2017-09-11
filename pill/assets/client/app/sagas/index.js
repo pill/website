@@ -1,6 +1,6 @@
 import { call, fork } from 'redux-saga/effects'
 
-import { postWatchers } from './posts'
+import { postWatchers } from './post'
 import { loginWatchers } from './login'
 import { appWatchers } from './app'
 
@@ -25,6 +25,7 @@ export default function* root() {
     const allWatchers = [
       forkList(loginWatchers),
       forkList(appWatchers),
+      forkList(postWatchers)
       // forkList(actionSheetWatchers),
     ]
     yield allWatchers

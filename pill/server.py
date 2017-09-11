@@ -21,11 +21,13 @@ from pill.services import (
     user as user_service
 )
 
-
 app = Flask(
     __name__,
     static_folder='assets/client',
     template_folder='assets/templates')
+
+app.secret_key = '\xb3\xf1\xe8\xdc\x0fQ\xd6\xdc]\x8c\\\xea\xb4lL\x84o\xe9\xe3\xf8\xda\x1f\xfc\x16'
+app.debug = True
 
 #=============
 # Services
@@ -50,14 +52,15 @@ def office():
     return render_template('index.html', **context)
 
 @app.route('/office/posts', methods=['GET'])
+@util.authenticated
 def posts_list():
+    user = getattr(g, 'user', None)
+    if not user:
+        pass
     context = {
         'section': 'office',
         'subsection': 'post_list'
     }
-    user = app.S.user.get_user_by_token(session.get('user_token'))
-    if user:
-        context['user'] = user.to_dict(keys=['username', 'user_token'])
     return render_template('index.html', **context)
 
 @app.route('/office/posts/new', methods=['GET'])
@@ -130,27 +133,28 @@ def login():
     error = ''
     user_token = ''
     username = ''
-    if request.method == 'POST':
-        data = request.get_json()
-        # user, but did not verify username/password yet
-        user =  app.S.user.get_db_user({
-            'username':data.get('username'),
-            'password':data.get('password')
-        })
-        if not user:
-            error = 'User not found'
+
+    # only accepts POST
+    data = request.get_json()
+    # user, but did not verify username/password yet
+    user =  app.S.user.get_db_user({
+        'username':data.get('username'),
+        'password':data.get('password')
+    })
+    if not user:
+        error = 'User not found'
+        status = 400
+    else:
+        # this issues a new session if successful
+        logged_in_user = app.S.user.login(user)
+        if not logged_in_user:
+            error = 'Bad username/password'
             status = 400
         else:
-            # this issues a new session if successful
-            logged_in_user = app.S.user.login(user)
-            if not logged_in_user:
-                error = 'Bad username/password'
-                status = 400
-            else:
-                session['user_token'] = logged_in_user.user_token
-                # for the response
-                user_token = session['user_token']
-                username = user.username
+            session['user_token'] = logged_in_user.user_token
+            # for the response
+            user_token = session['user_token']
+            username = user.username
 
     resp = jsonify({
         'user_token': user_token,
@@ -182,8 +186,35 @@ def logout():
     session.pop('user_token', None)
     return redirect(url_for('blog'))
 
-app.secret_key = '\xb3\xf1\xe8\xdc\x0fQ\xd6\xdc]\x8c\\\xea\xb4lL\x84o\xe9\xe3\xf8\xda\x1f\xfc\x16'
-app.debug = True
+@app.route('/api/v1/posts', methods=['POST'])
+@util.authenticated
+def create_post_api():
+    success = error = ''
+    user = getattr(g, 'user', None)
+    data = request.get_json()
+    try:
+        pid = app.S.post.create_post(user, data)
+        res = jsonify(
+            {'success': 'Post Created with id: {}'.format(pid)}
+        )
+        res.status_code = 200
+    except Exception as e:
+        res = jsonify({'error': str(e)})
+        res.status_code = 400
+    return res
+
+@app.route('/api/v1/posts', methods=['GET'])
+@util.authenticated
+def get_posts_api():
+    success = error = ''
+    user = getattr(g, 'user', None)
+    page = int(request.args.get('page', 1))
+    rpp = int(request.args.get('rpp', 20))
+    query = {}
+    posts = app.S.post.get_posts(user, query, page=page, rpp=rpp)
+    res = jsonify({'posts': posts})
+    res.status_code = 200
+    return res
 
 # app.config.update(dict(
 #     # SERVER_NAME = 'localhost:8080',

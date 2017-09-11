@@ -13,7 +13,8 @@ function mapStateToProps(state) {
   return {
     state: {
         user: state.user,
-        app: state.app
+        app: state.app,
+        post: state.post
     }
   }
 }

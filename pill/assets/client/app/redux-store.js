@@ -24,7 +24,16 @@ export const initialState = {
   app: {
     loading: false
   },
-  posts: {},
+  post: {
+    error: '',
+    success: '',
+    post_form_data: {
+      title: '',
+      body: '',
+      publish_status: ''
+    },
+    posts: []
+  },
   user: {
     username: '',
     user_token: ''

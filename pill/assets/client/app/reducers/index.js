@@ -1,9 +1,9 @@
 import app from './app'
-import posts from './posts'
+import post from './post'
 import user from './user'
 
 export {
     app,
-    posts,
+    post,
     user
 }

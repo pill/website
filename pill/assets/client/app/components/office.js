@@ -1,6 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 
 export class Office extends Component {
+
+  componentDidMount() {
+    const page = 1
+    const rpp = 20
+    this.props.actions.getPosts(page, rpp)
+  }
+
   // ===========
   // login form
   // ===========
@@ -41,8 +48,20 @@ export class Office extends Component {
   // post form
   // ===========
   _postForm = () => {
+
+    let message = ''
+    const { error, success } = this.props.state.post
+
+    if (success) {
+      message = (<div style={styles.success}>{success}</div>)
+    }
+    if (error) {
+      message = (<div style={styles.error}>{error}</div>)
+    }
+
     return (
       <div>
+        {message}
         <form>
           <label style={{...styles.label, ...styles.block}}>Title</label>
           <input style={styles.textInput} type="text" onChange={this._titleChange}/>
@@ -72,6 +91,7 @@ export class Office extends Component {
       return
     }
     // TODO: validation
+    // pull data from local state
     const { title, body, publish_status } = this.state || {}
     this.props.actions.createPost({ title, body, publish_status })
   }
@@ -80,10 +100,17 @@ export class Office extends Component {
   // post list
   // ===========
   _postList = () => {
+    const posts = this.props.state.post.posts
+    const res = []
+    console.log('posts', posts)
+    for (let i=0; i<posts.length; i++) {
+      let p = posts[i]
+      res.push(<div key={p._id}>{p.title}</div>)
+    }
     return (
-        <div>
-          post list
-        </div>
+      <div>
+        {res}
+      </div>
     )
   }
 
@@ -92,46 +119,47 @@ export class Office extends Component {
   // =============
   _officeIndex = () => {
     return (
-        <div>
-
-          <ul>
-            <li><a href="/office/posts">My Posts</a></li>
-            <li><a href="/office/posts/new">Write a Post</a></li>
-          </ul>
-        </div>
+      <div>
+        <ul>
+          <li><a href="/office/posts">My Posts</a></li>
+          <li><a href="/office/posts/new">Write a Post</a></li>
+        </ul>
+      </div>
     )
   }
 
   render = () => {
+    // render basd on login state, subsection
+
     // loading indicator
     if (this.props.state.app.loading) {
       return (<div style={styles.loading}><em>Loading...</em></div>)
     }
 
     // app is loaded, show login, post list, post form (new or edit)
-    let content, title
-    const isLoggedIn = this._isLoggedIn()
-    if (!isLoggedIn) {
-      title = 'Login first!'
-      content = this._loginForm()
-    }
-    else if (this.props.subsection === 'post_new'){
-      // post section
-      title = `Write a post ${this.props.state.user.username}!`
-      content = this._postForm()
-    }
-    else if (this.props.subsection === 'post_edit'){
-      // post section
-      title = `Edit this post ${this.props.state.user.username}!`
-      content = this._postForm()
-    }
-    else if (this.props.subsection === 'post_list') {
-      title = `Here are your posts ${this.props.state.user.username}!`
-      content = this._postList()
-    }
-    else if (this.props.subsection === 'index') {
-      title = `Site Admin`
-      content = this._officeIndex()
+    let content, title, sub
+    sub = !this._isLoggedIn() ? 'login' : this.props.subsection
+    switch(sub) {
+      case 'login':
+        title = 'Login first!'
+        content = this._loginForm()
+        break
+      case 'post_new':
+        title = `Write a post ${this.props.state.user.username}!`
+        content = this._postForm()
+        break
+      case 'post_edit':
+        title = `Edit this post ${this.props.state.user.username}!`
+        content = this._postForm()
+        break
+      case 'post_list':
+        title = `Here are your posts ${this.props.state.user.username}!`
+        content = this._postList()
+        break
+      case 'index':
+      default:
+        title = `Site Admin`
+        content = this._officeIndex()
     }
 
     return (
@@ -149,7 +177,23 @@ export class Office extends Component {
 }
 
 const styles = {
-  loading: {'marginTop':'5em'},
+  loading: {marginTop:'5em'},
+  error: {
+    display:'block',
+    color: 'white',
+    backgroundColor: '#f44242',
+    margin: '1em 0 1em 0',
+    width: '50%',
+    padding: '5px'
+  },
+  success: {
+    display:'block',
+    color: 'white',
+    backgroundColor: '#37ce23',
+    margin: '1em 0 1em 0',
+    width: '50%',
+    padding: '5px'
+  },
   postText: {
     width:'50%',
     height:'10em',

@@ -31852,7 +31852,8 @@
 	  return {
 	    state: {
 	      user: state.user,
-	      app: state.app
+	      app: state.app,
+	      post: state.post
 	    }
 	  };
 	}
@@ -31888,56 +31889,59 @@
 	exports.getPosts = getPosts;
 	exports.getPostsSuccess = getPostsSuccess;
 	exports.getPostsError = getPostsError;
+	exports.getPost = getPost;
+	exports.getPostSuccess = getPostSuccess;
+	exports.getPostError = getPostError;
 	
 	var _actionTypes = __webpack_require__(/*! ./action-types */ 497);
 	
 	var types = _interopRequireWildcard(_actionTypes);
 	
+	var _util = __webpack_require__(/*! ../lib/util */ 502);
+	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
-	function createPost(post_data) {
-	  return {
-	    type: types.POST_CREATE_REQUESTED,
-	    payload: { post_data: post_data }
-	  };
+	function createPost(post_form_data) {
+	  return (0, _util.createAction)(types.POST_CREATE_REQUESTED, { post_form_data: post_form_data });
 	}
-	function createPostSuccess(post_data) {
-	  return {
-	    type: types.POST_CREATE_SUCCESS,
-	    payload: { post_data: post_data }
-	  };
+	function createPostSuccess(success) {
+	  return (0, _util.createAction)(types.POST_CREATE_SUCCESS, { success: success });
 	}
 	function createPostError(error) {
-	  return {
-	    type: types.POST_CREATE_ERROR,
-	    payload: { error: error }
-	  };
+	  return (0, _util.createAction)(types.POST_CREATE_ERROR, { error: error });
 	}
 	
-	function deletePost(post_id) {}
-	function deletePostSuccess(post_id) {}
-	function deletePostError(post_id) {}
+	function deletePost(delete_post_id) {
+	  return (0, _util.createAction)(types.POST_DELETE_REQUESTED, { delete_post_id: delete_post_id });
+	}
+	function deletePostSuccess(delete_post_id) {
+	  return (0, _util.createAction)(types.POST_DELETE_SUCCESS, { post_id: post_id });
+	}
+	function deletePostError(error) {
+	  return (0, _util.createAction)(types.POST_DELETE_ERROR, { error: error });
+	}
 	
 	function getPosts() {
 	  var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
 	  var rpp = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
 	
-	  return {
-	    type: types.POSTS_GET_REQUESTED,
-	    payload: { page: page, rpp: rpp }
-	  };
+	  return (0, _util.createAction)(types.POSTS_GET_REQUESTED, { page: page, rpp: rpp });
 	}
 	function getPostsSuccess(posts) {
-	  return {
-	    type: types.POSTS_GET_SUCCESS,
-	    payload: { posts: posts }
-	  };
+	  return (0, _util.createAction)(types.POSTS_GET_SUCCESS, { posts: posts });
 	}
-	function getPostsError(posts) {
-	  return {
-	    type: types.POSTS_GET_ERROR,
-	    payload: { posts: posts }
-	  };
+	function getPostsError(error) {
+	  return (0, _util.createAction)(types.POSTS_GET_ERROR, { error: error });
+	}
+	
+	function getPost(post_id) {
+	  return (0, _util.createAction)(types.POST_GET_REQUESTED, { post_id: post_id });
+	}
+	function getPostSuccess(posts) {
+	  return (0, _util.createAction)(types.POST_GET_SUCCESS, { posts: posts });
+	}
+	function getPostError(error) {
+	  return (0, _util.createAction)(types.POST_GET_ERROR, { error: error });
 	}
 
 /***/ },
@@ -33355,6 +33359,8 @@
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
 	var _react = __webpack_require__(/*! react */ 299);
 	
 	var _react2 = _interopRequireDefault(_react);
@@ -33423,9 +33429,32 @@
 	      }
 	      _this.props.actions.requestLogin(_this.state.username, _this.state.password);
 	    }, _this._postForm = function () {
+	
+	      var message = '';
+	      var _this$props$state$pos = _this.props.state.post,
+	          error = _this$props$state$pos.error,
+	          success = _this$props$state$pos.success;
+	
+	
+	      if (success) {
+	        message = _react2.default.createElement(
+	          "div",
+	          { style: styles.success },
+	          success
+	        );
+	      }
+	      if (error) {
+	        message = _react2.default.createElement(
+	          "div",
+	          { style: styles.error },
+	          error
+	        );
+	      }
+	
 	      return _react2.default.createElement(
 	        "div",
 	        null,
+	        message,
 	        _react2.default.createElement(
 	          "form",
 	          null,
@@ -33475,6 +33504,7 @@
 	        return;
 	      }
 	      // TODO: validation
+	      // pull data from local state
 	
 	      var _ref2 = _this.state || {},
 	          title = _ref2.title,
@@ -33483,10 +33513,21 @@
 	
 	      _this.props.actions.createPost({ title: title, body: body, publish_status: publish_status });
 	    }, _this._postList = function () {
+	      var posts = _this.props.state.post.posts;
+	      var res = [];
+	      console.log('posts', posts);
+	      for (var i = 0; i < posts.length; i++) {
+	        var p = posts[i];
+	        res.push(_react2.default.createElement(
+	          "div",
+	          { key: p._id },
+	          p.title
+	        ));
+	      }
 	      return _react2.default.createElement(
 	        "div",
 	        null,
-	        "post list"
+	        res
 	      );
 	    }, _this._officeIndex = function () {
 	      return _react2.default.createElement(
@@ -33516,6 +33557,8 @@
 	        )
 	      );
 	    }, _this.render = function () {
+	      // render basd on login state, subsection
+	
 	      // loading indicator
 	      if (_this.props.state.app.loading) {
 	        return _react2.default.createElement(
@@ -33531,25 +33574,30 @@
 	
 	      // app is loaded, show login, post list, post form (new or edit)
 	      var content = void 0,
-	          title = void 0;
-	      var isLoggedIn = _this._isLoggedIn();
-	      if (!isLoggedIn) {
-	        title = 'Login first!';
-	        content = _this._loginForm();
-	      } else if (_this.props.subsection === 'post_new') {
-	        // post section
-	        title = "Write a post " + _this.props.state.user.username + "!";
-	        content = _this._postForm();
-	      } else if (_this.props.subsection === 'post_edit') {
-	        // post section
-	        title = "Edit this post " + _this.props.state.user.username + "!";
-	        content = _this._postForm();
-	      } else if (_this.props.subsection === 'post_list') {
-	        title = "Here are your posts " + _this.props.state.user.username + "!";
-	        content = _this._postList();
-	      } else if (_this.props.subsection === 'index') {
-	        title = "Site Admin";
-	        content = _this._officeIndex();
+	          title = void 0,
+	          sub = void 0;
+	      sub = !_this._isLoggedIn() ? 'login' : _this.props.subsection;
+	      switch (sub) {
+	        case 'login':
+	          title = 'Login first!';
+	          content = _this._loginForm();
+	          break;
+	        case 'post_new':
+	          title = "Write a post " + _this.props.state.user.username + "!";
+	          content = _this._postForm();
+	          break;
+	        case 'post_edit':
+	          title = "Edit this post " + _this.props.state.user.username + "!";
+	          content = _this._postForm();
+	          break;
+	        case 'post_list':
+	          title = "Here are your posts " + _this.props.state.user.username + "!";
+	          content = _this._postList();
+	          break;
+	        case 'index':
+	        default:
+	          title = "Site Admin";
+	          content = _this._officeIndex();
 	      }
 	
 	      return _react2.default.createElement(
@@ -33581,31 +33629,57 @@
 	      );
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
-	  // ===========
-	  // login form
-	  // ===========
+	
+	  _createClass(Office, [{
+	    key: "componentDidMount",
+	    value: function componentDidMount() {
+	      var page = 1;
+	      var rpp = 20;
+	      this.props.actions.getPosts(page, rpp);
+	    }
+	
+	    // ===========
+	    // login form
+	    // ===========
 	
 	
-	  // ===========
-	  // post form
-	  // ===========
+	    // ===========
+	    // post form
+	    // ===========
 	
 	
-	  // ===========
-	  // post list
-	  // ===========
+	    // ===========
+	    // post list
+	    // ===========
 	
 	
-	  // =============
-	  // office index
-	  // =============
+	    // =============
+	    // office index
+	    // =============
 	
+	  }]);
 	
 	  return Office;
 	}(_react.Component);
 	
 	var styles = {
-	  loading: { 'marginTop': '5em' },
+	  loading: { marginTop: '5em' },
+	  error: {
+	    display: 'block',
+	    color: 'white',
+	    backgroundColor: '#f44242',
+	    margin: '1em 0 1em 0',
+	    width: '50%',
+	    padding: '5px'
+	  },
+	  success: {
+	    display: 'block',
+	    color: 'white',
+	    backgroundColor: '#37ce23',
+	    margin: '1em 0 1em 0',
+	    width: '50%',
+	    padding: '5px'
+	  },
 	  postText: {
 	    width: '50%',
 	    height: '10em',
@@ -33742,7 +33816,16 @@
 	  app: {
 	    loading: false
 	  },
-	  posts: {},
+	  post: {
+	    error: '',
+	    success: '',
+	    post_form_data: {
+	      title: '',
+	      body: '',
+	      publish_status: ''
+	    },
+	    posts: []
+	  },
 	  user: {
 	    username: '',
 	    user_token: ''
@@ -36158,7 +36241,7 @@
 	
 	var _effects = __webpack_require__(/*! redux-saga/effects */ 554);
 	
-	var _posts = __webpack_require__(/*! ./posts */ 555);
+	var _post = __webpack_require__(/*! ./post */ 566);
 	
 	var _login = __webpack_require__(/*! ./login */ 556);
 	
@@ -36214,7 +36297,9 @@
 	      switch (_context2.prev = _context2.next) {
 	        case 0:
 	          _context2.prev = 0;
-	          allWatchers = [forkList(_login.loginWatchers), forkList(_app.appWatchers)];
+	          allWatchers = [forkList(_login.loginWatchers), forkList(_app.appWatchers), forkList(_post.postWatchers)
+	          // forkList(actionSheetWatchers),
+	          ];
 	          _context2.next = 4;
 	          return allWatchers;
 	
@@ -36246,102 +36331,7 @@
 	module.exports = __webpack_require__(/*! ./lib/effects */ 549)
 
 /***/ },
-/* 555 */
-/*!******************************************!*\
-  !*** ./assets/client/app/sagas/posts.js ***!
-  \******************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.postWatchers = undefined;
-	exports.postsRequestedWatcher = postsRequestedWatcher;
-	exports.createPostWatcher = createPostWatcher;
-	exports.postsRequestedWorker = postsRequestedWorker;
-	exports.createPostWorker = createPostWorker;
-	
-	var _reduxSaga = __webpack_require__(/*! redux-saga */ 539);
-	
-	var _effects = __webpack_require__(/*! redux-saga/effects */ 554);
-	
-	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
-	
-	var types = _interopRequireWildcard(_actionTypes);
-	
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-	
-	var _marked = [postsRequestedWatcher, createPostWatcher, postsRequestedWorker, createPostWorker].map(regeneratorRuntime.mark);
-	
-	// === Watchers ===
-	var postWatchers = [postsRequestedWatcher, createPostWatcher];
-	exports.postWatchers = postWatchers;
-	function postsRequestedWatcher() {
-	  return regeneratorRuntime.wrap(function postsRequestedWatcher$(_context) {
-	    while (1) {
-	      switch (_context.prev = _context.next) {
-	        case 0:
-	        case 'end':
-	          return _context.stop();
-	      }
-	    }
-	  }, _marked[0], this);
-	}
-	
-	function createPostWatcher() {
-	  return regeneratorRuntime.wrap(function createPostWatcher$(_context2) {
-	    while (1) {
-	      switch (_context2.prev = _context2.next) {
-	        case 0:
-	          return _context2.delegateYield((0, _reduxSaga.takeEvery)(types.POST_CREATE_REQUESTED, createPostWorker), 't0', 1);
-	
-	        case 1:
-	        case 'end':
-	          return _context2.stop();
-	      }
-	    }
-	  }, _marked[1], this);
-	}
-	
-	// === Workers ===
-	
-	function postsRequestedWorker(action) {
-	  return regeneratorRuntime.wrap(function postsRequestedWorker$(_context3) {
-	    while (1) {
-	      switch (_context3.prev = _context3.next) {
-	        case 0:
-	        case 'end':
-	          return _context3.stop();
-	      }
-	    }
-	  }, _marked[2], this);
-	}
-	
-	function createPostWorker(action) {
-	  var post_data, response;
-	  return regeneratorRuntime.wrap(function createPostWorker$(_context4) {
-	    while (1) {
-	      switch (_context4.prev = _context4.next) {
-	        case 0:
-	          console.log("requested create post", action.payload);
-	          post_data = action.payload.post_data;
-	          _context4.next = 4;
-	          return (0, _effects.call)(Api.createPost, post_data);
-	
-	        case 4:
-	          response = _context4.sent;
-	
-	        case 5:
-	        case 'end':
-	          return _context4.stop();
-	      }
-	    }
-	  }, _marked[3], this);
-	}
-
-/***/ },
+/* 555 */,
 /* 556 */
 /*!******************************************!*\
   !*** ./assets/client/app/sagas/login.js ***!
@@ -36457,6 +36447,7 @@
 	exports.login = login;
 	exports.authCheck = authCheck;
 	exports.createPost = createPost;
+	exports.getPosts = getPosts;
 	
 	var _conf = __webpack_require__(/*! ../conf */ 552);
 	
@@ -36475,7 +36466,8 @@
 	var ENDPOINTS = {
 	  login: BASE_API_URL + '/login',
 	  authCheck: BASE_API_URL + '/auth_check',
-	  createPost: BASE_API_URL + '/posts'
+	  createPost: BASE_API_URL + '/posts',
+	  getPosts: BASE_API_URL + '/posts'
 	};
 	
 	function _parseResponse(response, context) {
@@ -36524,8 +36516,39 @@
 	  });
 	}
 	
-	function createPost(post_data) {
-	  return fetch(ENDPOINTS.createPost);
+	function createPost(post_form_data) {
+	
+	  return fetch(ENDPOINTS.createPost, {
+	    method: 'POST',
+	    headers: {
+	      'Accept': 'application/json',
+	      'Content-Type': 'application/json'
+	    },
+	    body: JSON.stringify(post_form_data),
+	    credentials: 'include'
+	  }).then(function (response) {
+	    return _parseResponse(response);
+	  }).catch(function (error) {
+	    return _handleError(error);
+	  });
+	}
+	
+	function getPosts(page, rpp) {
+	  page = page || 1;
+	  rpp = rpp || 20;
+	  var endpoint = ENDPOINTS.getPosts + '?page=' + page + '&rpp=' + rpp;
+	  return fetch(endpoint, {
+	    method: 'GET',
+	    headers: {
+	      'Accept': 'application/json',
+	      'Content-Type': 'application/json'
+	    },
+	    credentials: 'include'
+	  }).then(function (response) {
+	    return _parseResponse(response);
+	  }).catch(function (error) {
+	    return _handleError(error);
+	  });
 	}
 
 /***/ },
@@ -36706,15 +36729,15 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.user = exports.posts = exports.app = undefined;
+	exports.user = exports.post = exports.app = undefined;
 	
 	var _app = __webpack_require__(/*! ./app */ 562);
 	
 	var _app2 = _interopRequireDefault(_app);
 	
-	var _posts = __webpack_require__(/*! ./posts */ 563);
+	var _post = __webpack_require__(/*! ./post */ 565);
 	
-	var _posts2 = _interopRequireDefault(_posts);
+	var _post2 = _interopRequireDefault(_post);
 	
 	var _user = __webpack_require__(/*! ./user */ 564);
 	
@@ -36723,7 +36746,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	exports.app = _app2.default;
-	exports.posts = _posts2.default;
+	exports.post = _post2.default;
 	exports.user = _user2.default;
 
 /***/ },
@@ -36770,38 +36793,7 @@
 	}
 
 /***/ },
-/* 563 */
-/*!*********************************************!*\
-  !*** ./assets/client/app/reducers/posts.js ***!
-  \*********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = posts;
-	
-	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
-	
-	var types = _interopRequireWildcard(_actionTypes);
-	
-	var _reduxStore = __webpack_require__(/*! ../redux-store */ 538);
-	
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-	
-	function posts() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-	  var action = arguments[1];
-	
-	  switch (action.type) {
-	    default:
-	      return state;
-	  }
-	}
-
-/***/ },
+/* 563 */,
 /* 564 */
 /*!********************************************!*\
   !*** ./assets/client/app/reducers/user.js ***!
@@ -36844,6 +36836,230 @@
 	    default:
 	      return state;
 	  }
+	}
+
+/***/ },
+/* 565 */
+/*!********************************************!*\
+  !*** ./assets/client/app/reducers/post.js ***!
+  \********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	exports.default = posts;
+	
+	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	var _reduxStore = __webpack_require__(/*! ../redux-store */ 538);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function posts() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _reduxStore.initialState.post;
+	  var action = arguments[1];
+	
+	  var _ref = action.payload || {},
+	      post_form_data = _ref.post_form_data,
+	      success = _ref.success,
+	      error = _ref.error,
+	      delete_post_id = _ref.delete_post_id,
+	      posts = _ref.posts;
+	
+	  switch (action.type) {
+	
+	    case types.POST_CREATE_REQUESTED:
+	      return _extends({}, state, {
+	        post_form_data: post_form_data,
+	        success: '',
+	        error: ''
+	      });
+	    case types.POST_CREATE_SUCCESS:
+	      return _extends({}, state, {
+	        success: success,
+	        error: ''
+	      });
+	    case types.POST_CREATE_ERROR:
+	      return _extends({}, state, {
+	        success: '',
+	        error: error
+	      });
+	    case types.POST_DELETE_REQUESTED:
+	      return _extends({}, state, {
+	        delete_post_id: delete_post_id
+	      });
+	    case types.POST_DELETE_SUCCESS:
+	      return _extends({}, state, {
+	        post_form_data: post_form_data,
+	        success: success,
+	        error: ''
+	      });
+	    case types.POSTS_GET_SUCCESS:
+	      return _extends({}, state, {
+	        posts: posts
+	      });
+	
+	    case types.POST_DELETE_ERROR:
+	    case types.POST_GET_REQUESTED:
+	    case types.POST_GET_ERROR:
+	    case types.POSTS_GET_REQUESTED:
+	    case types.POSTS_GET_ERROR:
+	
+	    default:
+	      return state;
+	  }
+	}
+
+/***/ },
+/* 566 */
+/*!*****************************************!*\
+  !*** ./assets/client/app/sagas/post.js ***!
+  \*****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.postWatchers = undefined;
+	exports.postsRequestedWatcher = postsRequestedWatcher;
+	exports.createPostWatcher = createPostWatcher;
+	exports.postsRequestedWorker = postsRequestedWorker;
+	exports.createPostWorker = createPostWorker;
+	
+	var _reduxSaga = __webpack_require__(/*! redux-saga */ 539);
+	
+	var _effects = __webpack_require__(/*! redux-saga/effects */ 554);
+	
+	var _api = __webpack_require__(/*! ../lib/api */ 557);
+	
+	var Api = _interopRequireWildcard(_api);
+	
+	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	var _office = __webpack_require__(/*! ../actions/office */ 500);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	var _marked = [postsRequestedWatcher, createPostWatcher, postsRequestedWorker, createPostWorker].map(regeneratorRuntime.mark);
+	
+	// === Watchers ===
+	var postWatchers = [postsRequestedWatcher, createPostWatcher];
+	exports.postWatchers = postWatchers;
+	function postsRequestedWatcher() {
+	  return regeneratorRuntime.wrap(function postsRequestedWatcher$(_context) {
+	    while (1) {
+	      switch (_context.prev = _context.next) {
+	        case 0:
+	          return _context.delegateYield((0, _reduxSaga.takeEvery)(types.POSTS_GET_REQUESTED, postsRequestedWorker), 't0', 1);
+	
+	        case 1:
+	        case 'end':
+	          return _context.stop();
+	      }
+	    }
+	  }, _marked[0], this);
+	}
+	
+	function createPostWatcher() {
+	  return regeneratorRuntime.wrap(function createPostWatcher$(_context2) {
+	    while (1) {
+	      switch (_context2.prev = _context2.next) {
+	        case 0:
+	          return _context2.delegateYield((0, _reduxSaga.takeEvery)(types.POST_CREATE_REQUESTED, createPostWorker), 't0', 1);
+	
+	        case 1:
+	        case 'end':
+	          return _context2.stop();
+	      }
+	    }
+	  }, _marked[1], this);
+	}
+	
+	// === Workers ===
+	
+	function postsRequestedWorker(action) {
+	  var response, posts;
+	  return regeneratorRuntime.wrap(function postsRequestedWorker$(_context3) {
+	    while (1) {
+	      switch (_context3.prev = _context3.next) {
+	        case 0:
+	          _context3.next = 2;
+	          return (0, _effects.call)(Api.getPosts);
+	
+	        case 2:
+	          response = _context3.sent;
+	          posts = response.json.posts;
+	
+	          if (!(response.status == 200)) {
+	            _context3.next = 7;
+	            break;
+	          }
+	
+	          _context3.next = 7;
+	          return (0, _effects.put)((0, _office.getPostsSuccess)(posts));
+	
+	        case 7:
+	        case 'end':
+	          return _context3.stop();
+	      }
+	    }
+	  }, _marked[2], this);
+	}
+	
+	function createPostWorker(action) {
+	  var post_form_data, response, _response$json, success, error;
+	
+	  return regeneratorRuntime.wrap(function createPostWorker$(_context4) {
+	    while (1) {
+	      switch (_context4.prev = _context4.next) {
+	        case 0:
+	          post_form_data = action.payload.post_form_data;
+	          _context4.next = 3;
+	          return (0, _effects.call)(Api.createPost, post_form_data);
+	
+	        case 3:
+	          response = _context4.sent;
+	          _response$json = response.json, success = _response$json.success, error = _response$json.error;
+	
+	          if (!(response.status == 200)) {
+	            _context4.next = 10;
+	            break;
+	          }
+	
+	          _context4.next = 8;
+	          return (0, _effects.put)((0, _office.createPostSuccess)(success));
+	
+	        case 8:
+	          _context4.next = 13;
+	          break;
+	
+	        case 10:
+	          if (!(response.status == 400)) {
+	            _context4.next = 13;
+	            break;
+	          }
+	
+	          _context4.next = 13;
+	          return (0, _effects.put)((0, _office.createPostError)(error));
+	
+	        case 13:
+	        case 'end':
+	          return _context4.stop();
+	      }
+	    }
+	  }, _marked[3], this);
 	}
 
 /***/ }
