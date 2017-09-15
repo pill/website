@@ -1,10 +1,13 @@
 import React, { Component, PropTypes } from 'react'
+import { findGetParameter } from '../lib/util'
 
 export class Office extends Component {
 
-  componentDidMount() {
-    const page = 1
-    const rpp = 20
+  componentWillMount() {
+    const page = parseInt(findGetParameter('page')) || 1
+    const rpp = parseInt(findGetParameter('rpp')) || 10
+    // paging
+    this.setState({ page, rpp })
     this.props.actions.getPosts(page, rpp)
   }
 
@@ -48,7 +51,6 @@ export class Office extends Component {
   // post form
   // ===========
   _postForm = () => {
-
     let message = ''
     const { error, success } = this.props.state.post
 
@@ -90,7 +92,6 @@ export class Office extends Component {
       console.log("You didn't type anything!")
       return
     }
-    // TODO: validation
     // pull data from local state
     const { title, body, publish_status } = this.state || {}
     this.props.actions.createPost({ title, body, publish_status })
@@ -101,17 +102,43 @@ export class Office extends Component {
   // ===========
   _postList = () => {
     const posts = this.props.state.post.posts
+    const { page, rpp } = this.state
+    const next_link = `/office/posts?page=${page+1}&rpp=${rpp}`
+    const prev_link = `/office/posts?page=${page-1}&rpp=${rpp}`
+    const prev = page > 1 ? (<a href={prev_link}>&laquo; prev</a>) : ''
+    const next = posts.length === rpp ? (<a href={next_link}>next &raquo;</a>) : ''
     const res = []
-    console.log('posts', posts)
     for (let i=0; i<posts.length; i++) {
       let p = posts[i]
-      res.push(<div key={p._id}>{p.title}</div>)
+      res.push(
+        <AdminPostRow key={p._id}
+                      post={p}
+                      editPost={this._editPost}
+                      deletePost={this._deletePost}></AdminPostRow>
+      )
     }
+
     return (
       <div>
-        {res}
+        <div>
+          {prev} {next}
+        </div>
+        <div style={styles.postsList}>
+          <table style={styles.adminPostTable}><tbody>{res}</tbody></table>
+        </div>
+        <div>
+          {prev} {next}
+        </div>
       </div>
     )
+  }
+  _editPost = (p) => {
+    console.log("edit post ", p)
+
+  }
+  _deletePost = (p) => {
+    console.log("delete post ", p)
+    this.props.actions.deletePost(p._id)
   }
 
   // =============
@@ -129,7 +156,7 @@ export class Office extends Component {
   }
 
   render = () => {
-    // render basd on login state, subsection
+    // render main content based on login state, subsection
 
     // loading indicator
     if (this.props.state.app.loading) {
@@ -176,6 +203,29 @@ export class Office extends Component {
   }
 }
 
+// this is the preferred way to pass args to a
+// component event action, that way
+// extra render() calls aren't made
+class AdminPostRow extends Component {
+  render = () => {
+    console.log("this props", this)
+    return (
+      <tr key={this.props.post._id}>
+          <td style={styles.adminPostTitle}><a href="#" onClick={this._edit}>{this.props.post.title}</a></td>
+          <td><a href="#" onClick={this._delete}>[X]</a></td>
+      </tr>
+    )
+  }
+  _edit = (e) => {
+    e.preventDefault()
+    this.props.editPost(this.props.post)
+  }
+  _delete = (e) => {
+    e.preventDefault()
+    this.props.deletePost(this.props.post)
+  }
+}
+
 const styles = {
   loading: {marginTop:'5em'},
   error: {
@@ -200,6 +250,18 @@ const styles = {
     display:'block',
     marginTop: '1em',
     marginBottom:'1em'
+  },
+  postsList: {
+    margin: '.5em 0 .5em 0',
+    borderTop: '1px solid #ccc',
+    borderBottom: '1px solid #ccc',
+    padding: '.5em 0 .5em 0'
+  },
+  adminPostTitle: {
+    width: '300px'
+  },
+  adminPostTable: {
+    width: '500px'
   },
   textInput: { width:'50%', marginTop: '1em', marginBottom: '1em'},
   submitButton: { marginTop:'1em'},

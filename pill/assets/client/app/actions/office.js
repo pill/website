@@ -13,10 +13,20 @@ export function createPostError(error) {
   return createAction(types.POST_CREATE_ERROR, { error })
 }
 
-export function deletePost(delete_post_id) {
-  return createAction(types.POST_DELETE_REQUESTED, { delete_post_id })
+export function updatePost(post_id, post_form_data) {
+  return createAction(types.POST_UPDATE_REQUESTED, { post_id, post_form_data })
 }
-export function deletePostSuccess(delete_post_id) {
+export function updatePostSuccess(success) {
+  return createAction(types.POST_UPDATE_SUCCESS, { success })
+}
+export function updatePostError(error) {
+  return createAction(types.POST_UPDATE_ERROR, { error })
+}
+
+export function deletePost(post_id) {
+  return createAction(types.POST_DELETE_REQUESTED, { post_id })
+}
+export function deletePostSuccess(post_id) {
   return createAction(types.POST_DELETE_SUCCESS, { post_id })
 }
 export function deletePostError(error) {

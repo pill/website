@@ -31735,6 +31735,10 @@
 	var POST_CREATE_SUCCESS = exports.POST_CREATE_SUCCESS = 'POST_CREATE_SUCCESS';
 	var POST_CREATE_ERROR = exports.POST_CREATE_ERROR = 'POST_CREATE_ERROR';
 	
+	var POST_UPDATE_REQUESTED = exports.POST_UPDATE_REQUESTED = 'POST_UPDATE_REQUESTED';
+	var POST_UPDATE_SUCCESS = exports.POST_UPDATE_SUCCESS = 'POST_UPDATE_SUCCESS';
+	var POST_UPDATE_ERROR = exports.POST_UPDATE_ERROR = 'POST_UPDATE_ERROR';
+	
 	var POST_DELETE_REQUESTED = exports.POST_DELETE_REQUESTED = 'POST_DELETE_REQUESTED';
 	var POST_DELETE_SUCCESS = exports.POST_DELETE_SUCCESS = 'POST_DELETE_SUCCESS';
 	var POST_DELETE_ERROR = exports.POST_DELETE_ERROR = 'POST_DELETE_ERROR';
@@ -31836,7 +31840,7 @@
 	
 	var officeActions = _interopRequireWildcard(_office);
 	
-	var _login = __webpack_require__(/*! ../actions/login */ 501);
+	var _login = __webpack_require__(/*! ../actions/login */ 535);
 	
 	var loginActions = _interopRequireWildcard(_login);
 	
@@ -31883,6 +31887,9 @@
 	exports.createPost = createPost;
 	exports.createPostSuccess = createPostSuccess;
 	exports.createPostError = createPostError;
+	exports.updatePost = updatePost;
+	exports.updatePostSuccess = updatePostSuccess;
+	exports.updatePostError = updatePostError;
 	exports.deletePost = deletePost;
 	exports.deletePostSuccess = deletePostSuccess;
 	exports.deletePostError = deletePostError;
@@ -31897,7 +31904,7 @@
 	
 	var types = _interopRequireWildcard(_actionTypes);
 	
-	var _util = __webpack_require__(/*! ../lib/util */ 502);
+	var _util = __webpack_require__(/*! ../lib/util */ 501);
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
@@ -31911,10 +31918,20 @@
 	  return (0, _util.createAction)(types.POST_CREATE_ERROR, { error: error });
 	}
 	
-	function deletePost(delete_post_id) {
-	  return (0, _util.createAction)(types.POST_DELETE_REQUESTED, { delete_post_id: delete_post_id });
+	function updatePost(post_id, post_form_data) {
+	  return (0, _util.createAction)(types.POST_UPDATE_REQUESTED, { post_id: post_id, post_form_data: post_form_data });
 	}
-	function deletePostSuccess(delete_post_id) {
+	function updatePostSuccess(success) {
+	  return (0, _util.createAction)(types.POST_UPDATE_SUCCESS, { success: success });
+	}
+	function updatePostError(error) {
+	  return (0, _util.createAction)(types.POST_UPDATE_ERROR, { error: error });
+	}
+	
+	function deletePost(post_id) {
+	  return (0, _util.createAction)(types.POST_DELETE_REQUESTED, { post_id: post_id });
+	}
+	function deletePostSuccess(post_id) {
 	  return (0, _util.createAction)(types.POST_DELETE_SUCCESS, { post_id: post_id });
 	}
 	function deletePostError(error) {
@@ -31946,51 +31963,6 @@
 
 /***/ },
 /* 501 */
-/*!********************************************!*\
-  !*** ./assets/client/app/actions/login.js ***!
-  \********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.requestLogin = requestLogin;
-	exports.loginSuccess = loginSuccess;
-	exports.loginError = loginError;
-	exports.authCheckSuccess = authCheckSuccess;
-	
-	var _actionTypes = __webpack_require__(/*! ./action-types */ 497);
-	
-	var types = _interopRequireWildcard(_actionTypes);
-	
-	var _util = __webpack_require__(/*! ../lib/util */ 502);
-	
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-	
-	// === Action Creators ===
-	
-	function requestLogin(username, password) {
-	  return (0, _util.createAction)(types.LOGIN_REQUESTED, { username: username, password: password });
-	}
-	
-	function loginSuccess(username, user_token) {
-	  return (0, _util.createAction)(types.LOGIN_SUCCESS, { username: username, user_token: user_token });
-	}
-	
-	function loginError(error) {
-	  return (0, _util.createAction)(types.LOGIN_ERROR, { error: error });
-	}
-	
-	function authCheckSuccess(username, user_token) {
-	  // ex. used if you refesh a page, so there's no explicit login action
-	  // to set the user state so we call this
-	  return (0, _util.createAction)(types.AUTH_CHECK_SUCCESS, { username: username, user_token: user_token });
-	}
-
-/***/ },
-/* 502 */
 /*!***************************************!*\
   !*** ./assets/client/app/lib/util.js ***!
   \***************************************/
@@ -32009,12 +31981,13 @@
 	
 	exports.assert = assert;
 	exports.createAction = createAction;
+	exports.findGetParameter = findGetParameter;
 	
-	var _includes = __webpack_require__(/*! lodash/includes */ 503);
+	var _includes = __webpack_require__(/*! lodash/includes */ 502);
 	
 	var _includes2 = _interopRequireDefault(_includes);
 	
-	var _values = __webpack_require__(/*! lodash/values */ 518);
+	var _values = __webpack_require__(/*! lodash/values */ 517);
 	
 	var _values2 = _interopRequireDefault(_values);
 	
@@ -32057,19 +32030,29 @@
 	var isEffect = exports.isEffect = function isEffect(action) {
 	  return (0, _includes2.default)(action.type, 'EFFECT_');
 	};
+	
+	function findGetParameter(parameterName) {
+	  var result = null,
+	      tmp = [];
+	  location.search.substr(1).split("&").forEach(function (item) {
+	    tmp = item.split("=");
+	    if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+	  });
+	  return result;
+	}
 
 /***/ },
-/* 503 */
+/* 502 */
 /*!******************************!*\
   !*** ./~/lodash/includes.js ***!
   \******************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIndexOf = __webpack_require__(/*! ./_baseIndexOf */ 504),
-	    isArrayLike = __webpack_require__(/*! ./isArrayLike */ 508),
-	    isString = __webpack_require__(/*! ./isString */ 512),
-	    toInteger = __webpack_require__(/*! ./toInteger */ 514),
-	    values = __webpack_require__(/*! ./values */ 518);
+	var baseIndexOf = __webpack_require__(/*! ./_baseIndexOf */ 503),
+	    isArrayLike = __webpack_require__(/*! ./isArrayLike */ 507),
+	    isString = __webpack_require__(/*! ./isString */ 511),
+	    toInteger = __webpack_require__(/*! ./toInteger */ 513),
+	    values = __webpack_require__(/*! ./values */ 517);
 	
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -32121,15 +32104,15 @@
 
 
 /***/ },
-/* 504 */
+/* 503 */
 /*!**********************************!*\
   !*** ./~/lodash/_baseIndexOf.js ***!
   \**********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFindIndex = __webpack_require__(/*! ./_baseFindIndex */ 505),
-	    baseIsNaN = __webpack_require__(/*! ./_baseIsNaN */ 506),
-	    strictIndexOf = __webpack_require__(/*! ./_strictIndexOf */ 507);
+	var baseFindIndex = __webpack_require__(/*! ./_baseFindIndex */ 504),
+	    baseIsNaN = __webpack_require__(/*! ./_baseIsNaN */ 505),
+	    strictIndexOf = __webpack_require__(/*! ./_strictIndexOf */ 506);
 	
 	/**
 	 * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
@@ -32150,7 +32133,7 @@
 
 
 /***/ },
-/* 505 */
+/* 504 */
 /*!************************************!*\
   !*** ./~/lodash/_baseFindIndex.js ***!
   \************************************/
@@ -32183,7 +32166,7 @@
 
 
 /***/ },
-/* 506 */
+/* 505 */
 /*!********************************!*\
   !*** ./~/lodash/_baseIsNaN.js ***!
   \********************************/
@@ -32204,7 +32187,7 @@
 
 
 /***/ },
-/* 507 */
+/* 506 */
 /*!************************************!*\
   !*** ./~/lodash/_strictIndexOf.js ***!
   \************************************/
@@ -32236,14 +32219,14 @@
 
 
 /***/ },
-/* 508 */
+/* 507 */
 /*!*********************************!*\
   !*** ./~/lodash/isArrayLike.js ***!
   \*********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isFunction = __webpack_require__(/*! ./isFunction */ 509),
-	    isLength = __webpack_require__(/*! ./isLength */ 511);
+	var isFunction = __webpack_require__(/*! ./isFunction */ 508),
+	    isLength = __webpack_require__(/*! ./isLength */ 510);
 	
 	/**
 	 * Checks if `value` is array-like. A value is considered array-like if it's
@@ -32278,14 +32261,14 @@
 
 
 /***/ },
-/* 509 */
+/* 508 */
 /*!********************************!*\
   !*** ./~/lodash/isFunction.js ***!
   \********************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 461),
-	    isObject = __webpack_require__(/*! ./isObject */ 510);
+	    isObject = __webpack_require__(/*! ./isObject */ 509);
 	
 	/** `Object#toString` result references. */
 	var asyncTag = '[object AsyncFunction]',
@@ -32324,7 +32307,7 @@
 
 
 /***/ },
-/* 510 */
+/* 509 */
 /*!******************************!*\
   !*** ./~/lodash/isObject.js ***!
   \******************************/
@@ -32364,7 +32347,7 @@
 
 
 /***/ },
-/* 511 */
+/* 510 */
 /*!******************************!*\
   !*** ./~/lodash/isLength.js ***!
   \******************************/
@@ -32408,14 +32391,14 @@
 
 
 /***/ },
-/* 512 */
+/* 511 */
 /*!******************************!*\
   !*** ./~/lodash/isString.js ***!
   \******************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 461),
-	    isArray = __webpack_require__(/*! ./isArray */ 513),
+	    isArray = __webpack_require__(/*! ./isArray */ 512),
 	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 469);
 	
 	/** `Object#toString` result references. */
@@ -32447,7 +32430,7 @@
 
 
 /***/ },
-/* 513 */
+/* 512 */
 /*!*****************************!*\
   !*** ./~/lodash/isArray.js ***!
   \*****************************/
@@ -32482,13 +32465,13 @@
 
 
 /***/ },
-/* 514 */
+/* 513 */
 /*!*******************************!*\
   !*** ./~/lodash/toInteger.js ***!
   \*******************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var toFinite = __webpack_require__(/*! ./toFinite */ 515);
+	var toFinite = __webpack_require__(/*! ./toFinite */ 514);
 	
 	/**
 	 * Converts `value` to an integer.
@@ -32527,13 +32510,13 @@
 
 
 /***/ },
-/* 515 */
+/* 514 */
 /*!******************************!*\
   !*** ./~/lodash/toFinite.js ***!
   \******************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var toNumber = __webpack_require__(/*! ./toNumber */ 516);
+	var toNumber = __webpack_require__(/*! ./toNumber */ 515);
 	
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0,
@@ -32578,14 +32561,14 @@
 
 
 /***/ },
-/* 516 */
+/* 515 */
 /*!******************************!*\
   !*** ./~/lodash/toNumber.js ***!
   \******************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(/*! ./isObject */ 510),
-	    isSymbol = __webpack_require__(/*! ./isSymbol */ 517);
+	var isObject = __webpack_require__(/*! ./isObject */ 509),
+	    isSymbol = __webpack_require__(/*! ./isSymbol */ 516);
 	
 	/** Used as references for various `Number` constants. */
 	var NAN = 0 / 0;
@@ -32653,7 +32636,7 @@
 
 
 /***/ },
-/* 517 */
+/* 516 */
 /*!******************************!*\
   !*** ./~/lodash/isSymbol.js ***!
   \******************************/
@@ -32691,14 +32674,14 @@
 
 
 /***/ },
-/* 518 */
+/* 517 */
 /*!****************************!*\
   !*** ./~/lodash/values.js ***!
   \****************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseValues = __webpack_require__(/*! ./_baseValues */ 519),
-	    keys = __webpack_require__(/*! ./keys */ 521);
+	var baseValues = __webpack_require__(/*! ./_baseValues */ 518),
+	    keys = __webpack_require__(/*! ./keys */ 520);
 	
 	/**
 	 * Creates an array of the own enumerable string keyed property values of `object`.
@@ -32734,13 +32717,13 @@
 
 
 /***/ },
-/* 519 */
+/* 518 */
 /*!*********************************!*\
   !*** ./~/lodash/_baseValues.js ***!
   \*********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayMap = __webpack_require__(/*! ./_arrayMap */ 520);
+	var arrayMap = __webpack_require__(/*! ./_arrayMap */ 519);
 	
 	/**
 	 * The base implementation of `_.values` and `_.valuesIn` which creates an
@@ -32762,7 +32745,7 @@
 
 
 /***/ },
-/* 520 */
+/* 519 */
 /*!*******************************!*\
   !*** ./~/lodash/_arrayMap.js ***!
   \*******************************/
@@ -32792,15 +32775,15 @@
 
 
 /***/ },
-/* 521 */
+/* 520 */
 /*!**************************!*\
   !*** ./~/lodash/keys.js ***!
   \**************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayLikeKeys = __webpack_require__(/*! ./_arrayLikeKeys */ 522),
-	    baseKeys = __webpack_require__(/*! ./_baseKeys */ 533),
-	    isArrayLike = __webpack_require__(/*! ./isArrayLike */ 508);
+	var arrayLikeKeys = __webpack_require__(/*! ./_arrayLikeKeys */ 521),
+	    baseKeys = __webpack_require__(/*! ./_baseKeys */ 532),
+	    isArrayLike = __webpack_require__(/*! ./isArrayLike */ 507);
 	
 	/**
 	 * Creates an array of the own enumerable property names of `object`.
@@ -32838,18 +32821,18 @@
 
 
 /***/ },
-/* 522 */
+/* 521 */
 /*!************************************!*\
   !*** ./~/lodash/_arrayLikeKeys.js ***!
   \************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseTimes = __webpack_require__(/*! ./_baseTimes */ 523),
-	    isArguments = __webpack_require__(/*! ./isArguments */ 524),
-	    isArray = __webpack_require__(/*! ./isArray */ 513),
-	    isBuffer = __webpack_require__(/*! ./isBuffer */ 526),
-	    isIndex = __webpack_require__(/*! ./_isIndex */ 528),
-	    isTypedArray = __webpack_require__(/*! ./isTypedArray */ 529);
+	var baseTimes = __webpack_require__(/*! ./_baseTimes */ 522),
+	    isArguments = __webpack_require__(/*! ./isArguments */ 523),
+	    isArray = __webpack_require__(/*! ./isArray */ 512),
+	    isBuffer = __webpack_require__(/*! ./isBuffer */ 525),
+	    isIndex = __webpack_require__(/*! ./_isIndex */ 527),
+	    isTypedArray = __webpack_require__(/*! ./isTypedArray */ 528);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -32896,7 +32879,7 @@
 
 
 /***/ },
-/* 523 */
+/* 522 */
 /*!********************************!*\
   !*** ./~/lodash/_baseTimes.js ***!
   \********************************/
@@ -32925,13 +32908,13 @@
 
 
 /***/ },
-/* 524 */
+/* 523 */
 /*!*********************************!*\
   !*** ./~/lodash/isArguments.js ***!
   \*********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsArguments = __webpack_require__(/*! ./_baseIsArguments */ 525),
+	var baseIsArguments = __webpack_require__(/*! ./_baseIsArguments */ 524),
 	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 469);
 	
 	/** Used for built-in method references. */
@@ -32970,7 +32953,7 @@
 
 
 /***/ },
-/* 525 */
+/* 524 */
 /*!**************************************!*\
   !*** ./~/lodash/_baseIsArguments.js ***!
   \**************************************/
@@ -32997,14 +32980,14 @@
 
 
 /***/ },
-/* 526 */
+/* 525 */
 /*!******************************!*\
   !*** ./~/lodash/isBuffer.js ***!
   \******************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(/*! ./_root */ 463),
-	    stubFalse = __webpack_require__(/*! ./stubFalse */ 527);
+	    stubFalse = __webpack_require__(/*! ./stubFalse */ 526);
 	
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -33045,7 +33028,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../webpack/buildin/module.js */ 472)(module)))
 
 /***/ },
-/* 527 */
+/* 526 */
 /*!*******************************!*\
   !*** ./~/lodash/stubFalse.js ***!
   \*******************************/
@@ -33072,7 +33055,7 @@
 
 
 /***/ },
-/* 528 */
+/* 527 */
 /*!******************************!*\
   !*** ./~/lodash/_isIndex.js ***!
   \******************************/
@@ -33103,15 +33086,15 @@
 
 
 /***/ },
-/* 529 */
+/* 528 */
 /*!**********************************!*\
   !*** ./~/lodash/isTypedArray.js ***!
   \**********************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsTypedArray = __webpack_require__(/*! ./_baseIsTypedArray */ 530),
-	    baseUnary = __webpack_require__(/*! ./_baseUnary */ 531),
-	    nodeUtil = __webpack_require__(/*! ./_nodeUtil */ 532);
+	var baseIsTypedArray = __webpack_require__(/*! ./_baseIsTypedArray */ 529),
+	    baseUnary = __webpack_require__(/*! ./_baseUnary */ 530),
+	    nodeUtil = __webpack_require__(/*! ./_nodeUtil */ 531);
 	
 	/* Node.js helper references. */
 	var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
@@ -33139,14 +33122,14 @@
 
 
 /***/ },
-/* 530 */
+/* 529 */
 /*!***************************************!*\
   !*** ./~/lodash/_baseIsTypedArray.js ***!
   \***************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 461),
-	    isLength = __webpack_require__(/*! ./isLength */ 511),
+	    isLength = __webpack_require__(/*! ./isLength */ 510),
 	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 469);
 	
 	/** `Object#toString` result references. */
@@ -33208,7 +33191,7 @@
 
 
 /***/ },
-/* 531 */
+/* 530 */
 /*!********************************!*\
   !*** ./~/lodash/_baseUnary.js ***!
   \********************************/
@@ -33231,7 +33214,7 @@
 
 
 /***/ },
-/* 532 */
+/* 531 */
 /*!*******************************!*\
   !*** ./~/lodash/_nodeUtil.js ***!
   \*******************************/
@@ -33263,14 +33246,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../webpack/buildin/module.js */ 472)(module)))
 
 /***/ },
-/* 533 */
+/* 532 */
 /*!*******************************!*\
   !*** ./~/lodash/_baseKeys.js ***!
   \*******************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var isPrototype = __webpack_require__(/*! ./_isPrototype */ 534),
-	    nativeKeys = __webpack_require__(/*! ./_nativeKeys */ 535);
+	var isPrototype = __webpack_require__(/*! ./_isPrototype */ 533),
+	    nativeKeys = __webpack_require__(/*! ./_nativeKeys */ 534);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -33302,7 +33285,7 @@
 
 
 /***/ },
-/* 534 */
+/* 533 */
 /*!**********************************!*\
   !*** ./~/lodash/_isPrototype.js ***!
   \**********************************/
@@ -33329,7 +33312,7 @@
 
 
 /***/ },
-/* 535 */
+/* 534 */
 /*!*********************************!*\
   !*** ./~/lodash/_nativeKeys.js ***!
   \*********************************/
@@ -33344,13 +33327,58 @@
 
 
 /***/ },
+/* 535 */
+/*!********************************************!*\
+  !*** ./assets/client/app/actions/login.js ***!
+  \********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.requestLogin = requestLogin;
+	exports.loginSuccess = loginSuccess;
+	exports.loginError = loginError;
+	exports.authCheckSuccess = authCheckSuccess;
+	
+	var _actionTypes = __webpack_require__(/*! ./action-types */ 497);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	var _util = __webpack_require__(/*! ../lib/util */ 501);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	// === Action Creators ===
+	
+	function requestLogin(username, password) {
+	  return (0, _util.createAction)(types.LOGIN_REQUESTED, { username: username, password: password });
+	}
+	
+	function loginSuccess(username, user_token) {
+	  return (0, _util.createAction)(types.LOGIN_SUCCESS, { username: username, user_token: user_token });
+	}
+	
+	function loginError(error) {
+	  return (0, _util.createAction)(types.LOGIN_ERROR, { error: error });
+	}
+	
+	function authCheckSuccess(username, user_token) {
+	  // ex. used if you refesh a page, so there's no explicit login action
+	  // to set the user state so we call this
+	  return (0, _util.createAction)(types.AUTH_CHECK_SUCCESS, { username: username, user_token: user_token });
+	}
+
+/***/ },
 /* 536 */
 /*!************************************************!*\
   !*** ./assets/client/app/components/office.js ***!
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -33364,6 +33392,8 @@
 	var _react = __webpack_require__(/*! react */ 299);
 	
 	var _react2 = _interopRequireDefault(_react);
+	
+	var _util = __webpack_require__(/*! ../lib/util */ 501);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -33392,27 +33422,27 @@
 	      return !!_this.props.state.user.user_token;
 	    }, _this._loginForm = function () {
 	      return _react2.default.createElement(
-	        "div",
+	        'div',
 	        null,
 	        _react2.default.createElement(
-	          "form",
-	          { method: "post", onSubmit: _this._submitLogin },
+	          'form',
+	          { method: 'post', onSubmit: _this._submitLogin },
 	          _react2.default.createElement(
-	            "div",
+	            'div',
 	            null,
-	            "username:",
-	            _react2.default.createElement("input", { type: "text", onChange: _this._handleUsernameChange })
+	            'username:',
+	            _react2.default.createElement('input', { type: 'text', onChange: _this._handleUsernameChange })
 	          ),
 	          _react2.default.createElement(
-	            "div",
+	            'div',
 	            null,
-	            "password:",
-	            _react2.default.createElement("input", { type: "password", onChange: _this._handlePasswordChange })
+	            'password:',
+	            _react2.default.createElement('input', { type: 'password', onChange: _this._handlePasswordChange })
 	          ),
 	          _react2.default.createElement(
-	            "div",
+	            'div',
 	            null,
-	            _react2.default.createElement("input", { style: styles.submitButton, type: "submit", value: "Login" })
+	            _react2.default.createElement('input', { style: styles.submitButton, type: 'submit', value: 'Login' })
 	          )
 	        )
 	      );
@@ -33429,7 +33459,6 @@
 	      }
 	      _this.props.actions.requestLogin(_this.state.username, _this.state.password);
 	    }, _this._postForm = function () {
-	
 	      var message = '';
 	      var _this$props$state$pos = _this.props.state.post,
 	          error = _this$props$state$pos.error,
@@ -33438,56 +33467,56 @@
 	
 	      if (success) {
 	        message = _react2.default.createElement(
-	          "div",
+	          'div',
 	          { style: styles.success },
 	          success
 	        );
 	      }
 	      if (error) {
 	        message = _react2.default.createElement(
-	          "div",
+	          'div',
 	          { style: styles.error },
 	          error
 	        );
 	      }
 	
 	      return _react2.default.createElement(
-	        "div",
+	        'div',
 	        null,
 	        message,
 	        _react2.default.createElement(
-	          "form",
+	          'form',
 	          null,
 	          _react2.default.createElement(
-	            "label",
+	            'label',
 	            { style: _extends({}, styles.label, styles.block) },
-	            "Title"
+	            'Title'
 	          ),
-	          _react2.default.createElement("input", { style: styles.textInput, type: "text", onChange: _this._titleChange }),
+	          _react2.default.createElement('input', { style: styles.textInput, type: 'text', onChange: _this._titleChange }),
 	          _react2.default.createElement(
-	            "label",
+	            'label',
 	            { style: _extends({}, styles.label, styles.block) },
-	            "Body"
+	            'Body'
 	          ),
-	          _react2.default.createElement("textarea", { style: styles.postText, onChange: _this._bodyChange }),
+	          _react2.default.createElement('textarea', { style: styles.postText, onChange: _this._bodyChange }),
 	          _react2.default.createElement(
-	            "select",
-	            { id: "publish_status", onChange: _this._publishStatusChange },
+	            'select',
+	            { id: 'publish_status', onChange: _this._publishStatusChange },
 	            _react2.default.createElement(
-	              "option",
-	              { value: "draft" },
-	              "Draft"
+	              'option',
+	              { value: 'draft' },
+	              'Draft'
 	            ),
 	            _react2.default.createElement(
-	              "option",
-	              { value: "published" },
-	              "Published"
+	              'option',
+	              { value: 'published' },
+	              'Published'
 	            )
 	          ),
 	          _react2.default.createElement(
-	            "div",
+	            'div',
 	            { style: styles.submitButton },
-	            _react2.default.createElement("input", { type: "button", value: "Post It", onClick: _this._handlePostSubmit })
+	            _react2.default.createElement('input', { type: 'button', value: 'Post It', onClick: _this._handlePostSubmit })
 	          )
 	        )
 	      );
@@ -33503,7 +33532,6 @@
 	        console.log("You didn't type anything!");
 	        return;
 	      }
-	      // TODO: validation
 	      // pull data from local state
 	
 	      var _ref2 = _this.state || {},
@@ -33514,60 +33542,106 @@
 	      _this.props.actions.createPost({ title: title, body: body, publish_status: publish_status });
 	    }, _this._postList = function () {
 	      var posts = _this.props.state.post.posts;
+	      var _this$state = _this.state,
+	          page = _this$state.page,
+	          rpp = _this$state.rpp;
+	
+	      var next_link = '/office/posts?page=' + (page + 1) + '&rpp=' + rpp;
+	      var prev_link = '/office/posts?page=' + (page - 1) + '&rpp=' + rpp;
+	      var prev = page > 1 ? _react2.default.createElement(
+	        'a',
+	        { href: prev_link },
+	        '\xAB prev'
+	      ) : '';
+	      var next = posts.length === rpp ? _react2.default.createElement(
+	        'a',
+	        { href: next_link },
+	        'next \xBB'
+	      ) : '';
 	      var res = [];
-	      console.log('posts', posts);
 	      for (var i = 0; i < posts.length; i++) {
 	        var p = posts[i];
-	        res.push(_react2.default.createElement(
-	          "div",
-	          { key: p._id },
-	          p.title
-	        ));
+	        res.push(_react2.default.createElement(AdminPostRow, { key: p._id,
+	          post: p,
+	          editPost: _this._editPost,
+	          deletePost: _this._deletePost }));
 	      }
+	
 	      return _react2.default.createElement(
-	        "div",
-	        null,
-	        res
-	      );
-	    }, _this._officeIndex = function () {
-	      return _react2.default.createElement(
-	        "div",
+	        'div',
 	        null,
 	        _react2.default.createElement(
-	          "ul",
+	          'div',
+	          null,
+	          prev,
+	          ' ',
+	          next
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { style: styles.postsList },
+	          _react2.default.createElement(
+	            'table',
+	            { style: styles.adminPostTable },
+	            _react2.default.createElement(
+	              'tbody',
+	              null,
+	              res
+	            )
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          prev,
+	          ' ',
+	          next
+	        )
+	      );
+	    }, _this._editPost = function (p) {
+	      console.log("edit post ", p);
+	    }, _this._deletePost = function (p) {
+	      console.log("delete post ", p);
+	      _this.props.actions.deletePost(p._id);
+	    }, _this._officeIndex = function () {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'ul',
 	          null,
 	          _react2.default.createElement(
-	            "li",
+	            'li',
 	            null,
 	            _react2.default.createElement(
-	              "a",
-	              { href: "/office/posts" },
-	              "My Posts"
+	              'a',
+	              { href: '/office/posts' },
+	              'My Posts'
 	            )
 	          ),
 	          _react2.default.createElement(
-	            "li",
+	            'li',
 	            null,
 	            _react2.default.createElement(
-	              "a",
-	              { href: "/office/posts/new" },
-	              "Write a Post"
+	              'a',
+	              { href: '/office/posts/new' },
+	              'Write a Post'
 	            )
 	          )
 	        )
 	      );
 	    }, _this.render = function () {
-	      // render basd on login state, subsection
+	      // render main content based on login state, subsection
 	
 	      // loading indicator
 	      if (_this.props.state.app.loading) {
 	        return _react2.default.createElement(
-	          "div",
+	          'div',
 	          { style: styles.loading },
 	          _react2.default.createElement(
-	            "em",
+	            'em',
 	            null,
-	            "Loading..."
+	            'Loading...'
 	          )
 	        );
 	      }
@@ -33583,45 +33657,45 @@
 	          content = _this._loginForm();
 	          break;
 	        case 'post_new':
-	          title = "Write a post " + _this.props.state.user.username + "!";
+	          title = 'Write a post ' + _this.props.state.user.username + '!';
 	          content = _this._postForm();
 	          break;
 	        case 'post_edit':
-	          title = "Edit this post " + _this.props.state.user.username + "!";
+	          title = 'Edit this post ' + _this.props.state.user.username + '!';
 	          content = _this._postForm();
 	          break;
 	        case 'post_list':
-	          title = "Here are your posts " + _this.props.state.user.username + "!";
+	          title = 'Here are your posts ' + _this.props.state.user.username + '!';
 	          content = _this._postList();
 	          break;
 	        case 'index':
 	        default:
-	          title = "Site Admin";
+	          title = 'Site Admin';
 	          content = _this._officeIndex();
 	      }
 	
 	      return _react2.default.createElement(
-	        "div",
+	        'div',
 	        { style: styles.officeNav },
 	        _react2.default.createElement(
-	          "a",
-	          { href: "/office" },
-	          "Site Admin"
+	          'a',
+	          { href: '/office' },
+	          'Site Admin'
 	        ),
-	        "\xA0\xB7\xA0",
+	        '\xA0\xB7\xA0',
 	        _react2.default.createElement(
-	          "a",
-	          { href: "/office/posts" },
-	          "My Posts"
+	          'a',
+	          { href: '/office/posts' },
+	          'My Posts'
 	        ),
-	        "\xA0\xB7\xA0",
+	        '\xA0\xB7\xA0',
 	        _react2.default.createElement(
-	          "a",
-	          { href: "/office/posts/new" },
-	          "Write a Post"
+	          'a',
+	          { href: '/office/posts/new' },
+	          'Write a Post'
 	        ),
 	        _react2.default.createElement(
-	          "h1",
+	          'h1',
 	          null,
 	          title
 	        ),
@@ -33631,10 +33705,12 @@
 	  }
 	
 	  _createClass(Office, [{
-	    key: "componentDidMount",
-	    value: function componentDidMount() {
-	      var page = 1;
-	      var rpp = 20;
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var page = parseInt((0, _util.findGetParameter)('page')) || 1;
+	      var rpp = parseInt((0, _util.findGetParameter)('rpp')) || 10;
+	      // paging
+	      this.setState({ page: page, rpp: rpp });
 	      this.props.actions.getPosts(page, rpp);
 	    }
 	
@@ -33662,6 +33738,61 @@
 	  return Office;
 	}(_react.Component);
 	
+	// this is the preferred way to pass args to a
+	// component event action, that way
+	// extra render() calls aren't made
+	
+	
+	var AdminPostRow = function (_Component2) {
+	  _inherits(AdminPostRow, _Component2);
+	
+	  function AdminPostRow() {
+	    var _ref3;
+	
+	    var _temp2, _this2, _ret2;
+	
+	    _classCallCheck(this, AdminPostRow);
+	
+	    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	      args[_key2] = arguments[_key2];
+	    }
+	
+	    return _ret2 = (_temp2 = (_this2 = _possibleConstructorReturn(this, (_ref3 = AdminPostRow.__proto__ || Object.getPrototypeOf(AdminPostRow)).call.apply(_ref3, [this].concat(args))), _this2), _this2.render = function () {
+	      console.log("this props", _this2);
+	      return _react2.default.createElement(
+	        'tr',
+	        { key: _this2.props.post._id },
+	        _react2.default.createElement(
+	          'td',
+	          { style: styles.adminPostTitle },
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', onClick: _this2._edit },
+	            _this2.props.post.title
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'td',
+	          null,
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', onClick: _this2._delete },
+	            '[X]'
+	          )
+	        )
+	      );
+	    }, _this2._edit = function (e) {
+	      e.preventDefault();
+	      _this2.props.editPost(_this2.props.post);
+	    }, _this2._delete = function (e) {
+	      e.preventDefault();
+	      _this2.props.deletePost(_this2.props.post);
+	    }, _temp2), _possibleConstructorReturn(_this2, _ret2);
+	  }
+	
+	  return AdminPostRow;
+	}(_react.Component);
+	
 	var styles = {
 	  loading: { marginTop: '5em' },
 	  error: {
@@ -33686,6 +33817,18 @@
 	    display: 'block',
 	    marginTop: '1em',
 	    marginBottom: '1em'
+	  },
+	  postsList: {
+	    margin: '.5em 0 .5em 0',
+	    borderTop: '1px solid #ccc',
+	    borderBottom: '1px solid #ccc',
+	    padding: '.5em 0 .5em 0'
+	  },
+	  adminPostTitle: {
+	    width: '300px'
+	  },
+	  adminPostTable: {
+	    width: '500px'
 	  },
 	  textInput: { width: '50%', marginTop: '1em', marginBottom: '1em' },
 	  submitButton: { marginTop: '1em' },
@@ -36165,7 +36308,7 @@
 	
 	var _conf2 = _interopRequireDefault(_conf);
 	
-	var _util = __webpack_require__(/*! ../lib/util */ 502);
+	var _util = __webpack_require__(/*! ../lib/util */ 501);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -36241,9 +36384,9 @@
 	
 	var _effects = __webpack_require__(/*! redux-saga/effects */ 554);
 	
-	var _post = __webpack_require__(/*! ./post */ 566);
+	var _post = __webpack_require__(/*! ./post */ 555);
 	
-	var _login = __webpack_require__(/*! ./login */ 556);
+	var _login = __webpack_require__(/*! ./login */ 558);
 	
 	var _app = __webpack_require__(/*! ./app */ 559);
 	
@@ -36331,8 +36474,466 @@
 	module.exports = __webpack_require__(/*! ./lib/effects */ 549)
 
 /***/ },
-/* 555 */,
+/* 555 */
+/*!*****************************************!*\
+  !*** ./assets/client/app/sagas/post.js ***!
+  \*****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.postWatchers = undefined;
+	exports.postsRequestedWatcher = postsRequestedWatcher;
+	exports.createPostWatcher = createPostWatcher;
+	exports.updatePostWatcher = updatePostWatcher;
+	exports.deletePostWatcher = deletePostWatcher;
+	exports.postsRequestedWorker = postsRequestedWorker;
+	exports.createPostWorker = createPostWorker;
+	exports.updatePostWorker = updatePostWorker;
+	exports.deletePostWorker = deletePostWorker;
+	
+	var _reduxSaga = __webpack_require__(/*! redux-saga */ 539);
+	
+	var _effects = __webpack_require__(/*! redux-saga/effects */ 554);
+	
+	var _api = __webpack_require__(/*! ../lib/api */ 556);
+	
+	var Api = _interopRequireWildcard(_api);
+	
+	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	var _office = __webpack_require__(/*! ../actions/office */ 500);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	var _marked = [postsRequestedWatcher, createPostWatcher, updatePostWatcher, deletePostWatcher, postsRequestedWorker, createPostWorker, updatePostWorker, deletePostWorker].map(regeneratorRuntime.mark);
+	
+	// === Watchers ===
+	var postWatchers = [postsRequestedWatcher, createPostWatcher, updatePostWatcher, deletePostWatcher];
+	exports.postWatchers = postWatchers;
+	function postsRequestedWatcher() {
+	  return regeneratorRuntime.wrap(function postsRequestedWatcher$(_context) {
+	    while (1) {
+	      switch (_context.prev = _context.next) {
+	        case 0:
+	          return _context.delegateYield((0, _reduxSaga.takeEvery)(types.POSTS_GET_REQUESTED, postsRequestedWorker), 't0', 1);
+	
+	        case 1:
+	        case 'end':
+	          return _context.stop();
+	      }
+	    }
+	  }, _marked[0], this);
+	}
+	
+	function createPostWatcher() {
+	  return regeneratorRuntime.wrap(function createPostWatcher$(_context2) {
+	    while (1) {
+	      switch (_context2.prev = _context2.next) {
+	        case 0:
+	          return _context2.delegateYield((0, _reduxSaga.takeEvery)(types.POST_CREATE_REQUESTED, createPostWorker), 't0', 1);
+	
+	        case 1:
+	        case 'end':
+	          return _context2.stop();
+	      }
+	    }
+	  }, _marked[1], this);
+	}
+	
+	function updatePostWatcher() {
+	  return regeneratorRuntime.wrap(function updatePostWatcher$(_context3) {
+	    while (1) {
+	      switch (_context3.prev = _context3.next) {
+	        case 0:
+	          return _context3.delegateYield((0, _reduxSaga.takeEvery)(types.POST_UPDATE_REQUESTED, updatePostWorker), 't0', 1);
+	
+	        case 1:
+	        case 'end':
+	          return _context3.stop();
+	      }
+	    }
+	  }, _marked[2], this);
+	}
+	
+	function deletePostWatcher() {
+	  return regeneratorRuntime.wrap(function deletePostWatcher$(_context4) {
+	    while (1) {
+	      switch (_context4.prev = _context4.next) {
+	        case 0:
+	          return _context4.delegateYield((0, _reduxSaga.takeEvery)(types.POST_DELETE_REQUESTED, deletePostWorker), 't0', 1);
+	
+	        case 1:
+	        case 'end':
+	          return _context4.stop();
+	      }
+	    }
+	  }, _marked[3], this);
+	}
+	// === Workers ===
+	
+	function postsRequestedWorker(action) {
+	  var _action$payload, page, rpp, response, posts;
+	
+	  return regeneratorRuntime.wrap(function postsRequestedWorker$(_context5) {
+	    while (1) {
+	      switch (_context5.prev = _context5.next) {
+	        case 0:
+	          _action$payload = action.payload, page = _action$payload.page, rpp = _action$payload.rpp;
+	          _context5.next = 3;
+	          return (0, _effects.call)(Api.getPosts, page, rpp);
+	
+	        case 3:
+	          response = _context5.sent;
+	          posts = response.json.posts;
+	
+	          if (!(response.status == 200)) {
+	            _context5.next = 8;
+	            break;
+	          }
+	
+	          _context5.next = 8;
+	          return (0, _effects.put)((0, _office.getPostsSuccess)(posts));
+	
+	        case 8:
+	        case 'end':
+	          return _context5.stop();
+	      }
+	    }
+	  }, _marked[4], this);
+	}
+	
+	function createPostWorker(action) {
+	  var post_form_data, response, _response$json, success, error;
+	
+	  return regeneratorRuntime.wrap(function createPostWorker$(_context6) {
+	    while (1) {
+	      switch (_context6.prev = _context6.next) {
+	        case 0:
+	          post_form_data = action.payload.post_form_data;
+	          _context6.next = 3;
+	          return (0, _effects.call)(Api.createPost, post_form_data);
+	
+	        case 3:
+	          response = _context6.sent;
+	          _response$json = response.json, success = _response$json.success, error = _response$json.error;
+	
+	          if (!(response.status == 200)) {
+	            _context6.next = 10;
+	            break;
+	          }
+	
+	          _context6.next = 8;
+	          return (0, _effects.put)((0, _office.createPostSuccess)(success));
+	
+	        case 8:
+	          _context6.next = 13;
+	          break;
+	
+	        case 10:
+	          if (!(response.status == 400)) {
+	            _context6.next = 13;
+	            break;
+	          }
+	
+	          _context6.next = 13;
+	          return (0, _effects.put)((0, _office.createPostError)(error));
+	
+	        case 13:
+	        case 'end':
+	          return _context6.stop();
+	      }
+	    }
+	  }, _marked[5], this);
+	}
+	
+	function updatePostWorker(action) {
+	  var _action$payload2, post_id, post_form_data, response, _response$json2, success, error;
+	
+	  return regeneratorRuntime.wrap(function updatePostWorker$(_context7) {
+	    while (1) {
+	      switch (_context7.prev = _context7.next) {
+	        case 0:
+	          _action$payload2 = action.payload, post_id = _action$payload2.post_id, post_form_data = _action$payload2.post_form_data;
+	          _context7.next = 3;
+	          return (0, _effects.call)(Api.updatePost, post_id, post_form_data);
+	
+	        case 3:
+	          response = _context7.sent;
+	          _response$json2 = response.json, success = _response$json2.success, error = _response$json2.error;
+	
+	          if (!(response.status == 200)) {
+	            _context7.next = 10;
+	            break;
+	          }
+	
+	          _context7.next = 8;
+	          return (0, _effects.put)((0, _office.updatePostSuccess)(success));
+	
+	        case 8:
+	          _context7.next = 13;
+	          break;
+	
+	        case 10:
+	          if (!(response.status == 400)) {
+	            _context7.next = 13;
+	            break;
+	          }
+	
+	          _context7.next = 13;
+	          return (0, _effects.put)((0, _office.updatePostError)(error));
+	
+	        case 13:
+	        case 'end':
+	          return _context7.stop();
+	      }
+	    }
+	  }, _marked[6], this);
+	}
+	
+	function deletePostWorker(action) {
+	  var post_id, response, _response$json3, success, error;
+	
+	  return regeneratorRuntime.wrap(function deletePostWorker$(_context8) {
+	    while (1) {
+	      switch (_context8.prev = _context8.next) {
+	        case 0:
+	          post_id = action.payload.post_id;
+	          _context8.next = 3;
+	          return (0, _effects.call)(Api.deletePost, post_id);
+	
+	        case 3:
+	          response = _context8.sent;
+	          _response$json3 = response.json, success = _response$json3.success, error = _response$json3.error;
+	
+	          if (!(response.status == 200)) {
+	            _context8.next = 10;
+	            break;
+	          }
+	
+	          _context8.next = 8;
+	          return (0, _effects.put)((0, _office.deletePostSuccess)(success));
+	
+	        case 8:
+	          _context8.next = 13;
+	          break;
+	
+	        case 10:
+	          if (!(response.status == 400)) {
+	            _context8.next = 13;
+	            break;
+	          }
+	
+	          _context8.next = 13;
+	          return (0, _effects.put)((0, _office.deletePostError)(error));
+	
+	        case 13:
+	        case 'end':
+	          return _context8.stop();
+	      }
+	    }
+	  }, _marked[7], this);
+	}
+
+/***/ },
 /* 556 */
+/*!**************************************!*\
+  !*** ./assets/client/app/lib/api.js ***!
+  \**************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.login = login;
+	exports.authCheck = authCheck;
+	exports.createPost = createPost;
+	exports.updatePost = updatePost;
+	exports.getPosts = getPosts;
+	exports.deletePost = deletePost;
+	
+	var _conf = __webpack_require__(/*! ../conf */ 552);
+	
+	var _conf2 = _interopRequireDefault(_conf);
+	
+	var _isBoolean = __webpack_require__(/*! lodash/isBoolean */ 557);
+	
+	var _isBoolean2 = _interopRequireDefault(_isBoolean);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var HOST = _conf2.default.host + ':' + _conf2.default.port;
+	//import * as C from '../constants'
+	
+	var BASE_API_URL = HOST + '/api/v1';
+	var ENDPOINTS = {
+	  login: BASE_API_URL + '/login',
+	  authCheck: BASE_API_URL + '/auth_check',
+	  posts: BASE_API_URL + '/posts'
+	
+	};
+	
+	function _parseResponse(response, context) {
+	  // TODO: handle status codes
+	  return response.json().then(function (jsonObj) {
+	    return { json: jsonObj, status: response.status };
+	  });
+	}
+	
+	function _handleError(error) {
+	  console.log('error', error);
+	}
+	
+	function login(username, password) {
+	  var body = { username: username, password: password };
+	  return fetch(ENDPOINTS.login, {
+	    method: 'POST',
+	    headers: {
+	      'Accept': 'application/json',
+	      'Content-Type': 'application/json'
+	    },
+	    body: JSON.stringify(body),
+	    credentials: 'include' // always need this for cookies to work
+	  }).then(function (response) {
+	    return _parseResponse(response);
+	  }).catch(function (error) {
+	    return _handleError(error);
+	  });
+	}
+	
+	function authCheck() {
+	  // checks if current user is authenticated
+	  // using flask session
+	  var body = {};
+	  return fetch(ENDPOINTS.authCheck, {
+	    method: 'GET',
+	    headers: {
+	      'Accept': 'application/json',
+	      'Content-Type': 'application/json'
+	    },
+	    credentials: 'include'
+	  }).then(function (response) {
+	    return _parseResponse(response);
+	  }).catch(function (error) {
+	    return _handleError(error);
+	  });
+	}
+	
+	function createPost(post_form_data) {
+	
+	  return fetch(ENDPOINTS.posts, {
+	    method: 'POST',
+	    headers: {
+	      'Accept': 'application/json',
+	      'Content-Type': 'application/json'
+	    },
+	    body: JSON.stringify(post_form_data),
+	    credentials: 'include'
+	  }).then(function (response) {
+	    return _parseResponse(response);
+	  }).catch(function (error) {
+	    return _handleError(error);
+	  });
+	}
+	
+	function updatePost(post_id, post_form_data) {
+	  var endpoint = ENDPOINTS.posts + '/' + post_id;
+	  return fetch(ENDPOINTS.posts, {
+	    method: 'POST',
+	    headers: {
+	      'Accept': 'application/json',
+	      'Content-Type': 'application/json'
+	    },
+	    body: JSON.stringify(post_form_data),
+	    credentials: 'include'
+	  }).then(function (response) {
+	    return _parseResponse(response);
+	  }).catch(function (error) {
+	    return _handleError(error);
+	  });
+	}
+	
+	function getPosts(page, rpp) {
+	  page = page || 1;
+	  rpp = rpp || 10;
+	  var endpoint = ENDPOINTS.posts + '?page=' + page + '&rpp=' + rpp;
+	  return fetch(endpoint, {
+	    method: 'GET',
+	    headers: {
+	      'Accept': 'application/json',
+	      'Content-Type': 'application/json'
+	    },
+	    credentials: 'include'
+	  }).then(function (response) {
+	    return _parseResponse(response);
+	  }).catch(function (error) {
+	    return _handleError(error);
+	  });
+	}
+	
+	function deletePost(post_id) {
+	  var endpoint = ENDPOINTS.posts + '/' + post_id;
+	  return fetch(endpoint, {
+	    method: 'DELETE',
+	    headers: {
+	      'Accept': 'application/json',
+	      'Content-Type': 'application/json'
+	    },
+	    credentials: 'include'
+	  }).then(function (response) {
+	    return _parseResponse(response);
+	  }).catch(function (error) {
+	    return _handleError(error);
+	  });
+	}
+
+/***/ },
+/* 557 */
+/*!*******************************!*\
+  !*** ./~/lodash/isBoolean.js ***!
+  \*******************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 461),
+	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 469);
+	
+	/** `Object#toString` result references. */
+	var boolTag = '[object Boolean]';
+	
+	/**
+	 * Checks if `value` is classified as a boolean primitive or object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a boolean, else `false`.
+	 * @example
+	 *
+	 * _.isBoolean(false);
+	 * // => true
+	 *
+	 * _.isBoolean(null);
+	 * // => false
+	 */
+	function isBoolean(value) {
+	  return value === true || value === false ||
+	    (isObjectLike(value) && baseGetTag(value) == boolTag);
+	}
+	
+	module.exports = isBoolean;
+
+
+/***/ },
+/* 558 */
 /*!******************************************!*\
   !*** ./assets/client/app/sagas/login.js ***!
   \******************************************/
@@ -36351,7 +36952,7 @@
 	
 	var _effects = __webpack_require__(/*! redux-saga/effects */ 554);
 	
-	var _api = __webpack_require__(/*! ../lib/api */ 557);
+	var _api = __webpack_require__(/*! ../lib/api */ 556);
 	
 	var Api = _interopRequireWildcard(_api);
 	
@@ -36359,7 +36960,7 @@
 	
 	var types = _interopRequireWildcard(_actionTypes);
 	
-	var _login = __webpack_require__(/*! ../actions/login */ 501);
+	var _login = __webpack_require__(/*! ../actions/login */ 535);
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
@@ -36433,163 +37034,6 @@
 	}
 
 /***/ },
-/* 557 */
-/*!**************************************!*\
-  !*** ./assets/client/app/lib/api.js ***!
-  \**************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.login = login;
-	exports.authCheck = authCheck;
-	exports.createPost = createPost;
-	exports.getPosts = getPosts;
-	
-	var _conf = __webpack_require__(/*! ../conf */ 552);
-	
-	var _conf2 = _interopRequireDefault(_conf);
-	
-	var _isBoolean = __webpack_require__(/*! lodash/isBoolean */ 558);
-	
-	var _isBoolean2 = _interopRequireDefault(_isBoolean);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var HOST = _conf2.default.host + ':' + _conf2.default.port;
-	//import * as C from '../constants'
-	
-	var BASE_API_URL = HOST + '/api/v1';
-	var ENDPOINTS = {
-	  login: BASE_API_URL + '/login',
-	  authCheck: BASE_API_URL + '/auth_check',
-	  createPost: BASE_API_URL + '/posts',
-	  getPosts: BASE_API_URL + '/posts'
-	};
-	
-	function _parseResponse(response, context) {
-	  // TODO: handle status codes
-	  return response.json().then(function (jsonObj) {
-	    return { json: jsonObj, status: response.status };
-	  });
-	}
-	
-	function _handleError(error) {
-	  console.log('error', error);
-	}
-	
-	function login(username, password) {
-	  var body = { username: username, password: password };
-	  return fetch(ENDPOINTS.login, {
-	    method: 'POST',
-	    headers: {
-	      'Accept': 'application/json',
-	      'Content-Type': 'application/json'
-	    },
-	    body: JSON.stringify(body),
-	    credentials: 'include' // always need this for cookies to work
-	  }).then(function (response) {
-	    return _parseResponse(response);
-	  }).catch(function (error) {
-	    return _handleError(error);
-	  });
-	}
-	
-	function authCheck() {
-	  // checks if current user is authenticated
-	  // using flask session
-	  var body = {};
-	  return fetch(ENDPOINTS.authCheck, {
-	    method: 'GET',
-	    headers: {
-	      'Accept': 'application/json',
-	      'Content-Type': 'application/json'
-	    },
-	    credentials: 'include'
-	  }).then(function (response) {
-	    return _parseResponse(response);
-	  }).catch(function (error) {
-	    return _handleError(error);
-	  });
-	}
-	
-	function createPost(post_form_data) {
-	
-	  return fetch(ENDPOINTS.createPost, {
-	    method: 'POST',
-	    headers: {
-	      'Accept': 'application/json',
-	      'Content-Type': 'application/json'
-	    },
-	    body: JSON.stringify(post_form_data),
-	    credentials: 'include'
-	  }).then(function (response) {
-	    return _parseResponse(response);
-	  }).catch(function (error) {
-	    return _handleError(error);
-	  });
-	}
-	
-	function getPosts(page, rpp) {
-	  page = page || 1;
-	  rpp = rpp || 20;
-	  var endpoint = ENDPOINTS.getPosts + '?page=' + page + '&rpp=' + rpp;
-	  return fetch(endpoint, {
-	    method: 'GET',
-	    headers: {
-	      'Accept': 'application/json',
-	      'Content-Type': 'application/json'
-	    },
-	    credentials: 'include'
-	  }).then(function (response) {
-	    return _parseResponse(response);
-	  }).catch(function (error) {
-	    return _handleError(error);
-	  });
-	}
-
-/***/ },
-/* 558 */
-/*!*******************************!*\
-  !*** ./~/lodash/isBoolean.js ***!
-  \*******************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseGetTag = __webpack_require__(/*! ./_baseGetTag */ 461),
-	    isObjectLike = __webpack_require__(/*! ./isObjectLike */ 469);
-	
-	/** `Object#toString` result references. */
-	var boolTag = '[object Boolean]';
-	
-	/**
-	 * Checks if `value` is classified as a boolean primitive or object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a boolean, else `false`.
-	 * @example
-	 *
-	 * _.isBoolean(false);
-	 * // => true
-	 *
-	 * _.isBoolean(null);
-	 * // => false
-	 */
-	function isBoolean(value) {
-	  return value === true || value === false ||
-	    (isObjectLike(value) && baseGetTag(value) == boolTag);
-	}
-	
-	module.exports = isBoolean;
-
-
-/***/ },
 /* 559 */
 /*!****************************************!*\
   !*** ./assets/client/app/sagas/app.js ***!
@@ -36609,7 +37053,7 @@
 	
 	var _effects = __webpack_require__(/*! redux-saga/effects */ 554);
 	
-	var _api = __webpack_require__(/*! ../lib/api */ 557);
+	var _api = __webpack_require__(/*! ../lib/api */ 556);
 	
 	var Api = _interopRequireWildcard(_api);
 	
@@ -36619,7 +37063,7 @@
 	
 	var _app = __webpack_require__(/*! ../actions/app */ 560);
 	
-	var _login = __webpack_require__(/*! ../actions/login */ 501);
+	var _login = __webpack_require__(/*! ../actions/login */ 535);
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
@@ -36735,7 +37179,7 @@
 	
 	var _app2 = _interopRequireDefault(_app);
 	
-	var _post = __webpack_require__(/*! ./post */ 565);
+	var _post = __webpack_require__(/*! ./post */ 563);
 	
 	var _post2 = _interopRequireDefault(_post);
 	
@@ -36793,7 +37237,79 @@
 	}
 
 /***/ },
-/* 563 */,
+/* 563 */
+/*!********************************************!*\
+  !*** ./assets/client/app/reducers/post.js ***!
+  \********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	exports.default = posts;
+	
+	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	var _reduxStore = __webpack_require__(/*! ../redux-store */ 538);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function posts() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _reduxStore.initialState.post;
+	  var action = arguments[1];
+	
+	  var _ref = action.payload || {},
+	      post_form_data = _ref.post_form_data,
+	      success = _ref.success,
+	      error = _ref.error,
+	      delete_post_id = _ref.delete_post_id,
+	      posts = _ref.posts;
+	
+	  switch (action.type) {
+	
+	    case types.POST_CREATE_REQUESTED:
+	    case types.POST_UPDATE_REQUESTED:
+	    case types.POST_DELETE_REQUESTED:
+	    case types.POSTS_GET_REQUESTED:
+	    case types.POST_GET_REQUESTED:
+	      return _extends({}, state, {
+	        success: '',
+	        error: ''
+	      });
+	    case types.POST_CREATE_SUCCESS:
+	    case types.POST_UPDATE_SUCCESS:
+	    case types.POST_DELETE_SUCCESS:
+	    case types.POST_GET_SUCCESS:
+	      return _extends({}, state, {
+	        success: success,
+	        error: ''
+	      });
+	    case types.POST_CREATE_ERROR:
+	    case types.POST_UPDATE_ERROR:
+	    case types.POST_DELETE_ERROR:
+	    case types.POSTS_GET_ERROR:
+	    case types.POST_GET_ERROR:
+	      return _extends({}, state, {
+	        success: '',
+	        error: error
+	      });
+	    case types.POSTS_GET_SUCCESS:
+	      return _extends({}, state, {
+	        posts: posts
+	      });
+	    default:
+	      return state;
+	  }
+	}
+
+/***/ },
 /* 564 */
 /*!********************************************!*\
   !*** ./assets/client/app/reducers/user.js ***!
@@ -36836,230 +37352,6 @@
 	    default:
 	      return state;
 	  }
-	}
-
-/***/ },
-/* 565 */
-/*!********************************************!*\
-  !*** ./assets/client/app/reducers/post.js ***!
-  \********************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-	
-	exports.default = posts;
-	
-	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
-	
-	var types = _interopRequireWildcard(_actionTypes);
-	
-	var _reduxStore = __webpack_require__(/*! ../redux-store */ 538);
-	
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-	
-	function posts() {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _reduxStore.initialState.post;
-	  var action = arguments[1];
-	
-	  var _ref = action.payload || {},
-	      post_form_data = _ref.post_form_data,
-	      success = _ref.success,
-	      error = _ref.error,
-	      delete_post_id = _ref.delete_post_id,
-	      posts = _ref.posts;
-	
-	  switch (action.type) {
-	
-	    case types.POST_CREATE_REQUESTED:
-	      return _extends({}, state, {
-	        post_form_data: post_form_data,
-	        success: '',
-	        error: ''
-	      });
-	    case types.POST_CREATE_SUCCESS:
-	      return _extends({}, state, {
-	        success: success,
-	        error: ''
-	      });
-	    case types.POST_CREATE_ERROR:
-	      return _extends({}, state, {
-	        success: '',
-	        error: error
-	      });
-	    case types.POST_DELETE_REQUESTED:
-	      return _extends({}, state, {
-	        delete_post_id: delete_post_id
-	      });
-	    case types.POST_DELETE_SUCCESS:
-	      return _extends({}, state, {
-	        post_form_data: post_form_data,
-	        success: success,
-	        error: ''
-	      });
-	    case types.POSTS_GET_SUCCESS:
-	      return _extends({}, state, {
-	        posts: posts
-	      });
-	
-	    case types.POST_DELETE_ERROR:
-	    case types.POST_GET_REQUESTED:
-	    case types.POST_GET_ERROR:
-	    case types.POSTS_GET_REQUESTED:
-	    case types.POSTS_GET_ERROR:
-	
-	    default:
-	      return state;
-	  }
-	}
-
-/***/ },
-/* 566 */
-/*!*****************************************!*\
-  !*** ./assets/client/app/sagas/post.js ***!
-  \*****************************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.postWatchers = undefined;
-	exports.postsRequestedWatcher = postsRequestedWatcher;
-	exports.createPostWatcher = createPostWatcher;
-	exports.postsRequestedWorker = postsRequestedWorker;
-	exports.createPostWorker = createPostWorker;
-	
-	var _reduxSaga = __webpack_require__(/*! redux-saga */ 539);
-	
-	var _effects = __webpack_require__(/*! redux-saga/effects */ 554);
-	
-	var _api = __webpack_require__(/*! ../lib/api */ 557);
-	
-	var Api = _interopRequireWildcard(_api);
-	
-	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 497);
-	
-	var types = _interopRequireWildcard(_actionTypes);
-	
-	var _office = __webpack_require__(/*! ../actions/office */ 500);
-	
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-	
-	var _marked = [postsRequestedWatcher, createPostWatcher, postsRequestedWorker, createPostWorker].map(regeneratorRuntime.mark);
-	
-	// === Watchers ===
-	var postWatchers = [postsRequestedWatcher, createPostWatcher];
-	exports.postWatchers = postWatchers;
-	function postsRequestedWatcher() {
-	  return regeneratorRuntime.wrap(function postsRequestedWatcher$(_context) {
-	    while (1) {
-	      switch (_context.prev = _context.next) {
-	        case 0:
-	          return _context.delegateYield((0, _reduxSaga.takeEvery)(types.POSTS_GET_REQUESTED, postsRequestedWorker), 't0', 1);
-	
-	        case 1:
-	        case 'end':
-	          return _context.stop();
-	      }
-	    }
-	  }, _marked[0], this);
-	}
-	
-	function createPostWatcher() {
-	  return regeneratorRuntime.wrap(function createPostWatcher$(_context2) {
-	    while (1) {
-	      switch (_context2.prev = _context2.next) {
-	        case 0:
-	          return _context2.delegateYield((0, _reduxSaga.takeEvery)(types.POST_CREATE_REQUESTED, createPostWorker), 't0', 1);
-	
-	        case 1:
-	        case 'end':
-	          return _context2.stop();
-	      }
-	    }
-	  }, _marked[1], this);
-	}
-	
-	// === Workers ===
-	
-	function postsRequestedWorker(action) {
-	  var response, posts;
-	  return regeneratorRuntime.wrap(function postsRequestedWorker$(_context3) {
-	    while (1) {
-	      switch (_context3.prev = _context3.next) {
-	        case 0:
-	          _context3.next = 2;
-	          return (0, _effects.call)(Api.getPosts);
-	
-	        case 2:
-	          response = _context3.sent;
-	          posts = response.json.posts;
-	
-	          if (!(response.status == 200)) {
-	            _context3.next = 7;
-	            break;
-	          }
-	
-	          _context3.next = 7;
-	          return (0, _effects.put)((0, _office.getPostsSuccess)(posts));
-	
-	        case 7:
-	        case 'end':
-	          return _context3.stop();
-	      }
-	    }
-	  }, _marked[2], this);
-	}
-	
-	function createPostWorker(action) {
-	  var post_form_data, response, _response$json, success, error;
-	
-	  return regeneratorRuntime.wrap(function createPostWorker$(_context4) {
-	    while (1) {
-	      switch (_context4.prev = _context4.next) {
-	        case 0:
-	          post_form_data = action.payload.post_form_data;
-	          _context4.next = 3;
-	          return (0, _effects.call)(Api.createPost, post_form_data);
-	
-	        case 3:
-	          response = _context4.sent;
-	          _response$json = response.json, success = _response$json.success, error = _response$json.error;
-	
-	          if (!(response.status == 200)) {
-	            _context4.next = 10;
-	            break;
-	          }
-	
-	          _context4.next = 8;
-	          return (0, _effects.put)((0, _office.createPostSuccess)(success));
-	
-	        case 8:
-	          _context4.next = 13;
-	          break;
-	
-	        case 10:
-	          if (!(response.status == 400)) {
-	            _context4.next = 13;
-	            break;
-	          }
-	
-	          _context4.next = 13;
-	          return (0, _effects.put)((0, _office.createPostError)(error));
-	
-	        case 13:
-	        case 'end':
-	          return _context4.stop();
-	      }
-	    }
-	  }, _marked[3], this);
 	}
 
 /***/ }

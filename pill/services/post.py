@@ -23,10 +23,9 @@ class PostService(BaseService):
 
     def get_posts(self, user, query, page=1, rpp=20):
         page = page or 1
-        rpp = rpp or 20
+        rpp = rpp or 10
         offset = (page - 1) * rpp
         cursor = conn()['posts'].find(query)[offset:offset+rpp]
-        # TODO: convert to model?
         docs = [self._clean_doc(doc) for doc in cursor]
         print(docs)
         return docs
@@ -35,6 +34,16 @@ class PostService(BaseService):
         doc['_id'] = str(doc['_id'])
         return doc
 
-    def get_post(self, post_id):
+    def get_post(self, user, post_id):
         res = conn()['posts'].find({'_id': ObjectId('post_id')})
         return res
+
+    def delete_post(self, user, post_id):
+        if not user:
+            raise Exception('Not logged in')
+        print ("delete post", post_id)
+
+    def update_post(self, user, post_id, post_form_data):
+        if not user:
+            raise Exception('Not logged in')
+        print ("update_post", post_id, post_form_data)

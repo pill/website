@@ -203,13 +203,46 @@ def create_post_api():
         res.status_code = 400
     return res
 
+@app.route('/api/v1/posts/<string:post_id>', methods=['POST'])
+@util.authenticated
+def update_post_api(post_id):
+    success = error = ''
+    user = getattr(g, 'user', None)
+    data = request.get_json()
+    try:
+        pid = app.S.post.update_post(user, post_id, data)
+        res = jsonify(
+            {'success': 'Post Updated with id: {}'.format(pid)}
+        )
+        res.status_code = 200
+    except Exception as e:
+        res = jsonify({'error': str(e)})
+        res.status_code = 400
+    return res
+
+@app.route('/api/v1/posts/<string:post_id>', methods=['DELETE'])
+@util.authenticated
+def delete_post_api(post_id):
+    success = error = ''
+    user = getattr(g, 'user', None)
+    try:
+        pid = app.S.post.delete_post(user, post_id)
+        res = jsonify(
+            {'success': 'Post Deleted with id: {}'.format(pid)}
+        )
+        res.status_code = 200
+    except Exception as e:
+        res = jsonify({'error': str(e)})
+        res.status_code = 400
+    return res
+
 @app.route('/api/v1/posts', methods=['GET'])
 @util.authenticated
 def get_posts_api():
     success = error = ''
     user = getattr(g, 'user', None)
     page = int(request.args.get('page', 1))
-    rpp = int(request.args.get('rpp', 20))
+    rpp = int(request.args.get('rpp', 10))
     query = {}
     posts = app.S.post.get_posts(user, query, page=page, rpp=rpp)
     res = jsonify({'posts': posts})
