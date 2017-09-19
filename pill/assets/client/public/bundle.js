@@ -31931,8 +31931,8 @@
 	function deletePost(post_id) {
 	  return (0, _util.createAction)(types.POST_DELETE_REQUESTED, { post_id: post_id });
 	}
-	function deletePostSuccess(post_id) {
-	  return (0, _util.createAction)(types.POST_DELETE_SUCCESS, { post_id: post_id });
+	function deletePostSuccess(success, post_id) {
+	  return (0, _util.createAction)(types.POST_DELETE_SUCCESS, { success: success, post_id: post_id });
 	}
 	function deletePostError(error) {
 	  return (0, _util.createAction)(types.POST_DELETE_ERROR, { error: error });
@@ -33541,6 +33541,27 @@
 	
 	      _this.props.actions.createPost({ title: title, body: body, publish_status: publish_status });
 	    }, _this._postList = function () {
+	      console.log('postList this.props', _this.props);
+	      var message = '';
+	      var _this$props$state$pos2 = _this.props.state.post,
+	          error = _this$props$state$pos2.error,
+	          success = _this$props$state$pos2.success;
+	
+	
+	      if (success) {
+	        message = _react2.default.createElement(
+	          'div',
+	          { style: styles.success },
+	          success
+	        );
+	      }
+	      if (error) {
+	        message = _react2.default.createElement(
+	          'div',
+	          { style: styles.error },
+	          error
+	        );
+	      }
 	      var posts = _this.props.state.post.posts;
 	      var _this$state = _this.state,
 	          page = _this$state.page,
@@ -33570,6 +33591,7 @@
 	      return _react2.default.createElement(
 	        'div',
 	        null,
+	        message,
 	        _react2.default.createElement(
 	          'div',
 	          null,
@@ -33632,7 +33654,7 @@
 	      );
 	    }, _this.render = function () {
 	      // render main content based on login state, subsection
-	
+	      console.log("render main");
 	      // loading indicator
 	      if (_this.props.state.app.loading) {
 	        return _react2.default.createElement(
@@ -33758,7 +33780,7 @@
 	    }
 	
 	    return _ret2 = (_temp2 = (_this2 = _possibleConstructorReturn(this, (_ref3 = AdminPostRow.__proto__ || Object.getPrototypeOf(AdminPostRow)).call.apply(_ref3, [this].concat(args))), _this2), _this2.render = function () {
-	      console.log("this props", _this2);
+	      console.log("rendering row", _this2.props);
 	      return _react2.default.createElement(
 	        'tr',
 	        { key: _this2.props.post._id },
@@ -36717,7 +36739,7 @@
 	          }
 	
 	          _context8.next = 8;
-	          return (0, _effects.put)((0, _office.deletePostSuccess)(success));
+	          return (0, _effects.put)((0, _office.deletePostSuccess)(success, post_id));
 	
 	        case 8:
 	          _context8.next = 13;
@@ -37269,7 +37291,7 @@
 	      post_form_data = _ref.post_form_data,
 	      success = _ref.success,
 	      error = _ref.error,
-	      delete_post_id = _ref.delete_post_id,
+	      post_id = _ref.post_id,
 	      posts = _ref.posts;
 	
 	  switch (action.type) {
@@ -37287,7 +37309,11 @@
 	    case types.POST_UPDATE_SUCCESS:
 	    case types.POST_DELETE_SUCCESS:
 	    case types.POST_GET_SUCCESS:
+	      //
 	      return _extends({}, state, {
+	        posts: state.posts.filter(function (p) {
+	          return p._id !== post_id;
+	        }),
 	        success: success,
 	        error: ''
 	      });

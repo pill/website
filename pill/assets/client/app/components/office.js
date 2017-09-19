@@ -101,6 +101,16 @@ export class Office extends Component {
   // post list
   // ===========
   _postList = () => {
+    console.log('postList this.props', this.props)
+    let message = ''
+    const { error, success } = this.props.state.post
+
+    if (success) {
+      message = (<div style={styles.success}>{success}</div>)
+    }
+    if (error) {
+      message = (<div style={styles.error}>{error}</div>)
+    }
     const posts = this.props.state.post.posts
     const { page, rpp } = this.state
     const next_link = `/office/posts?page=${page+1}&rpp=${rpp}`
@@ -120,6 +130,7 @@ export class Office extends Component {
 
     return (
       <div>
+        {message}
         <div>
           {prev} {next}
         </div>
@@ -157,7 +168,7 @@ export class Office extends Component {
 
   render = () => {
     // render main content based on login state, subsection
-
+    console.log("render main")
     // loading indicator
     if (this.props.state.app.loading) {
       return (<div style={styles.loading}><em>Loading...</em></div>)
@@ -208,7 +219,7 @@ export class Office extends Component {
 // extra render() calls aren't made
 class AdminPostRow extends Component {
   render = () => {
-    console.log("this props", this)
+    console.log("rendering row", this.props)
     return (
       <tr key={this.props.post._id}>
           <td style={styles.adminPostTitle}><a href="#" onClick={this._edit}>{this.props.post.title}</a></td>

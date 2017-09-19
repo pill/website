@@ -78,7 +78,7 @@ export function* deletePostWorker(action) {
   const response = yield call(Api.deletePost, post_id)
   const { success, error } = response.json
   if (response.status == 200) {
-    yield put(deletePostSuccess(success))
+    yield put(deletePostSuccess(success, post_id))
   }
   else if (response.status == 400) {
     yield put(deletePostError(error))

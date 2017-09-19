@@ -228,7 +228,7 @@ def delete_post_api(post_id):
     try:
         pid = app.S.post.delete_post(user, post_id)
         res = jsonify(
-            {'success': 'Post Deleted with id: {}'.format(pid)}
+            {'success': 'Post Deleted with id: {}'.format(post_id)}
         )
         res.status_code = 200
     except Exception as e:

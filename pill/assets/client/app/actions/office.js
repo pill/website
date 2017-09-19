@@ -26,8 +26,8 @@ export function updatePostError(error) {
 export function deletePost(post_id) {
   return createAction(types.POST_DELETE_REQUESTED, { post_id })
 }
-export function deletePostSuccess(post_id) {
-  return createAction(types.POST_DELETE_SUCCESS, { post_id })
+export function deletePostSuccess(success, post_id) {
+  return createAction(types.POST_DELETE_SUCCESS, { success, post_id })
 }
 export function deletePostError(error) {
   return createAction(types.POST_DELETE_ERROR, { error })

@@ -3,7 +3,12 @@ import { initialState } from '../redux-store'
 
 export default function posts(state=initialState.post, action) {
 
-  const { post_form_data, success, error, delete_post_id, posts } = action.payload || {}
+  const {
+    post_form_data,
+    success,
+    error,
+    post_id,
+    posts } = action.payload || {}
 
   switch (action.type) {
 
@@ -21,8 +26,10 @@ export default function posts(state=initialState.post, action) {
     case types.POST_UPDATE_SUCCESS:
     case types.POST_DELETE_SUCCESS:
     case types.POST_GET_SUCCESS:
+    //
       return {
         ...state,
+        posts: state.posts.filter(p => p._id !== post_id),
         success: success,
         error: ''
       }
