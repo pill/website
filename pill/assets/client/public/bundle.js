@@ -33780,7 +33780,6 @@
 	    }
 	
 	    return _ret2 = (_temp2 = (_this2 = _possibleConstructorReturn(this, (_ref3 = AdminPostRow.__proto__ || Object.getPrototypeOf(AdminPostRow)).call.apply(_ref3, [this].concat(args))), _this2), _this2.render = function () {
-	      console.log("rendering row", _this2.props);
 	      return _react2.default.createElement(
 	        'tr',
 	        { key: _this2.props.post._id },
@@ -33792,6 +33791,11 @@
 	            { href: '#', onClick: _this2._edit },
 	            _this2.props.post.title
 	          )
+	        ),
+	        _react2.default.createElement(
+	          'td',
+	          null,
+	          _this2.props.post._id
 	        ),
 	        _react2.default.createElement(
 	          'td',
@@ -33847,7 +33851,7 @@
 	    padding: '.5em 0 .5em 0'
 	  },
 	  adminPostTitle: {
-	    width: '300px'
+	    width: '25%'
 	  },
 	  adminPostTable: {
 	    width: '500px'
@@ -33987,6 +33991,7 @@
 	    post_form_data: {
 	      title: '',
 	      body: '',
+	      author: '',
 	      publish_status: ''
 	    },
 	    posts: []

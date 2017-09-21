@@ -7,6 +7,7 @@ class Post(Model):
         self._id = kwargs.get('_id', '')
         self.title = kwargs.get('title')
         self.body = kwargs.get('body')
+        self.publish_status = kwargs.get('publish_status')
         self.author = kwargs.get('author')
 
 class User(Model):

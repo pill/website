@@ -219,10 +219,10 @@ export class Office extends Component {
 // extra render() calls aren't made
 class AdminPostRow extends Component {
   render = () => {
-    console.log("rendering row", this.props)
     return (
       <tr key={this.props.post._id}>
           <td style={styles.adminPostTitle}><a href="#" onClick={this._edit}>{this.props.post.title}</a></td>
+          <td>{this.props.post._id}</td>
           <td><a href="#" onClick={this._delete}>[X]</a></td>
       </tr>
     )
@@ -269,7 +269,7 @@ const styles = {
     padding: '.5em 0 .5em 0'
   },
   adminPostTitle: {
-    width: '300px'
+    width: '25%'
   },
   adminPostTable: {
     width: '500px'

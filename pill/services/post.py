@@ -10,6 +10,12 @@ log = logging.getLogger(__file__)
 
 class PostService(BaseService):
 
+    def _clean_doc(self, doc):
+        if not doc:
+            return None
+        doc['_id'] = str(doc['_id'])
+        return doc
+
     def create_post(self, user, post_form_data):
         if not user:
             raise Exception('Not logged in')
@@ -20,7 +26,11 @@ class PostService(BaseService):
         res = conn()['posts'].insert(post_form_data)
         return res
 
-    def get_posts(self, user, query, page=1, rpp=20):
+    def get_post(self, post_id):
+        res = conn()['posts'].find({'_id': ObjectId(post_id)})
+        return self._clean_doc(res.next())
+
+    def get_posts(self, query, page=1, rpp=20):
         page = page or 1
         rpp = rpp or 10
         offset = (page - 1) * rpp
@@ -28,18 +38,14 @@ class PostService(BaseService):
         docs = [self._clean_doc(doc) for doc in cursor]
         return docs
 
-    def _clean_doc(self, doc):
-        doc['_id'] = str(doc['_id'])
-        return doc
-
-    def get_post(self, user, post_id):
-        res = conn()['posts'].find({'_id': ObjectId(post_id)})
-        return res.next()
-
     def delete_post(self, user, post_id):
         if not user:
             raise Exception('Not logged in')
-        post = self.get_post(user, post_id)
+        post = self.get_post(post_id)
+
+        # post needs needs ObjectId to do an update
+        post['_id'] = ObjectId(post['_id'])
+
         conn()['posts_trash'].update({'_id': ObjectId(post_id)}, post, True)
         conn()['posts'].delete_one({'_id': ObjectId(post_id)})
 

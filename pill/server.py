@@ -21,6 +21,14 @@ from pill.services import (
     user as user_service
 )
 
+from pill.schema import *
+
+"""
+Hi. Run the dev server like this:
+
+flask run --host=0.0.0.0 --port=8080
+"""
+
 app = Flask(
     __name__,
     static_folder='assets/client',
@@ -225,28 +233,44 @@ def update_post_api(post_id):
 def delete_post_api(post_id):
     success = error = ''
     user = getattr(g, 'user', None)
-    try:
-        pid = app.S.post.delete_post(user, post_id)
-        res = jsonify(
-            {'success': 'Post Deleted with id: {}'.format(post_id)}
-        )
-        res.status_code = 200
-    except Exception as e:
-        res = jsonify({'error': str(e)})
-        res.status_code = 400
+    #try:
+    pid = app.S.post.delete_post(user, post_id)
+    res = jsonify(
+        {'success': 'Post Deleted with id: {}'.format(post_id)}
+    )
+    res.status_code = 200
+    # except Exception as e:
+    #     print (e)
+    #     res = jsonify({'error': str(e)})
+    #     res.status_code = 400
     return res
 
 @app.route('/api/v1/posts', methods=['GET'])
-@util.authenticated
 def get_posts_api():
     success = error = ''
-    user = getattr(g, 'user', None)
     page = int(request.args.get('page', 1))
     rpp = int(request.args.get('rpp', 10))
     query = {}
-    posts = app.S.post.get_posts(user, query, page=page, rpp=rpp)
+    posts = app.S.post.get_posts(query, page=page, rpp=rpp)
     res = jsonify({'posts': posts})
     res.status_code = 200
+    return res
+
+@app.route('/api/v1/posts/<string:post_id>', methods=['GET'])
+def get_post_api(post_id):
+    success = error = ''
+    post = app.S.post.get_post(post_id)
+    res = jsonify({'post': post})
+    res.status_code = 200
+    return res
+
+@app.route('/graphql', methods=['GET', 'POST'])
+def graphql_api():
+    query = request.args.get('query')
+    print('raw query', query)
+    res = schema.execute(query)
+    # TODO:
+    res = jsonify(res.data)
     return res
 
 # app.config.update(dict(

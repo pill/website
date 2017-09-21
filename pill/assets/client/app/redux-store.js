@@ -30,6 +30,7 @@ export const initialState = {
     post_form_data: {
       title: '',
       body: '',
+      author: '',
       publish_status: ''
     },
     posts: []
