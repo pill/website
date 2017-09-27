@@ -26,6 +26,8 @@ from pill.schema import *
 """
 Hi. Run the dev server like this:
 
+export FLASK_APP=pill.server
+export FLASK_DEBUG=1
 flask run --host=0.0.0.0 --port=8080
 """
 
@@ -103,7 +105,14 @@ def home():
 @app.route('/blog')
 def blog():
     query = {}
-    context = {'section': 'blog'}
+    context = {'section': 'blog', 'subsection': 'posts_list'}
+    return render_template('index.html', **context)
+
+
+@app.route('/blog/posts/<post_id>')
+def blog_post(post_id):
+    query = {}
+    context = {'section': 'blog', 'subsection': 'single_post_view'}
     return render_template('index.html', **context)
 
 #------
@@ -268,8 +277,7 @@ def get_post_api(post_id):
 def graphql_api():
     query = request.args.get('query')
     print('raw query', query)
-    res = schema.execute(query)
-    # TODO:
+    res = post_schema.execute(query)
     res = jsonify(res.data)
     return res
 

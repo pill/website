@@ -1,4 +1,5 @@
 import graphene
+#from graphene import relay
 from flask import current_app
 import logging
 
@@ -12,28 +13,17 @@ class Post(graphene.ObjectType):
     author = graphene.String()
 
 class Query(graphene.ObjectType):
-
     post = graphene.Field(Post, _id=graphene.ID())
+    posts = graphene.List(Post, page=graphene.Int(), rpp=graphene.Int())
 
     def resolve_post(self, info, _id=None):
-        print('resolving post:', _id)
-        # get data from mongodb
         p_data = current_app.S.post.get_post(_id)
         # make graphene object
         return Post(**p_data)
 
-schema = graphene.Schema(query=Query, auto_camelcase=False)
+    def resolve_posts(self, info, page=None, rpp=None):
+        posts = current_app.S.post.get_posts({}, page=page, rpp=rpp)
+        return [Post(**p) for p in posts]
 
-"""
-ResolveInfo
-        self.field_name = field_name
-        self.field_asts = field_asts
-        self.return_type = return_type
-        self.parent_type = parent_type
-        self.schema = schema
-        self.fragments = fragments
-        self.root_value = root_value
-        self.operation = operation
-        self.variable_values = variable_values
-        self.context = context
-"""
+post_schema = graphene.Schema(query=Query, types=[Post,], auto_camelcase=False)
+

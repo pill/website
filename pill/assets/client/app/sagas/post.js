@@ -11,7 +11,7 @@ import {
   deletePostSuccess,
   deletePostError,
   updatePostSuccess,
-  updatePostError } from '../actions/office'
+  updatePostError } from '../actions/post'
 
 // === Watchers ===
 const postWatchers = [

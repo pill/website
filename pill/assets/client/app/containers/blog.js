@@ -4,16 +4,25 @@ import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as postActions from '../actions/post'
+import { PostsList, Post } from '../components/posts'
 
-import { PostsList } from '../components/posts'
-
-export class HomeContainer extends Component {
+export class BlogContainer extends Component {
   render() {
+    const { state, actions } = this.props
+    const res = []
+    switch(this.props.subsection) {
+      case 'single_post_view':
+        res.push(<Post state={state} actions={actions}></Post>)
+        break
+      case 'posts_list':
+      default:
+        res.push(<PostsList state={state} actions={actions}></PostsList>)
+    }
     return (
       <div>
         <h1>Phil's Site</h1>
         <h2>Blog</h2>
-        Home
+        {res}
       </div>
     )
   }
@@ -31,6 +40,6 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(BlogContainer)
 
 

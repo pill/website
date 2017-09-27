@@ -3,6 +3,7 @@
 import React, { Component, PropTypes } from 'react'
 import HomeContainer from './home'
 import OfficeContainer from './office'
+import BlogContainer from './blog'
 import { Navbar } from '../components/navbar'
 
 import { bindActionCreators } from 'redux'
@@ -23,6 +24,8 @@ export class MainContainer extends Component {
         break
       case 'main':
       case 'blog':
+        res.push(<BlogContainer state={state} actions={actions} key="blogContainer" {...this.props}/>)
+        break
       case 'work':
       default:
         res.push(<HomeContainer state={state} actions={actions} key="homeContainer" {...this.props}/>)
