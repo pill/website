@@ -43,6 +43,7 @@ export class Post extends React.Component {
     // get single post
     const pathArr = window.location.pathname.split("/")
     const _id = pathArr[pathArr.length-1]
+    // build graphQL query
     const query = `{post(_id:"${_id}"){title,body}}`
     this.props.actions.graphqlQuery(query)
   }
