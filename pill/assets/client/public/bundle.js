@@ -39094,6 +39094,9 @@
 	};
 	
 	function _parseResponse(response, context) {
+	
+	  console.log('response', response);
+	
 	  // TODO: handle status codes
 	  return response.json().then(function (jsonObj) {
 	    return { json: jsonObj, status: response.status };
