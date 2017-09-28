@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as postActions from '../actions/post'
 import * as loginActions from '../actions/login'
+import * as graphQLActions from '../actions/graphql'
 import { Office } from '../components/office'
 
 // map global state to component properties
@@ -14,7 +15,8 @@ function mapStateToProps(state) {
     state: {
         user: state.user,
         app: state.app,
-        post: state.post
+        post: state.post,
+        graphql: state.graphql
     }
   }
 }
@@ -22,7 +24,8 @@ function mapStateToProps(state) {
 // map actions to component properties and connect to dispatch
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...postActions, ...loginActions}, dispatch)
+    actions: bindActionCreators({
+      ...postActions, ...loginActions, ...graphQLActions}, dispatch)
   }
 }
 

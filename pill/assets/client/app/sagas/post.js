@@ -26,6 +26,10 @@ export function* postsRequestedWatcher() {
   yield* takeEvery(types.POSTS_GET_REQUESTED, postsRequestedWorker)
 }
 
+export function* postRequestedWatcher() {
+  yield* takeEvery(types.POST_GET_REQUESTED, postRequestedWorker)
+}
+
 export function* createPostWatcher() {
   yield* takeEvery(types.POST_CREATE_REQUESTED, createPostWorker)
 }
@@ -37,6 +41,7 @@ export function* updatePostWatcher() {
 export function* deletePostWatcher() {
   yield* takeEvery(types.POST_DELETE_REQUESTED, deletePostWorker)
 }
+
 // === Workers ===
 
 export function* postsRequestedWorker(action) {
@@ -46,7 +51,15 @@ export function* postsRequestedWorker(action) {
   if (response.status == 200) {
     yield put(getPostsSuccess(posts))
   }
+}
 
+export function* postRequestedWorker(action) {
+  const { post_id } = action.payload
+  const response = yield call(Api.getPost, post_id)
+  const { post } = response.json
+  if (response.status == 200) {
+    yield put(getPostsSuccess(posts))
+  }
 }
 
 export function* createPostWorker(action) {

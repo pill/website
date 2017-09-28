@@ -4,10 +4,13 @@ import React, { Component, PropTypes } from 'react'
 import HomeContainer from './home'
 import OfficeContainer from './office'
 import BlogContainer from './blog'
+import WorkContainer from './work'
 import { Navbar } from '../components/navbar'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+
+import * as graphQLActions from '../actions/graphql'
 
 export class MainContainer extends Component {
 
@@ -27,6 +30,8 @@ export class MainContainer extends Component {
         res.push(<BlogContainer state={state} actions={actions} key="blogContainer" {...this.props}/>)
         break
       case 'work':
+        res.push(<WorkContainer state={state} actions={actions} key="workContainer" {...this.props}/>)
+        break
       default:
         res.push(<HomeContainer state={state} actions={actions} key="homeContainer" {...this.props}/>)
     }
@@ -46,7 +51,7 @@ function mapStateToProps(state) {
 // map global state to component properties
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({}, dispatch)
+    actions: bindActionCreators({...graphqlActions}, dispatch)
   }
 }
 

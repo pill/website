@@ -1,5 +1,4 @@
 import graphene
-#from graphene import relay
 from flask import current_app
 import logging
 

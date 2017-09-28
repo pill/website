@@ -38,5 +38,8 @@ export const initialState = {
   user: {
     username: '',
     user_token: ''
+  },
+  graphql: {
+    response: null
   }
 }

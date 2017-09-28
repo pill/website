@@ -40,9 +40,27 @@ export class PostsList extends React.Component {
 
 export class Post extends React.Component {
   componentWillMount() {
+    // get single post
+    const pathArr = window.location.pathname.split("/")
+    const _id = pathArr[pathArr.length-1]
+    const query = `{post(_id:"${_id}"){title,body}}`
+    this.props.actions.graphqlQuery(query)
   }
 
   render() {
-      return <div>single post</div>
+    // latest graphql response is in state
+    const { response } = this.props.state.graphql
+    if (!response) {
+      return (
+        <div>chill out!</div>
+      )
+    }
+    const { post } = response.json
+    return (
+      <div>
+        <h1>{post.title}</h1>
+        <div>{post.body}</div>
+      </div>
+    )
   }
 }

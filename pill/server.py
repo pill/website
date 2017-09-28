@@ -108,7 +108,6 @@ def blog():
     context = {'section': 'blog', 'subsection': 'posts_list'}
     return render_template('index.html', **context)
 
-
 @app.route('/blog/posts/<post_id>')
 def blog_post(post_id):
     query = {}

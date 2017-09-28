@@ -12,8 +12,7 @@ export class HomeContainer extends Component {
     return (
       <div>
         <h1>Phil's Site</h1>
-        <h2>Blog</h2>
-        Home
+        Homie!
       </div>
     )
   }

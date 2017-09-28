@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as postActions from '../actions/post'
 import { PostsList, Post } from '../components/posts'
+import * as graphQLActions from '../actions/graphql'
 
 export class BlogContainer extends Component {
   render() {
@@ -12,16 +13,15 @@ export class BlogContainer extends Component {
     const res = []
     switch(this.props.subsection) {
       case 'single_post_view':
-        res.push(<Post state={state} actions={actions}></Post>)
+        res.push(<Post key="post" state={state} actions={actions}></Post>)
         break
       case 'posts_list':
       default:
-        res.push(<PostsList state={state} actions={actions}></PostsList>)
+        res.push(<PostsList key="postList" state={state} actions={actions}></PostsList>)
     }
     return (
       <div>
-        <h1>Phil's Site</h1>
-        <h2>Blog</h2>
+        <h1>Phil's Blog</h1>
         {res}
       </div>
     )
@@ -36,7 +36,7 @@ function mapStateToProps(state) {
 // map actions to component properties and connect to dispatch
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...postActions}, dispatch)
+    actions: bindActionCreators({...postActions, ...graphQLActions}, dispatch)
   }
 }
 

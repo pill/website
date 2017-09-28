@@ -30248,11 +30248,21 @@
 	
 	var _blog2 = _interopRequireDefault(_blog);
 	
+	var _work = __webpack_require__(/*! ./work */ 451);
+	
+	var _work2 = _interopRequireDefault(_work);
+	
 	var _navbar = __webpack_require__(/*! ../components/navbar */ 418);
 	
 	var _redux = __webpack_require__(/*! redux */ 334);
 	
 	var _reactRedux = __webpack_require__(/*! react-redux */ 355);
+	
+	var _graphql = __webpack_require__(/*! ../actions/graphql */ 452);
+	
+	var graphQLActions = _interopRequireWildcard(_graphql);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -30292,6 +30302,8 @@
 	          res.push(_react2.default.createElement(_blog2.default, _extends({ state: state, actions: actions, key: 'blogContainer' }, this.props)));
 	          break;
 	        case 'work':
+	          res.push(_react2.default.createElement(_work2.default, _extends({ state: state, actions: actions, key: 'workContainer' }, this.props)));
+	          break;
 	        default:
 	          res.push(_react2.default.createElement(_home2.default, _extends({ state: state, actions: actions, key: 'homeContainer' }, this.props)));
 	      }
@@ -30318,7 +30330,7 @@
 	// map global state to component properties
 	function mapDispatchToProps(dispatch) {
 	  return {
-	    actions: (0, _redux.bindActionCreators)({}, dispatch)
+	    actions: (0, _redux.bindActionCreators)(_extends({}, graphqlActions), dispatch)
 	  };
 	}
 	
@@ -30386,12 +30398,7 @@
 	          null,
 	          'Phil\'s Site'
 	        ),
-	        _react2.default.createElement(
-	          'h2',
-	          null,
-	          'Blog'
-	        ),
-	        'Home'
+	        'Homie!'
 	      );
 	    }
 	  }]);
@@ -30446,6 +30453,10 @@
 	
 	var loginActions = _interopRequireWildcard(_login);
 	
+	var _graphql = __webpack_require__(/*! ../actions/graphql */ 452);
+	
+	var graphQLActions = _interopRequireWildcard(_graphql);
+	
 	var _office = __webpack_require__(/*! ../components/office */ 417);
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -30459,7 +30470,8 @@
 	    state: {
 	      user: state.user,
 	      app: state.app,
-	      post: state.post
+	      post: state.post,
+	      graphql: state.graphql
 	    }
 	  };
 	}
@@ -30467,7 +30479,7 @@
 	// map actions to component properties and connect to dispatch
 	function mapDispatchToProps(dispatch) {
 	  return {
-	    actions: (0, _redux.bindActionCreators)(_extends({}, postActions, loginActions), dispatch)
+	    actions: (0, _redux.bindActionCreators)(_extends({}, postActions, loginActions, graphQLActions), dispatch)
 	  };
 	}
 	
@@ -33896,11 +33908,16 @@
 
 	'use strict';
 	
-	// startup stuff
+	// GRAPH QL
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	var GRAPHQL_QUERY = exports.GRAPHQL_QUERY = 'GRAPHQL_QUERY';
+	var GRAPHQL_SUCCESS = exports.GRAPHQL_SUCCESS = 'GRAPHQL_SUCCESS';
+	var GRAPHQL_ERROR = exports.GRAPHQL_ERROR = 'GRAPHQL_ERROR';
+	
+	// startup stuff
 	var APP_INIT_STARTED = exports.APP_INIT_STARTED = 'APP_INIT_STARTED';
 	var APP_INIT_COMPLETE = exports.APP_INIT_COMPLETE = 'APP_INIT_COMPLETE';
 	var AUTH_CHECK_SUCCESS = exports.AUTH_CHECK_SUCCESS = 'AUTH_CHECK_SUCCESS';
@@ -35973,6 +35990,9 @@
 	  user: {
 	    username: '',
 	    user_token: ''
+	  },
+	  graphql: {
+	    response: null
 	  }
 	};
 
@@ -38641,6 +38661,8 @@
 	
 	var _app = __webpack_require__(/*! ./app */ 443);
 	
+	var _graphql = __webpack_require__(/*! ./graphql */ 453);
+	
 	var _marked = [periodicTask, root].map(regeneratorRuntime.mark);
 	
 	function forkList(watcherList) {
@@ -38691,7 +38713,7 @@
 	      switch (_context2.prev = _context2.next) {
 	        case 0:
 	          _context2.prev = 0;
-	          allWatchers = [forkList(_login.loginWatchers), forkList(_app.appWatchers), forkList(_post.postWatchers)
+	          allWatchers = [forkList(_login.loginWatchers), forkList(_app.appWatchers), forkList(_post.postWatchers), forkList(_graphql.graphqlWatchers)
 	          // forkList(actionSheetWatchers),
 	          ];
 	          _context2.next = 4;
@@ -38729,10 +38751,12 @@
 	});
 	exports.postWatchers = undefined;
 	exports.postsRequestedWatcher = postsRequestedWatcher;
+	exports.postRequestedWatcher = postRequestedWatcher;
 	exports.createPostWatcher = createPostWatcher;
 	exports.updatePostWatcher = updatePostWatcher;
 	exports.deletePostWatcher = deletePostWatcher;
 	exports.postsRequestedWorker = postsRequestedWorker;
+	exports.postRequestedWorker = postRequestedWorker;
 	exports.createPostWorker = createPostWorker;
 	exports.updatePostWorker = updatePostWorker;
 	exports.deletePostWorker = deletePostWorker;
@@ -38753,7 +38777,7 @@
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
-	var _marked = [postsRequestedWatcher, createPostWatcher, updatePostWatcher, deletePostWatcher, postsRequestedWorker, createPostWorker, updatePostWorker, deletePostWorker].map(regeneratorRuntime.mark);
+	var _marked = [postsRequestedWatcher, postRequestedWatcher, createPostWatcher, updatePostWatcher, deletePostWatcher, postsRequestedWorker, postRequestedWorker, createPostWorker, updatePostWorker, deletePostWorker].map(regeneratorRuntime.mark);
 	
 	// === Watchers ===
 	var postWatchers = [postsRequestedWatcher, createPostWatcher, updatePostWatcher, deletePostWatcher];
@@ -38773,12 +38797,12 @@
 	  }, _marked[0], this);
 	}
 	
-	function createPostWatcher() {
-	  return regeneratorRuntime.wrap(function createPostWatcher$(_context2) {
+	function postRequestedWatcher() {
+	  return regeneratorRuntime.wrap(function postRequestedWatcher$(_context2) {
 	    while (1) {
 	      switch (_context2.prev = _context2.next) {
 	        case 0:
-	          return _context2.delegateYield((0, _reduxSaga.takeEvery)(types.POST_CREATE_REQUESTED, createPostWorker), 't0', 1);
+	          return _context2.delegateYield((0, _reduxSaga.takeEvery)(types.POST_GET_REQUESTED, postRequestedWorker), 't0', 1);
 	
 	        case 1:
 	        case 'end':
@@ -38788,12 +38812,12 @@
 	  }, _marked[1], this);
 	}
 	
-	function updatePostWatcher() {
-	  return regeneratorRuntime.wrap(function updatePostWatcher$(_context3) {
+	function createPostWatcher() {
+	  return regeneratorRuntime.wrap(function createPostWatcher$(_context3) {
 	    while (1) {
 	      switch (_context3.prev = _context3.next) {
 	        case 0:
-	          return _context3.delegateYield((0, _reduxSaga.takeEvery)(types.POST_UPDATE_REQUESTED, updatePostWorker), 't0', 1);
+	          return _context3.delegateYield((0, _reduxSaga.takeEvery)(types.POST_CREATE_REQUESTED, createPostWorker), 't0', 1);
 	
 	        case 1:
 	        case 'end':
@@ -38803,12 +38827,12 @@
 	  }, _marked[2], this);
 	}
 	
-	function deletePostWatcher() {
-	  return regeneratorRuntime.wrap(function deletePostWatcher$(_context4) {
+	function updatePostWatcher() {
+	  return regeneratorRuntime.wrap(function updatePostWatcher$(_context4) {
 	    while (1) {
 	      switch (_context4.prev = _context4.next) {
 	        case 0:
-	          return _context4.delegateYield((0, _reduxSaga.takeEvery)(types.POST_DELETE_REQUESTED, deletePostWorker), 't0', 1);
+	          return _context4.delegateYield((0, _reduxSaga.takeEvery)(types.POST_UPDATE_REQUESTED, updatePostWorker), 't0', 1);
 	
 	        case 1:
 	        case 'end':
@@ -38817,32 +38841,15 @@
 	    }
 	  }, _marked[3], this);
 	}
-	// === Workers ===
 	
-	function postsRequestedWorker(action) {
-	  var _action$payload, page, rpp, response, posts;
-	
-	  return regeneratorRuntime.wrap(function postsRequestedWorker$(_context5) {
+	function deletePostWatcher() {
+	  return regeneratorRuntime.wrap(function deletePostWatcher$(_context5) {
 	    while (1) {
 	      switch (_context5.prev = _context5.next) {
 	        case 0:
-	          _action$payload = action.payload, page = _action$payload.page, rpp = _action$payload.rpp;
-	          _context5.next = 3;
-	          return (0, _effects.call)(Api.getPosts, page, rpp);
+	          return _context5.delegateYield((0, _reduxSaga.takeEvery)(types.POST_DELETE_REQUESTED, deletePostWorker), 't0', 1);
 	
-	        case 3:
-	          response = _context5.sent;
-	          posts = response.json.posts;
-	
-	          if (!(response.status == 200)) {
-	            _context5.next = 8;
-	            break;
-	          }
-	
-	          _context5.next = 8;
-	          return (0, _effects.put)((0, _post.getPostsSuccess)(posts));
-	
-	        case 8:
+	        case 1:
 	        case 'end':
 	          return _context5.stop();
 	      }
@@ -38850,43 +38857,32 @@
 	  }, _marked[4], this);
 	}
 	
-	function createPostWorker(action) {
-	  var post_form_data, response, _response$json, success, error;
+	// === Workers ===
 	
-	  return regeneratorRuntime.wrap(function createPostWorker$(_context6) {
+	function postsRequestedWorker(action) {
+	  var _action$payload, page, rpp, response, posts;
+	
+	  return regeneratorRuntime.wrap(function postsRequestedWorker$(_context6) {
 	    while (1) {
 	      switch (_context6.prev = _context6.next) {
 	        case 0:
-	          post_form_data = action.payload.post_form_data;
+	          _action$payload = action.payload, page = _action$payload.page, rpp = _action$payload.rpp;
 	          _context6.next = 3;
-	          return (0, _effects.call)(Api.createPost, post_form_data);
+	          return (0, _effects.call)(Api.getPosts, page, rpp);
 	
 	        case 3:
 	          response = _context6.sent;
-	          _response$json = response.json, success = _response$json.success, error = _response$json.error;
+	          posts = response.json.posts;
 	
 	          if (!(response.status == 200)) {
-	            _context6.next = 10;
+	            _context6.next = 8;
 	            break;
 	          }
 	
 	          _context6.next = 8;
-	          return (0, _effects.put)((0, _post.createPostSuccess)(success));
+	          return (0, _effects.put)((0, _post.getPostsSuccess)(posts));
 	
 	        case 8:
-	          _context6.next = 13;
-	          break;
-	
-	        case 10:
-	          if (!(response.status == 400)) {
-	            _context6.next = 13;
-	            break;
-	          }
-	
-	          _context6.next = 13;
-	          return (0, _effects.put)((0, _post.createPostError)(error));
-	
-	        case 13:
 	        case 'end':
 	          return _context6.stop();
 	      }
@@ -38894,43 +38890,29 @@
 	  }, _marked[5], this);
 	}
 	
-	function updatePostWorker(action) {
-	  var _action$payload2, post_id, post_form_data, response, _response$json2, success, error;
-	
-	  return regeneratorRuntime.wrap(function updatePostWorker$(_context7) {
+	function postRequestedWorker(action) {
+	  var post_id, response, post;
+	  return regeneratorRuntime.wrap(function postRequestedWorker$(_context7) {
 	    while (1) {
 	      switch (_context7.prev = _context7.next) {
 	        case 0:
-	          _action$payload2 = action.payload, post_id = _action$payload2.post_id, post_form_data = _action$payload2.post_form_data;
+	          post_id = action.payload.post_id;
 	          _context7.next = 3;
-	          return (0, _effects.call)(Api.updatePost, post_id, post_form_data);
+	          return (0, _effects.call)(Api.getPost, post_id);
 	
 	        case 3:
 	          response = _context7.sent;
-	          _response$json2 = response.json, success = _response$json2.success, error = _response$json2.error;
+	          post = response.json.post;
 	
 	          if (!(response.status == 200)) {
-	            _context7.next = 10;
+	            _context7.next = 8;
 	            break;
 	          }
 	
 	          _context7.next = 8;
-	          return (0, _effects.put)((0, _post.updatePostSuccess)(success));
+	          return (0, _effects.put)((0, _post.getPostsSuccess)(posts));
 	
 	        case 8:
-	          _context7.next = 13;
-	          break;
-	
-	        case 10:
-	          if (!(response.status == 400)) {
-	            _context7.next = 13;
-	            break;
-	          }
-	
-	          _context7.next = 13;
-	          return (0, _effects.put)((0, _post.updatePostError)(error));
-	
-	        case 13:
 	        case 'end':
 	          return _context7.stop();
 	      }
@@ -38938,20 +38920,20 @@
 	  }, _marked[6], this);
 	}
 	
-	function deletePostWorker(action) {
-	  var post_id, response, _response$json3, success, error;
+	function createPostWorker(action) {
+	  var post_form_data, response, _response$json, success, error;
 	
-	  return regeneratorRuntime.wrap(function deletePostWorker$(_context8) {
+	  return regeneratorRuntime.wrap(function createPostWorker$(_context8) {
 	    while (1) {
 	      switch (_context8.prev = _context8.next) {
 	        case 0:
-	          post_id = action.payload.post_id;
+	          post_form_data = action.payload.post_form_data;
 	          _context8.next = 3;
-	          return (0, _effects.call)(Api.deletePost, post_id);
+	          return (0, _effects.call)(Api.createPost, post_form_data);
 	
 	        case 3:
 	          response = _context8.sent;
-	          _response$json3 = response.json, success = _response$json3.success, error = _response$json3.error;
+	          _response$json = response.json, success = _response$json.success, error = _response$json.error;
 	
 	          if (!(response.status == 200)) {
 	            _context8.next = 10;
@@ -38959,7 +38941,7 @@
 	          }
 	
 	          _context8.next = 8;
-	          return (0, _effects.put)((0, _post.deletePostSuccess)(success, post_id));
+	          return (0, _effects.put)((0, _post.createPostSuccess)(success));
 	
 	        case 8:
 	          _context8.next = 13;
@@ -38972,7 +38954,7 @@
 	          }
 	
 	          _context8.next = 13;
-	          return (0, _effects.put)((0, _post.deletePostError)(error));
+	          return (0, _effects.put)((0, _post.createPostError)(error));
 	
 	        case 13:
 	        case 'end':
@@ -38980,6 +38962,94 @@
 	      }
 	    }
 	  }, _marked[7], this);
+	}
+	
+	function updatePostWorker(action) {
+	  var _action$payload2, post_id, post_form_data, response, _response$json2, success, error;
+	
+	  return regeneratorRuntime.wrap(function updatePostWorker$(_context9) {
+	    while (1) {
+	      switch (_context9.prev = _context9.next) {
+	        case 0:
+	          _action$payload2 = action.payload, post_id = _action$payload2.post_id, post_form_data = _action$payload2.post_form_data;
+	          _context9.next = 3;
+	          return (0, _effects.call)(Api.updatePost, post_id, post_form_data);
+	
+	        case 3:
+	          response = _context9.sent;
+	          _response$json2 = response.json, success = _response$json2.success, error = _response$json2.error;
+	
+	          if (!(response.status == 200)) {
+	            _context9.next = 10;
+	            break;
+	          }
+	
+	          _context9.next = 8;
+	          return (0, _effects.put)((0, _post.updatePostSuccess)(success));
+	
+	        case 8:
+	          _context9.next = 13;
+	          break;
+	
+	        case 10:
+	          if (!(response.status == 400)) {
+	            _context9.next = 13;
+	            break;
+	          }
+	
+	          _context9.next = 13;
+	          return (0, _effects.put)((0, _post.updatePostError)(error));
+	
+	        case 13:
+	        case 'end':
+	          return _context9.stop();
+	      }
+	    }
+	  }, _marked[8], this);
+	}
+	
+	function deletePostWorker(action) {
+	  var post_id, response, _response$json3, success, error;
+	
+	  return regeneratorRuntime.wrap(function deletePostWorker$(_context10) {
+	    while (1) {
+	      switch (_context10.prev = _context10.next) {
+	        case 0:
+	          post_id = action.payload.post_id;
+	          _context10.next = 3;
+	          return (0, _effects.call)(Api.deletePost, post_id);
+	
+	        case 3:
+	          response = _context10.sent;
+	          _response$json3 = response.json, success = _response$json3.success, error = _response$json3.error;
+	
+	          if (!(response.status == 200)) {
+	            _context10.next = 10;
+	            break;
+	          }
+	
+	          _context10.next = 8;
+	          return (0, _effects.put)((0, _post.deletePostSuccess)(success, post_id));
+	
+	        case 8:
+	          _context10.next = 13;
+	          break;
+	
+	        case 10:
+	          if (!(response.status == 400)) {
+	            _context10.next = 13;
+	            break;
+	          }
+	
+	          _context10.next = 13;
+	          return (0, _effects.put)((0, _post.deletePostError)(error));
+	
+	        case 13:
+	        case 'end':
+	          return _context10.stop();
+	      }
+	    }
+	  }, _marked[9], this);
 	}
 
 /***/ },
@@ -38994,6 +39064,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.graphql = graphql;
 	exports.login = login;
 	exports.authCheck = authCheck;
 	exports.createPost = createPost;
@@ -39018,8 +39089,8 @@
 	var ENDPOINTS = {
 	  login: BASE_API_URL + '/login',
 	  authCheck: BASE_API_URL + '/auth_check',
-	  posts: BASE_API_URL + '/posts'
-	
+	  posts: BASE_API_URL + '/posts',
+	  graphql: HOST + '/graphql'
 	};
 	
 	function _parseResponse(response, context) {
@@ -39031,6 +39102,23 @@
 	
 	function _handleError(error) {
 	  console.log('error', error);
+	}
+	
+	function graphql(query) {
+	  // single graphql endpoint
+	  var endpoint = ENDPOINTS.graphql + '?query=' + query;
+	  return fetch(endpoint, {
+	    method: 'GET',
+	    headers: {
+	      'Accept': 'application/json',
+	      'Content-Type': 'application/json'
+	    },
+	    credentials: 'include'
+	  }).then(function (response) {
+	    return _parseResponse(response);
+	  }).catch(function (error) {
+	    return _handleError(error);
+	  });
 	}
 	
 	function login(username, password) {
@@ -39415,7 +39503,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.user = exports.post = exports.app = undefined;
+	exports.graphql = exports.user = exports.post = exports.app = undefined;
 	
 	var _app = __webpack_require__(/*! ./app */ 446);
 	
@@ -39429,11 +39517,16 @@
 	
 	var _user2 = _interopRequireDefault(_user);
 	
+	var _graphql = __webpack_require__(/*! ./graphql */ 454);
+	
+	var _graphql2 = _interopRequireDefault(_graphql);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	exports.app = _app2.default;
 	exports.post = _post2.default;
 	exports.user = _user2.default;
+	exports.graphql = _graphql2.default;
 
 /***/ },
 /* 446 */
@@ -39610,7 +39703,7 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 	exports.Post = exports.PostsList = undefined;
 	
@@ -39633,100 +39726,127 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var PostsList = exports.PostsList = function (_React$Component) {
-	    _inherits(PostsList, _React$Component);
+	  _inherits(PostsList, _React$Component);
 	
-	    function PostsList() {
-	        _classCallCheck(this, PostsList);
+	  function PostsList() {
+	    _classCallCheck(this, PostsList);
 	
-	        return _possibleConstructorReturn(this, (PostsList.__proto__ || Object.getPrototypeOf(PostsList)).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (PostsList.__proto__ || Object.getPrototypeOf(PostsList)).apply(this, arguments));
+	  }
+	
+	  _createClass(PostsList, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var page = parseInt((0, _util.findGetParameter)('page')) || 1;
+	      var rpp = parseInt((0, _util.findGetParameter)('rpp')) || 10;
+	      // paging
+	      this.setState({ page: page, rpp: rpp });
+	      this.props.actions.getPosts(page, rpp);
 	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var posts_markup = [];
+	      var posts = this.props.state.post.posts;
+	      var _state = this.state,
+	          page = _state.page,
+	          rpp = _state.rpp;
 	
-	    _createClass(PostsList, [{
-	        key: 'componentWillMount',
-	        value: function componentWillMount() {
-	            var page = parseInt((0, _util.findGetParameter)('page')) || 1;
-	            var rpp = parseInt((0, _util.findGetParameter)('rpp')) || 10;
-	            // paging
-	            this.setState({ page: page, rpp: rpp });
-	            this.props.actions.getPosts(page, rpp);
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var posts_markup = [];
-	            var posts = this.props.state.post.posts;
-	            var _state = this.state,
-	                page = _state.page,
-	                rpp = _state.rpp;
+	      var next_link = '/blog?page=' + (page + 1) + '&rpp=' + rpp;
+	      var prev_link = '/blog?page=' + (page - 1) + '&rpp=' + rpp;
+	      var prev = page > 1 ? _react2.default.createElement(
+	        'a',
+	        { href: prev_link },
+	        '\xAB prev'
+	      ) : '';
+	      var next = posts.length === rpp ? _react2.default.createElement(
+	        'a',
+	        { href: next_link },
+	        'next \xBB'
+	      ) : '';
+	      posts.map(function (p) {
+	        return posts_markup.push(_react2.default.createElement(
+	          'li',
+	          { key: p._id },
+	          _react2.default.createElement(
+	            'a',
+	            { href: "/blog/posts/" + p._id },
+	            p.title
+	          )
+	        ));
+	      });
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        prev,
+	        ' ',
+	        next,
+	        _react2.default.createElement(
+	          'ul',
+	          null,
+	          posts_markup
+	        ),
+	        prev,
+	        ' ',
+	        next
+	      );
+	    }
+	  }]);
 	
-	            var next_link = '/blog?page=' + (page + 1) + '&rpp=' + rpp;
-	            var prev_link = '/blog?page=' + (page - 1) + '&rpp=' + rpp;
-	            var prev = page > 1 ? _react2.default.createElement(
-	                'a',
-	                { href: prev_link },
-	                '\xAB prev'
-	            ) : '';
-	            var next = posts.length === rpp ? _react2.default.createElement(
-	                'a',
-	                { href: next_link },
-	                'next \xBB'
-	            ) : '';
-	            posts.map(function (p) {
-	                return posts_markup.push(_react2.default.createElement(
-	                    'li',
-	                    { key: p._id },
-	                    _react2.default.createElement(
-	                        'a',
-	                        { href: "/blog/posts/" + p._id },
-	                        p.title
-	                    )
-	                ));
-	            });
-	            return _react2.default.createElement(
-	                'div',
-	                null,
-	                prev,
-	                ' ',
-	                next,
-	                _react2.default.createElement(
-	                    'ul',
-	                    null,
-	                    posts_markup
-	                ),
-	                prev,
-	                ' ',
-	                next
-	            );
-	        }
-	    }]);
-	
-	    return PostsList;
+	  return PostsList;
 	}(_react2.default.Component);
 	
 	var Post = exports.Post = function (_React$Component2) {
-	    _inherits(Post, _React$Component2);
+	  _inherits(Post, _React$Component2);
 	
-	    function Post() {
-	        _classCallCheck(this, Post);
+	  function Post() {
+	    _classCallCheck(this, Post);
 	
-	        return _possibleConstructorReturn(this, (Post.__proto__ || Object.getPrototypeOf(Post)).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (Post.__proto__ || Object.getPrototypeOf(Post)).apply(this, arguments));
+	  }
+	
+	  _createClass(Post, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      // get single post
+	      var pathArr = window.location.pathname.split("/");
+	      var _id = pathArr[pathArr.length - 1];
+	      var query = '{post(_id:"' + _id + '"){title,body}}';
+	      this.props.actions.graphqlQuery(query);
 	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      // latest graphql response is in state
+	      var response = this.props.state.graphql.response;
 	
-	    _createClass(Post, [{
-	        key: 'componentWillMount',
-	        value: function componentWillMount() {}
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            return _react2.default.createElement(
-	                'div',
-	                null,
-	                'single post'
-	            );
-	        }
-	    }]);
+	      if (!response) {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          'chill out!'
+	        );
+	      }
+	      var post = response.json.post;
 	
-	    return Post;
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'h1',
+	          null,
+	          post.title
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          post.body
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return Post;
 	}(_react2.default.Component);
 
 /***/ },
@@ -39761,6 +39881,10 @@
 	
 	var _posts = __webpack_require__(/*! ../components/posts */ 449);
 	
+	var _graphql = __webpack_require__(/*! ../actions/graphql */ 452);
+	
+	var graphQLActions = _interopRequireWildcard(_graphql);
+	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -39790,11 +39914,11 @@
 	      var res = [];
 	      switch (this.props.subsection) {
 	        case 'single_post_view':
-	          res.push(_react2.default.createElement(_posts.Post, { state: state, actions: actions }));
+	          res.push(_react2.default.createElement(_posts.Post, { key: 'post', state: state, actions: actions }));
 	          break;
 	        case 'posts_list':
 	        default:
-	          res.push(_react2.default.createElement(_posts.PostsList, { state: state, actions: actions }));
+	          res.push(_react2.default.createElement(_posts.PostsList, { key: 'postList', state: state, actions: actions }));
 	      }
 	      return _react2.default.createElement(
 	        'div',
@@ -39802,12 +39926,7 @@
 	        _react2.default.createElement(
 	          'h1',
 	          null,
-	          'Phil\'s Site'
-	        ),
-	        _react2.default.createElement(
-	          'h2',
-	          null,
-	          'Blog'
+	          'Phil\'s Blog'
 	        ),
 	        res
 	      );
@@ -39827,11 +39946,262 @@
 	// map actions to component properties and connect to dispatch
 	function mapDispatchToProps(dispatch) {
 	  return {
-	    actions: (0, _redux.bindActionCreators)(_extends({}, postActions), dispatch)
+	    actions: (0, _redux.bindActionCreators)(_extends({}, postActions, graphQLActions), dispatch)
 	  };
 	}
 	
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(BlogContainer);
+
+/***/ },
+/* 451 */
+/*!**********************************************!*\
+  !*** ./assets/client/app/containers/work.js ***!
+  \**********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.WorkContainer = undefined;
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 299);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _redux = __webpack_require__(/*! redux */ 334);
+	
+	var _reactRedux = __webpack_require__(/*! react-redux */ 355);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var WorkContainer = exports.WorkContainer = function (_Component) {
+	  _inherits(WorkContainer, _Component);
+	
+	  function WorkContainer() {
+	    _classCallCheck(this, WorkContainer);
+	
+	    return _possibleConstructorReturn(this, (WorkContainer.__proto__ || Object.getPrototypeOf(WorkContainer)).apply(this, arguments));
+	  }
+	
+	  _createClass(WorkContainer, [{
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props,
+	          state = _props.state,
+	          actions = _props.actions;
+	
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'h1',
+	          null,
+	          'Phil\'s Site'
+	        ),
+	        'Work'
+	      );
+	    }
+	  }]);
+	
+	  return WorkContainer;
+	}(_react.Component);
+	
+	// map global state to component properties
+	
+	
+	function mapStateToProps(state) {
+	  return { state: state };
+	}
+	
+	// map actions to component properties and connect to dispatch
+	function mapDispatchToProps(dispatch) {
+	  return {
+	    actions: (0, _redux.bindActionCreators)({}, dispatch)
+	  };
+	}
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(WorkContainer);
+
+/***/ },
+/* 452 */
+/*!**********************************************!*\
+  !*** ./assets/client/app/actions/graphql.js ***!
+  \**********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.graphqlQuery = graphqlQuery;
+	exports.graphqlSuccess = graphqlSuccess;
+	exports.graphqlError = graphqlError;
+	
+	var _actionTypes = __webpack_require__(/*! ./action-types */ 381);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	var _util = __webpack_require__(/*! ../lib/util */ 382);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function graphqlQuery(query) {
+	  return (0, _util.createAction)(types.GRAPHQL_QUERY, { query: query });
+	}
+	function graphqlSuccess(response) {
+	  return (0, _util.createAction)(types.GRAPHQL_SUCCESS, { response: response });
+	}
+	function graphqlError(response) {
+	  return (0, _util.createAction)(types.GRAPHQL_ERROR, { response: response });
+	}
+
+/***/ },
+/* 453 */
+/*!********************************************!*\
+  !*** ./assets/client/app/sagas/graphql.js ***!
+  \********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.graphqlWatchers = undefined;
+	exports.graphqlWatcher = graphqlWatcher;
+	exports.graphqlWorker = graphqlWorker;
+	
+	var _reduxSaga = __webpack_require__(/*! redux-saga */ 420);
+	
+	var _effects = __webpack_require__(/*! redux-saga/effects */ 434);
+	
+	var _api = __webpack_require__(/*! ../lib/api */ 440);
+	
+	var Api = _interopRequireWildcard(_api);
+	
+	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 381);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	var _graphql = __webpack_require__(/*! ../actions/graphql */ 452);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	var _marked = [graphqlWatcher, graphqlWorker].map(regeneratorRuntime.mark);
+	
+	// === Watchers ===
+	var graphqlWatchers = [graphqlWatcher];
+	exports.graphqlWatchers = graphqlWatchers;
+	function graphqlWatcher() {
+	  return regeneratorRuntime.wrap(function graphqlWatcher$(_context) {
+	    while (1) {
+	      switch (_context.prev = _context.next) {
+	        case 0:
+	          return _context.delegateYield((0, _reduxSaga.takeEvery)(types.GRAPHQL_QUERY, graphqlWorker), 't0', 1);
+	
+	        case 1:
+	        case 'end':
+	          return _context.stop();
+	      }
+	    }
+	  }, _marked[0], this);
+	}
+	
+	// === Workers ===
+	
+	function graphqlWorker(action) {
+	  var query, response;
+	  return regeneratorRuntime.wrap(function graphqlWorker$(_context2) {
+	    while (1) {
+	      switch (_context2.prev = _context2.next) {
+	        case 0:
+	          query = action.payload.query;
+	          _context2.next = 3;
+	          return (0, _effects.call)(Api.graphql, query);
+	
+	        case 3:
+	          response = _context2.sent;
+	
+	          if (!(response.status == 200)) {
+	            _context2.next = 9;
+	            break;
+	          }
+	
+	          _context2.next = 7;
+	          return (0, _effects.put)((0, _graphql.graphqlSuccess)(response));
+	
+	        case 7:
+	          _context2.next = 11;
+	          break;
+	
+	        case 9:
+	          _context2.next = 11;
+	          return (0, _effects.put)((0, _graphql.graphqlError)(response));
+	
+	        case 11:
+	        case 'end':
+	          return _context2.stop();
+	      }
+	    }
+	  }, _marked[1], this);
+	}
+
+/***/ },
+/* 454 */
+/*!***********************************************!*\
+  !*** ./assets/client/app/reducers/graphql.js ***!
+  \***********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
+	exports.default = posts;
+	
+	var _actionTypes = __webpack_require__(/*! ../actions/action-types */ 381);
+	
+	var types = _interopRequireWildcard(_actionTypes);
+	
+	var _reduxStore = __webpack_require__(/*! ../redux-store */ 419);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function posts() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _reduxStore.initialState.graphql;
+	  var action = arguments[1];
+	
+	  var _ref = action.payload || {},
+	      response = _ref.response;
+	
+	  switch (action.type) {
+	
+	    case types.GRAPHQL_QUERY:
+	      return state;
+	    case types.GRAPHQL_SUCCESS:
+	    case types.GRAPHQL_ERROR:
+	      return _extends({}, state, {
+	        response: response
+	      });
+	    default:
+	      return state;
+	  }
+	}
 
 /***/ }
 /******/ ]);

@@ -1,5 +1,10 @@
 'use strict'
 
+// GRAPH QL
+export const GRAPHQL_QUERY = 'GRAPHQL_QUERY'
+export const GRAPHQL_SUCCESS = 'GRAPHQL_SUCCESS'
+export const GRAPHQL_ERROR = 'GRAPHQL_ERROR'
+
 // startup stuff
 export const APP_INIT_STARTED = 'APP_INIT_STARTED'
 export const APP_INIT_COMPLETE = 'APP_INIT_COMPLETE'
