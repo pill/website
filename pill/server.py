@@ -181,7 +181,6 @@ def login():
     return resp
 
 @app.route('/api/v1/auth_check', methods=['GET'])
-@util.crossdomain(origin="*")
 @util.authenticated
 def auth_check():
     """
@@ -195,6 +194,7 @@ def auth_check():
         'error' : error
     })
     resp.status_code = status
+    resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
 
 @app.route('/api/v1/logout', methods=['GET'])
