@@ -13,6 +13,7 @@ from flask import (
     url_for,
     g
 )
+from flask_cors import CORS
 
 from pill import models
 from pill import util
@@ -38,6 +39,9 @@ app = Flask(
 
 app.secret_key = '\xb3\xf1\xe8\xdc\x0fQ\xd6\xdc]\x8c\\\xea\xb4lL\x84o\xe9\xe3\xf8\xda\x1f\xfc\x16'
 app.debug = True
+
+# allow cross domain
+CORS(app)
 
 #=============
 # Services
