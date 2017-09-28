@@ -61,6 +61,8 @@ class UserService(BaseService):
             user = self.get_db_user(user.to_dict())
             user.user_token = util.gen_random_string()
             user_dict = user.to_dict()
+            # mongo does not allow update of _id
+            user_dict.pop('_id')
             conn()['users'].update(
                 {'_id': ObjectId(user._id)},
                 {'$set': user_dict}
