@@ -181,6 +181,7 @@ def login():
     return resp
 
 @app.route('/api/v1/auth_check', methods=['GET'])
+@util.crossdomain(origin="*")
 @util.authenticated
 def auth_check():
     """

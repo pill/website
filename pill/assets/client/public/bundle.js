@@ -39112,7 +39112,6 @@
 	  var endpoint = ENDPOINTS.graphql + '?query=' + query;
 	  return fetch(endpoint, {
 	    method: 'GET',
-	    mode: 'no-cors',
 	    headers: {
 	      'Accept': 'application/json',
 	      'Content-Type': 'application/json'
@@ -39129,7 +39128,6 @@
 	  var body = { username: username, password: password };
 	  return fetch(ENDPOINTS.login, {
 	    method: 'POST',
-	    mode: 'no-cors',
 	    headers: {
 	      'Accept': 'application/json',
 	      'Content-Type': 'application/json'
@@ -39149,7 +39147,6 @@
 	  var body = {};
 	  return fetch(ENDPOINTS.authCheck, {
 	    method: 'GET',
-	    mode: 'no-cors',
 	    headers: {
 	      'Accept': 'application/json',
 	      'Content-Type': 'application/json'
@@ -39166,7 +39163,6 @@
 	
 	  return fetch(ENDPOINTS.posts, {
 	    method: 'POST',
-	    mode: 'no-cors',
 	    headers: {
 	      'Accept': 'application/json',
 	      'Content-Type': 'application/json'
@@ -39184,7 +39180,6 @@
 	  var endpoint = ENDPOINTS.posts + '/' + post_id;
 	  return fetch(ENDPOINTS.posts, {
 	    method: 'POST',
-	    mode: 'no-cors',
 	    headers: {
 	      'Accept': 'application/json',
 	      'Content-Type': 'application/json'
@@ -39204,7 +39199,6 @@
 	  var endpoint = ENDPOINTS.posts + '?page=' + page + '&rpp=' + rpp;
 	  return fetch(endpoint, {
 	    method: 'GET',
-	    mode: 'no-cors',
 	    headers: {
 	      'Accept': 'application/json',
 	      'Content-Type': 'application/json'
@@ -39221,7 +39215,6 @@
 	  var endpoint = ENDPOINTS.posts + '/' + post_id;
 	  return fetch(endpoint, {
 	    method: 'DELETE',
-	    mode: 'no-cors',
 	    headers: {
 	      'Accept': 'application/json',
 	      'Content-Type': 'application/json'
