@@ -1,6 +1,6 @@
 const Conf = {
-  //host: 'http://localhost',
-  host: 'http://127.0.0.1',
+  host: 'http://phil.avery.nyc',
+  //host: 'http://127.0.0.1',
   port: '8080',
   logging: {
     enabled: true,
