@@ -39082,7 +39082,8 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var HOST = _conf2.default.host + ':' + _conf2.default.port;
+	//const HOST = `${Conf.host}:${Conf.port}`
+	var HOST = _conf2.default.host;
 	//import * as C from '../constants'
 	
 	var BASE_API_URL = HOST + '/api/v1';
