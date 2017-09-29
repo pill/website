@@ -13,7 +13,7 @@ from flask import (
     url_for,
     g
 )
-from flask_cors import CORS
+#from flask_cors import CORS
 
 from pill import models
 from pill import util
@@ -27,6 +27,7 @@ from pill.schema import *
 """
 Hi. Run the dev server like this:
 
+export ENV='development'
 export FLASK_APP=pill.server
 export FLASK_DEBUG=1
 flask run --host=0.0.0.0 --port=8080
@@ -41,7 +42,7 @@ app.secret_key = '\xb3\xf1\xe8\xdc\x0fQ\xd6\xdc]\x8c\\\xea\xb4lL\x84o\xe9\xe3\xf
 app.debug = True
 
 # allow cross domain
-CORS(app)
+#CORS(app)
 
 #=============
 # Services

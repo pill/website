@@ -1,4 +1,5 @@
 import logging
+import datetime
 from bson.objectid import ObjectId
 
 from pill.models import Post
@@ -23,7 +24,13 @@ class PostService(BaseService):
             raise Exception('Missing title')
         if not post_form_data.get('body'):
             raise Exception('Missing body')
-        res = conn()['posts'].insert(post_form_data)
+
+        post_data = post_form_data
+        post_data['created_on'] = datetime.datetime.now()
+        post_data['updated_on'] = datetime.datetime.now()
+        if post_form_data['publish_status'] == 'published':
+            post_data['published_on'] = datetime.datetime.now()
+        res = conn()['posts'].insert(post_data)
         return res
 
     def get_post(self, post_id):
@@ -52,5 +59,10 @@ class PostService(BaseService):
     def update_post(self, user, post_id, post_form_data):
         if not user:
             raise Exception('Not logged in')
+
+        post_data = post_form_data
+        post_data['updated_on'] = datetime.datetime.now()
+        if post_form_data['publish_status'] == 'published':
+            post_data['published_on'] = datetime.datetime.now()
         conn().posts.update(
-            {'_id': ObjectId('post_id')}, {'$set', post_form_data})
+            {'_id': ObjectId('post_id')}, {'$set', post_data})

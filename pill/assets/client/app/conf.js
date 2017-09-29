@@ -1,7 +1,10 @@
+const env = 'development'
+const host = env == 'development'
+                  ? 'http://127.0.0.1:8080'
+                  : 'http://phil.avery.nyc'
+
 const Conf = {
-  host: 'http://phil.avery.nyc',
-  //host: 'http://127.0.0.1',
-  port: '8080',
+  host: host,
   logging: {
     enabled: true,
     collapse: false

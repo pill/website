@@ -13,7 +13,9 @@ import { connect } from 'react-redux'
 import * as graphQLActions from '../actions/graphql'
 
 export class MainContainer extends Component {
-
+  /*
+   * This class acts as a container router based on section
+   */
   render() {
     const { state, actions } = this.props
     const res = []
@@ -25,7 +27,6 @@ export class MainContainer extends Component {
       case 'office':
         res.push(<OfficeContainer state={state} actions={actions} key="officeContainer" {...this.props}/>)
         break
-      case 'main':
       case 'blog':
         res.push(<BlogContainer state={state} actions={actions} key="blogContainer" {...this.props}/>)
         break
@@ -43,9 +44,7 @@ export class MainContainer extends Component {
 
 // map global state to component properties
 function mapStateToProps(state) {
-  return {
-    state: state
-  }
+  return { state: state }
 }
 
 // map global state to component properties

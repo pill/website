@@ -12,7 +12,14 @@ export class HomeContainer extends Component {
     return (
       <div>
         <h1>Phil's Site</h1>
-        Homie!
+        <p>
+        I'm going to put things here that I like; hobbies,<br/>
+        work, dabblings. Maybe a blog? Not sure yet!
+        </p>
+        <p>
+        Mostly it's just an online presence where I can <br/>
+        put myself out there for anyone interested.
+        </p>
       </div>
     )
   }

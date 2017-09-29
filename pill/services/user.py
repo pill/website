@@ -36,8 +36,10 @@ class UserService(BaseService):
         return user
 
     def get_db_user(self, userdata):
-        # userdata is a dict with user attrs
-        # db_user returned with userdata overlaid
+        """
+        Get use from db. `userdata` is a dict with user attrs
+        db_user returned with userdata overlaid
+        """
         assert userdata
         user = None
         cursor = conn()['users'].find({'username': userdata['username']})

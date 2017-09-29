@@ -10,8 +10,8 @@ export class WorkContainer extends Component {
     const { state, actions } = this.props
     return (
       <div>
-        <h1>Phil's Site</h1>
-        Work
+        <h1>Phil's Work</h1>
+        <em>coming soon!</em>
       </div>
     )
   }
