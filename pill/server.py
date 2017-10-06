@@ -283,30 +283,32 @@ def logout():
 #     res.status_code = 200
 #     return res
 
-@app.route('/graphql', methods=['GET'])
-def graphql_get_api():
-    query = request.args.get('query')
-    print('raw query', query)
-    res = post_schema.execute(query)
-    res = jsonify(res.data)
-    return res
-
-@app.route('/graphql', methods=['POST'])
+@app.route('/graphql', methods=['GET', 'POST'])
 @util.authenticated
-def graphql_post_api():
-    user = getattr(g, 'user', None)
-    if not user:
-        # not authenticated
-        res = jsonify({ 'errors' : 'Not Authenticated'})
-        res.status = 401
+def graphql_get_api():
+    if request.method == 'GET':
+        query = request.args.get('query')
+        print('raw query', query)
+        res = post_schema.execute(query)
+        res = jsonify(res.data)
+        return res
+    elif request.method == 'POST':
+        user = getattr(g, 'user', None)
+        if not user:
+            # not authenticated
+            res = jsonify({ 'errors' : 'Not Authenticated'})
+            res.status = 401
+            return res
+        # query as a string
+        query = request.data
+        res = post_schema.execute(query)
+        print('res', res.errors, res.data, res.invalid)
+        res = jsonify(res.data)
         return res
 
-    # query as a string
-    query = request.data
-    res = post_schema.execute(query)
-    print('res', res.errors, res.data, res.invalid)
-    res = jsonify(res.data)
-    return res
+# @app.route('/graphql', methods=['POST'])
+# def graphql_post_api():
+
 
 # app.config.update(dict(
 #     # SERVER_NAME = 'localhost:8080',
