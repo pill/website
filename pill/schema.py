@@ -107,7 +107,6 @@ class DeletePost(graphene.Mutation):
         user = getattr(g, 'user', None)
         ok = True
         current_app.S.post.delete_post(user, _id)
-        print('>>> _id', _id)
         return DeletePost(post_id=_id, ok=ok)
 
 class PostMutations(graphene.ObjectType):

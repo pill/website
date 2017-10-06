@@ -6,9 +6,7 @@ import { createAction } from '../lib/util'
 import * as types from '../actions/action-types'
 import {
   graphqlQuery,
-  graphqlMutation,
-  graphqlSuccess,
-  graphqlError } from '../actions/graphql'
+  graphqlMutation} from '../actions/graphql'
 
 // === Watchers ===
 

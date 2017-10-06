@@ -97,8 +97,6 @@ export class Office extends Component {
     }
     // pull data from local state
     const { title, body, publish_status } = this.state || {}
-    // this.props.actions.createPost({ title, body, publish_status })
-
     // insert mutation
     const mutation = `mutation myMutation {
         create_post(

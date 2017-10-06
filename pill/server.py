@@ -212,76 +212,76 @@ def logout():
     session.pop('user_token', None)
     return redirect(url_for('blog'))
 
-@app.route('/api/v1/posts', methods=['POST'])
-@util.authenticated
-def create_post_api():
-    success = error = ''
-    user = getattr(g, 'user', None)
-    data = request.get_json()
-    try:
-        pid = app.S.post.create_post(user, data)
-        res = jsonify(
-            {'success': 'Post Created with id: {}'.format(pid)}
-        )
-        res.status_code = 200
-    except Exception as e:
-        res = jsonify({'error': str(e)})
-        res.status_code = 400
-    return res
+# @app.route('/api/v1/posts', methods=['POST'])
+# @util.authenticated
+# def create_post_api():
+#     success = error = ''
+#     user = getattr(g, 'user', None)
+#     data = request.get_json()
+#     try:
+#         pid = app.S.post.create_post(user, data)
+#         res = jsonify(
+#             {'success': 'Post Created with id: {}'.format(pid)}
+#         )
+#         res.status_code = 200
+#     except Exception as e:
+#         res = jsonify({'error': str(e)})
+#         res.status_code = 400
+#     return res
 
-@app.route('/api/v1/posts/<string:post_id>', methods=['POST'])
-@util.authenticated
-def update_post_api(post_id):
-    success = error = ''
-    user = getattr(g, 'user', None)
-    data = request.get_json()
-    try:
-        pid = app.S.post.update_post(user, post_id, data)
-        res = jsonify(
-            {'success': 'Post Updated with id: {}'.format(pid)}
-        )
-        res.status_code = 200
-    except Exception as e:
-        res = jsonify({'error': str(e)})
-        res.status_code = 400
-    return res
+# @app.route('/api/v1/posts/<string:post_id>', methods=['POST'])
+# @util.authenticated
+# def update_post_api(post_id):
+#     success = error = ''
+#     user = getattr(g, 'user', None)
+#     data = request.get_json()
+#     try:
+#         pid = app.S.post.update_post(user, post_id, data)
+#         res = jsonify(
+#             {'success': 'Post Updated with id: {}'.format(pid)}
+#         )
+#         res.status_code = 200
+#     except Exception as e:
+#         res = jsonify({'error': str(e)})
+#         res.status_code = 400
+#     return res
 
-@app.route('/api/v1/posts/<string:post_id>', methods=['DELETE'])
-@util.authenticated
-def delete_post_api(post_id):
-    success = error = ''
-    user = getattr(g, 'user', None)
-    #try:
-    pid = app.S.post.delete_post(user, post_id)
-    res = jsonify(
-        {'success': 'Post Deleted with id: {}'.format(post_id)}
-    )
-    res.status_code = 200
-    # except Exception as e:
-    #     print (e)
-    #     res = jsonify({'error': str(e)})
-    #     res.status_code = 400
-    return res
+# @app.route('/api/v1/posts/<string:post_id>', methods=['DELETE'])
+# @util.authenticated
+# def delete_post_api(post_id):
+#     success = error = ''
+#     user = getattr(g, 'user', None)
+#     #try:
+#     pid = app.S.post.delete_post(user, post_id)
+#     res = jsonify(
+#         {'success': 'Post Deleted with id: {}'.format(post_id)}
+#     )
+#     res.status_code = 200
+#     # except Exception as e:
+#     #     print (e)
+#     #     res = jsonify({'error': str(e)})
+#     #     res.status_code = 400
+#     return res
 
-@app.route('/api/v1/posts', methods=['GET'])
-def get_posts_api():
-    success = error = ''
-    page = int(request.args.get('page', 1))
-    rpp = int(request.args.get('rpp', 10))
-    query = {}
-    print("getting posts")
-    posts = app.S.post.get_posts(query, page=page, rpp=rpp)
-    res = jsonify({'posts': posts})
-    res.status_code = 200
-    return res
+# @app.route('/api/v1/posts', methods=['GET'])
+# def get_posts_api():
+#     success = error = ''
+#     page = int(request.args.get('page', 1))
+#     rpp = int(request.args.get('rpp', 10))
+#     query = {}
+#     print("getting posts")
+#     posts = app.S.post.get_posts(query, page=page, rpp=rpp)
+#     res = jsonify({'posts': posts})
+#     res.status_code = 200
+#     return res
 
-@app.route('/api/v1/posts/<string:post_id>', methods=['GET'])
-def get_post_api(post_id):
-    success = error = ''
-    post = app.S.post.get_post(post_id)
-    res = jsonify({'post': post})
-    res.status_code = 200
-    return res
+# @app.route('/api/v1/posts/<string:post_id>', methods=['GET'])
+# def get_post_api(post_id):
+#     success = error = ''
+#     post = app.S.post.get_post(post_id)
+#     res = jsonify({'post': post})
+#     res.status_code = 200
+#     return res
 
 @app.route('/graphql', methods=['GET'])
 def graphql_get_api():
