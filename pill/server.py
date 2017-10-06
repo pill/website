@@ -31,6 +31,10 @@ export ENV='development'
 export FLASK_APP=pill.server
 export FLASK_DEBUG=1
 flask run --host=0.0.0.0 --port=8080
+
+and for assets:
+
+NODE_ENV='development' npm run dev
 """
 
 app = Flask(
@@ -265,6 +269,7 @@ def get_posts_api():
     page = int(request.args.get('page', 1))
     rpp = int(request.args.get('rpp', 10))
     query = {}
+    print("getting posts")
     posts = app.S.post.get_posts(query, page=page, rpp=rpp)
     res = jsonify({'posts': posts})
     res.status_code = 200
@@ -278,11 +283,28 @@ def get_post_api(post_id):
     res.status_code = 200
     return res
 
-@app.route('/graphql', methods=['GET', 'POST'])
-def graphql_api():
+@app.route('/graphql', methods=['GET'])
+def graphql_get_api():
     query = request.args.get('query')
     print('raw query', query)
     res = post_schema.execute(query)
+    res = jsonify(res.data)
+    return res
+
+@app.route('/graphql', methods=['POST'])
+@util.authenticated
+def graphql_post_api():
+    user = getattr(g, 'user', None)
+    if not user:
+        # not authenticated
+        res = jsonify({ 'errors' : 'Not Authenticated'})
+        res.status = 401
+        return res
+
+    # query as a string
+    query = request.data
+    res = post_schema.execute(query)
+    print('res', res.errors, res.data, res.invalid)
     res = jsonify(res.data)
     return res
 

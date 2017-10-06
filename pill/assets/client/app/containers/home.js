@@ -3,8 +3,6 @@
 import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import * as postActions from '../actions/post'
-
 import { PostsList } from '../components/posts'
 
 export class HomeContainer extends Component {
@@ -33,7 +31,7 @@ function mapStateToProps(state) {
 // map actions to component properties and connect to dispatch
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...postActions}, dispatch)
+    actions: bindActionCreators({}, dispatch)
   }
 }
 

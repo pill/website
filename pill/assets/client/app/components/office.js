@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { findGetParameter } from '../lib/util'
+import * as types from '../actions/action-types'
 
 export class Office extends Component {
 
@@ -8,7 +9,9 @@ export class Office extends Component {
     const rpp = parseInt(findGetParameter('rpp')) || 10
     // paging
     this.setState({ page, rpp })
-    this.props.actions.getPosts(page, rpp)
+    const query = `{posts(page:${page},rpp:${rpp}){_id,title,body}}`
+    this.props.actions.graphqlQuery(
+      query, types.POSTS_GET_SUCCESS, types.POSTS_GET_ERROR)
   }
 
   // ===========
@@ -94,7 +97,21 @@ export class Office extends Component {
     }
     // pull data from local state
     const { title, body, publish_status } = this.state || {}
-    this.props.actions.createPost({ title, body, publish_status })
+    // this.props.actions.createPost({ title, body, publish_status })
+
+    // insert mutation
+    const mutation = `mutation myMutation {
+        create_post(
+          post_form_data:{title:"${title}",body:"${body}",publish_status:"${publish_status}"}
+        ) {
+          post {
+            title
+          },
+          ok
+        }
+    }`
+    this.props.actions.graphqlMutation(
+      mutation, types.POST_CREATE_SUCCESS, types.POST_CREATE_ERROR)
   }
 
   // ===========
@@ -148,8 +165,14 @@ export class Office extends Component {
 
   }
   _deletePost = (p) => {
-    console.log("delete post ", p)
-    this.props.actions.deletePost(p._id)
+    const mutation = `mutation myMutation {
+      delete_post(_id:"${p._id}") {
+        post_id,
+        ok
+      }
+    }`
+    this.props.actions.graphqlMutation(
+      mutation, types.POST_DELETE_SUCCESS, types.POST_DELETE_ERROR)
   }
 
   // =============
@@ -168,7 +191,6 @@ export class Office extends Component {
 
   render = () => {
     // render main content based on login state, subsection
-    console.log("render main")
     // loading indicator
     if (this.props.state.app.loading) {
       return (<div style={styles.loading}><em>Loading...</em></div>)

@@ -1,7 +1,6 @@
 'use strict'
 
-import { takeEvery } from 'redux-saga'
-import { select, put, call } from 'redux-saga/effects'
+import { select, put, call, takeEvery } from 'redux-saga/effects'
 import * as Api from '../lib/api'
 import * as types from '../actions/action-types'
 import { loginSuccess, loginError } from '../actions/login'
@@ -16,7 +15,7 @@ const loginWatchers = [
 export { loginWatchers }
 
 export function* loginRequestedWatcher() {
-  yield* takeEvery(types.LOGIN_REQUESTED, loginRequestedWorker)
+  yield takeEvery(types.LOGIN_REQUESTED, loginRequestedWorker)
 }
 
 //==========

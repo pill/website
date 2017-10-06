@@ -3,6 +3,7 @@
 import React from 'react'
 import {render} from 'react-dom'
 import { findGetParameter } from '../lib/util'
+import * as types from '../actions/action-types'
 
 export class PostsList extends React.Component {
 
@@ -11,7 +12,10 @@ export class PostsList extends React.Component {
     const rpp = parseInt(findGetParameter('rpp')) || 10
     // paging
     this.setState({ page, rpp })
-    this.props.actions.getPosts(page, rpp)
+    // build graphQL query
+    const query = `{posts(page:${page},rpp:${rpp}){_id,title,body}}`
+    this.props.actions.graphqlQuery(
+      query, types.POSTS_GET_SUCCESS, types.POSTS_GET_ERROR)
   }
 
   render() {
@@ -23,44 +27,45 @@ export class PostsList extends React.Component {
     const prev = page > 1 ? (<a href={prev_link}>&laquo; prev</a>) : ''
     const next = posts.length === rpp ? (<a href={next_link}>next &raquo;</a>) : ''
     posts.map((p) =>
-        posts_markup.push(
-            <li key={p._id}>
-                <a href={"/blog/posts/" + p._id}>{p.title}</a>
-            </li>)
+      posts_markup.push(
+        <li key={p._id}>
+          <a href={"/blog/posts/" + p._id}>{p.title}</a>
+        </li>)
     )
     return (
-        <div>
-            {prev} {next}
-            <ul>{posts_markup}</ul>
-            {prev} {next}
-        </div>)
+      <div>
+        {prev} {next}
+        <ul>{posts_markup}</ul>
+        {prev} {next}
+      </div>)
   }
 
 }
 
 export class Post extends React.Component {
+
   componentWillMount() {
     // get single post
     const pathArr = window.location.pathname.split("/")
     const _id = pathArr[pathArr.length-1]
     // build graphQL query
     const query = `{post(_id:"${_id}"){title,body}}`
-    this.props.actions.graphqlQuery(query)
+    this.props.actions.graphqlQuery(
+      query, types.POST_GET_SUCCESS, types.POST_GET_ERROR)
   }
 
   render() {
     // latest graphql response is in state
-    const { response } = this.props.state.graphql
-    if (!response) {
+    const { single_post } = this.props.state.post
+    if (!single_post) {
       return (
         <div>chill out!</div>
       )
     }
-    const { post } = response.json
     return (
       <div>
-        <h1>{post.title}</h1>
-        <div>{post.body}</div>
+        <h1>{single_post.title}</h1>
+        <div>{single_post.body}</div>
       </div>
     )
   }

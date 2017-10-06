@@ -9,6 +9,9 @@ class Post(Model):
         self.body = kwargs.get('body')
         self.publish_status = kwargs.get('publish_status')
         self.author = kwargs.get('author')
+        self.created_on = kwargs.get('created_on')
+        self.updated_on = kwargs.get('updated_on')
+        self.published_on = kwargs.get('published_on')
 
 class User(Model):
 

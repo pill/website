@@ -5,10 +5,11 @@ export default function posts(state=initialState.post, action) {
 
   const {
     post_form_data,
-    success,
-    error,
-    post_id,
+    gql_response,
     posts } = action.payload || {}
+
+  const success = ''
+  const error = ''
 
   switch (action.type) {
 
@@ -23,14 +24,23 @@ export default function posts(state=initialState.post, action) {
         error: ''
       }
     case types.POST_CREATE_SUCCESS:
+      return {
+        ...state,
+        success: '',
+        error: ''
+      }
     case types.POST_UPDATE_SUCCESS:
-    case types.POST_DELETE_SUCCESS:
     case types.POST_GET_SUCCESS:
-    //
+      return {
+        ...state,
+        single_post: gql_response.json.post
+      }
+    case types.POST_DELETE_SUCCESS:
+      const { post_id } = gql_response.json.delete_post
       return {
         ...state,
         posts: state.posts.filter(p => p._id !== post_id),
-        success: success,
+        success: `Post ${post_id} deleted`,
         error: ''
       }
     case types.POST_CREATE_ERROR:
@@ -46,7 +56,7 @@ export default function posts(state=initialState.post, action) {
     case types.POSTS_GET_SUCCESS:
       return {
         ...state,
-        posts: posts
+        posts: gql_response.json.posts
       }
     default:
       return state

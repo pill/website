@@ -1,12 +1,10 @@
 'use strict'
 
-import { takeEvery } from 'redux-saga'
-import { select, put, call } from 'redux-saga/effects'
+import { select, put, call, takeEvery } from 'redux-saga/effects'
 import * as Api from '../lib/api'
 import * as types from '../actions/action-types'
 import { appInit, appInitComplete } from '../actions/app'
 import { authCheckSuccess } from '../actions/login'
-
 
 //==========
 // Watchers
@@ -16,7 +14,7 @@ const appWatchers = [ appInitWatcher ]
 export { appWatchers }
 
 export function* appInitWatcher() {
-  yield* takeEvery(types.APP_INIT_STARTED, appInitWorker)
+  yield takeEvery(types.APP_INIT_STARTED, appInitWorker)
 }
 
 //==========

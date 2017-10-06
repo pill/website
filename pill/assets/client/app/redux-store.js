@@ -33,6 +33,7 @@ export const initialState = {
       author: '',
       publish_status: ''
     },
+    single_post: null,
     posts: []
   },
   user: {

@@ -3,7 +3,6 @@
 import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import * as postActions from '../actions/post'
 import * as loginActions from '../actions/login'
 import * as graphQLActions from '../actions/graphql'
 import { Office } from '../components/office'
@@ -25,7 +24,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators({
-      ...postActions, ...loginActions, ...graphQLActions}, dispatch)
+      ...loginActions, ...graphQLActions}, dispatch)
   }
 }
 

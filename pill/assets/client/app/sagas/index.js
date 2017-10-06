@@ -1,6 +1,6 @@
-import { call, fork } from 'redux-saga/effects'
+import { call, fork, all } from 'redux-saga/effects'
 
-import { postWatchers } from './post'
+//import { postWatchers } from './post'
 import { loginWatchers } from './login'
 import { appWatchers } from './app'
 import { graphqlWatchers } from './graphql'
@@ -24,13 +24,11 @@ export default function* root() {
   // Run all watchers in parallel
   try {
     const allWatchers = [
-      forkList(loginWatchers),
-      forkList(appWatchers),
-      forkList(postWatchers),
-      forkList(graphqlWatchers)
-      // forkList(actionSheetWatchers),
+      ...forkList(loginWatchers),
+      ...forkList(appWatchers),
+      ...forkList(graphqlWatchers)
     ]
-    yield allWatchers
+    yield all(allWatchers)
   }
   catch (e) {
     console.error('Problem starting watchers', e.stack)
