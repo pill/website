@@ -39,8 +39,8 @@ NODE_ENV='development' npm run dev
 
 app = Flask(
     __name__,
-    static_folder='assets/client',
-    template_folder='assets/templates')
+    static_folder='../assets/client',
+    template_folder='../assets/templates')
 
 app.secret_key = '\xb3\xf1\xe8\xdc\x0fQ\xd6\xdc]\x8c\\\xea\xb4lL\x84o\xe9\xe3\xf8\xda\x1f\xfc\x16'
 app.debug = True
@@ -196,7 +196,7 @@ def auth_check():
     Returns the user if authenticated, else None
     """
     status = 200
-    # TODO: use exception
+    # TODO: use exception?
     error = ''
     resp = jsonify({
         'user' : getattr(g, 'user', None),

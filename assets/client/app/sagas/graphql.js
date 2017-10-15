@@ -4,9 +4,6 @@ import { select, put, call, takeEvery } from 'redux-saga/effects'
 import * as Api from '../lib/api'
 import { createAction } from '../lib/util'
 import * as types from '../actions/action-types'
-import {
-  graphqlQuery,
-  graphqlMutation} from '../actions/graphql'
 
 // === Watchers ===
 

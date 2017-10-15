@@ -9,12 +9,7 @@ export default function posts(state=initialState.graphql, action) {
 
     case types.GRAPHQL_QUERY:
       return state
-    case types.GRAPHQL_SUCCESS:
-    case types.GRAPHQL_ERROR:
-      return {
-        ...state,
-        response: response
-      }
+
     default:
       return state
   }
