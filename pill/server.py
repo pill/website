@@ -13,16 +13,11 @@ from flask import (
     url_for,
     g
 )
-#from flask_cors import CORS
-
-from pill import models
 from pill import util
 from pill.services import (
     post as post_service,
     user as user_service
 )
-
-from pill.schema import *
 
 """
 Hi. Run the dev server like this:
@@ -45,9 +40,6 @@ app = Flask(
 app.secret_key = '\xb3\xf1\xe8\xdc\x0fQ\xd6\xdc]\x8c\\\xea\xb4lL\x84o\xe9\xe3\xf8\xda\x1f\xfc\x16'
 app.debug = True
 
-# allow cross domain
-#CORS(app)
-
 #=============
 # Services
 #=============
@@ -59,78 +51,9 @@ app.S.user = user_service.UserService()
 # Routes
 #=============
 
-#-------
-# admin
-#-------
-@app.route('/office', methods=['GET'])
-def office():
-    context = {
-        'section': 'office',
-        'subsection': 'index'
-    }
-    return render_template('index.html', **context)
-
-@app.route('/office/posts', methods=['GET'])
-@util.authenticated
-def posts_list():
-    user = getattr(g, 'user', None)
-    if not user:
-        pass
-    context = {
-        'section': 'office',
-        'subsection': 'post_list'
-    }
-    return render_template('index.html', **context)
-
-@app.route('/office/posts/new', methods=['GET'])
-def create_post():
-    context = {
-        'section': 'office',
-        'subsection': 'post_new'
-    }
-    return render_template('index.html', **context)
-
-@app.route('/office/posts/<post_id>', methods=['GET'])
-def edit_single_post(post_id=None):
-    context = {
-        'section': 'office',
-        'subsection': 'post_edit'
-    }
-    resp = make_response(render_template('index.html', **context))
-    return resp
-
-#----------
-# homepage
-#----------
-@app.route('/')
-def home():
-    query = {}
-    context = {'section': 'home'}
-    return render_template('index.html', **context)
-
-#------
-# blog
-#------
-@app.route('/blog')
-def blog():
-    query = {}
-    context = {'section': 'blog', 'subsection': 'posts_list'}
-    return render_template('index.html', **context)
-
-@app.route('/blog/posts/<post_id>')
-def blog_post(post_id):
-    query = {}
-    context = {'section': 'blog', 'subsection': 'single_post_view'}
-    return render_template('index.html', **context)
-
-#------
-# work
-#------
-@app.route('/work')
-def work():
-    query = {}
-    context = {'section': 'work'}
-    return render_template('index.html', **context)
+import pill.routes.admin
+import pill.routes.api
+import pill.routes.sections
 
 #---------
 # general
@@ -144,102 +67,3 @@ def static_proxy(path):
 def page_not_found(error):
     return 'This route does not exist {}'.format(request.url), 404
 
-#=============
-# API
-#=============
-
-@app.route('/api/v1/login', methods=['POST'])
-def login():
-    """
-    Checks username/password
-    Logs user in and issues session token if successful
-    """
-    status = 200
-    error = ''
-    user_token = ''
-    username = ''
-
-    # only accepts POST
-    data = request.get_json()
-    # user, but did not verify username/password yet
-    user =  app.S.user.get_db_user({
-        'username':data.get('username'),
-        'password':data.get('password')
-    })
-    if not user:
-        error = 'User not found'
-        status = 400
-    else:
-        # this issues a new session if successful
-        logged_in_user = app.S.user.login(user)
-        if not logged_in_user:
-            error = 'Bad username/password'
-            status = 400
-        else:
-            session['user_token'] = logged_in_user.user_token
-            # for the response
-            user_token = session['user_token']
-            username = user.username
-
-    resp = jsonify({
-        'user_token': user_token,
-        'username': username,
-        'error': error
-    })
-    resp.status_code = status
-    return resp
-
-@app.route('/api/v1/auth_check', methods=['GET'])
-@util.authenticated
-def auth_check():
-    """
-    Returns the user if authenticated, else None
-    """
-    status = 200
-    # TODO: use exception?
-    error = ''
-    resp = jsonify({
-        'user' : getattr(g, 'user', None),
-        'error' : error
-    })
-    resp.status_code = status
-    resp.headers['Access-Control-Allow-Origin'] = '*'
-    return resp
-
-@app.route('/api/v1/logout', methods=['GET'])
-def logout():
-    # remove the username from the session if it's there
-    session.pop('user_token', None)
-    return redirect(url_for('blog'))
-
-@app.route('/graphql', methods=['GET'])
-def graphql_get_api():
-    query = request.args.get('query')
-    res = post_schema.execute(query)
-    res = jsonify(res.data)
-    return res
-
-@app.route('/graphql', methods=['POST'])
-@util.authenticated
-def graphql_post_api():
-    user = getattr(g, 'user', None)
-    if not user:
-        # not authenticated
-        res = jsonify({ 'errors' : 'Not Authenticated'})
-        res.status = 401
-        return res
-
-    mutation = request.data
-    res = post_schema.execute(mutation)
-    res = jsonify(res.data)
-    return res
-
-# app.config.update(dict(
-#     # SERVER_NAME = 'localhost:8080',
-#     # SESSION_COOKIE_NAME = '127.0.0.1:8080',
-#     # SESSION_COOKIE_DOMAIN = '127.0.0.1:8080'
-# ))
-
-# if __name__ == "__main__":
-#     app.debug = True
-#     app.run(host='0.0.0.0', port=8080)

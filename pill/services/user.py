@@ -1,9 +1,7 @@
-import hashlib
-import uuid
-import logging
 from bson.objectid import ObjectId
-
-from pill import models
+import hashlib
+import logging
+import uuid
 from pill.db import conn
 from pill.services.base import BaseService
 from pill.settings import conf
@@ -29,8 +27,7 @@ class UserService(BaseService):
             # TODO: make transient fields
             db_user_data.pop('salt')
             db_user_data.pop('password_hash')
-            if db_user_data:
-                user = models.User(**db_user_data)
+            user = db_user_data
         except:
             log.debug('user not found')
         return user
@@ -50,39 +47,40 @@ class UserService(BaseService):
                 if 'user_token' in db_user_data:
                     db_user_data.pop('user_token')
                 db_user_data.update(userdata)
-                # return a user Model
-                user = models.User(**db_user_data)
+                user = db_user_data
         except:
             log.debug('user not found')
         return user
 
     def login(self, user):
-        print ("login")
+        """
+        Authenticates user, sets user_token (session)
+        """
+        assert 'salt' in user
+        assert 'password' in user
         is_valid = self.validate_password(user)
         if is_valid:
-            user = self.get_db_user(user.to_dict())
-            user.user_token = util.gen_random_string()
-            user_dict = user.to_dict()
-            # mongo does not allow update of _id
-            user_dict.pop('_id')
+            user = self.get_db_user(user)
+            user['user_token'] = util.gen_random_string()
+            # need ObjectId for mongoDB query
             conn()['users'].update(
-                {'_id': ObjectId(user._id)},
-                {'$set': user_dict}
+                {'_id': ObjectId(user.pop('_id'))},
+                {'$set': user}
             )
             return user
         return None
 
     def encrypt_password(self, user):
-        user.salt = uuid.uuid4().hex
-        user.password_hash = self._encrypt_password(user.salt, user.password)
+        user['salt'] = uuid.uuid4().hex
+        user['password_hash'] = self._encrypt_password(user['salt'], user['password'])
 
     def validate_password(self, user):
         is_valid = self.check_password(user)
         return is_valid
 
     def check_password(self, user):
-        password_hash = self._encrypt_password(user.salt, user.password)
-        return password_hash == user.password_hash
+        password_hash = self._encrypt_password(user['salt'], user['password'])
+        return password_hash == user['password_hash']
 
     def _encrypt_password(self, salt, password):
         if password == None:

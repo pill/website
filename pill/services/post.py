@@ -1,8 +1,6 @@
-import logging
-import datetime
 from bson.objectid import ObjectId
-
-from pill.models import Post
+import datetime
+import logging
 from pill.db import conn
 from pill.services.base import BaseService
 from pill.settings import conf
@@ -25,12 +23,11 @@ class PostService(BaseService):
         if not post_form_data.get('body'):
             raise Exception('Missing body')
 
-        post_data = post_form_data
-        post_data['created_on'] = datetime.datetime.now()
-        post_data['updated_on'] = datetime.datetime.now()
+        post_form_data['created_on'] = datetime.datetime.now()
+        post_form_data['updated_on'] = datetime.datetime.now()
         if post_form_data['publish_status'] == 'published':
-            post_data['published_on'] = datetime.datetime.now()
-        res = conn()['posts'].insert(post_data)
+            post_form_data['published_on'] = datetime.datetime.now()
+        res = conn()['posts'].insert(post_form_data)
         return res
 
     def get_post(self, post_id):
@@ -49,12 +46,11 @@ class PostService(BaseService):
         if not user:
             raise Exception('Not logged in')
         post = self.get_post(post_id)
-
+        object_id = ObjectId(post_id)
         # post needs needs ObjectId to do an update
-        post['_id'] = ObjectId(post['_id'])
-
-        conn()['posts_trash'].update({'_id': ObjectId(post_id)}, post, True)
-        conn()['posts'].delete_one({'_id': ObjectId(post_id)})
+        post['_id'] = object_id
+        conn()['posts_trash'].update({'_id': object_id}, post, True)
+        conn()['posts'].delete_one({'_id': object_id})
 
     def update_post(self, user, post_id, post_form_data):
         if not user:
@@ -64,5 +60,4 @@ class PostService(BaseService):
         post_data['updated_on'] = datetime.datetime.now()
         if post_form_data['publish_status'] == 'published':
             post_data['published_on'] = datetime.datetime.now()
-        conn().posts.update(
-            {'_id': ObjectId('post_id')}, {'$set', post_data})
+        conn().posts.update({'_id': ObjectId('post_id')}, {'$set', post_data})

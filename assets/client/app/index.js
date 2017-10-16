@@ -12,7 +12,6 @@ import * as types from './actions/action-types'
 class App extends React.Component {
 
   componentWillMount() {
-    // TODO: check login
     const store = makeStore()
     this.setState({store: store})
 

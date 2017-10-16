@@ -1,8 +1,7 @@
+import logging
+from flask import current_app, g
 import graphene
 from graphene.types import datetime
-
-from flask import current_app, g
-import logging
 
 logger = logging.getLogger(__name__)
 
