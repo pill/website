@@ -4,23 +4,43 @@ import * as types from '../actions/action-types'
 
 export class Office extends Component {
 
-  componentWillMount() {
-    const page = parseInt(findGetParameter('page')) || 1
-    const rpp = parseInt(findGetParameter('rpp')) || 10
-    // paging
-    this.setState({ page, rpp })
-    const query = `{posts(page:${page},rpp:${rpp}){_id,title,body}}`
-    this.props.actions.graphqlQuery(
-      query, types.POSTS_GET_SUCCESS, types.POSTS_GET_ERROR)
+  constructor(props) {
+    super(props)
+    // default state
+    console.log("set this.state")
+    this.state = {}
+  }
+
+  componentDidMount() {
+
+    let query
+
+    switch(this.props.subsection) {
+      case 'post_list':
+      case 'index':
+        // fetches post list
+        const page = parseInt(findGetParameter('page')) || 1
+        const rpp = parseInt(findGetParameter('rpp')) || 10
+        this.setState({ page, rpp })
+        query = `{posts(page:${page},rpp:${rpp}){_id,title,body}}`
+        this.props.actions.graphqlQuery(
+          query, types.POSTS_GET_SUCCESS, types.POSTS_GET_ERROR)
+        break
+      case 'post_edit':
+        // fetches single post
+        const post_id = this.props.post_id
+        this.setState({ _id: post_id })
+        query = `{post(_id:"${post_id}"){_id,title,body}}`
+        this.props.actions.graphqlQuery(
+          query, types.POST_GET_SUCCESS, types.POST_GET_ERROR)
+        break
+    }
   }
 
   // ===========
   // login form
   // ===========
-  _isLoggedIn = () => {
-    // redux state
-    return !!this.props.state.user.user_token
-  }
+  _isLoggedIn = () => !!this.props.state.user.user_token
   _loginForm = () => {
     return (
       <div>
@@ -53,9 +73,20 @@ export class Office extends Component {
   // ===========
   // post form
   // ===========
-  _postForm = () => {
+
+  _postForm = (isEdit=false) => {
     let message = ''
-    const { error, success } = this.props.state.post
+    const { error, success, single_post } = this.props.state.post
+    let thePost
+    if (!single_post) {
+      thePost = { title: '', body: '', publish_status: 'draft' }
+    }
+    else {
+      // it is edit mode
+      // will use live component state if keys are
+      // set else use the post we fetched
+      thePost = this._postFormValues()
+    }
 
     if (success) {
       message = (<div style={styles.success}>{success}</div>)
@@ -64,15 +95,22 @@ export class Office extends Component {
       message = (<div style={styles.error}>{error}</div>)
     }
 
+    let submit_button = <input type="button" value="Post It" onClick={this._handlePostSubmit}/>
+    if (isEdit) {
+      submit_button = <input type="button" value="Update It" onClick={this._handlePostEdit}/>
+    }
+
     return (
       <div>
         {message}
         <form>
           <label style={{...styles.label, ...styles.block}}>Title</label>
-          <input style={styles.textInput} type="text" onChange={this._titleChange}/>
+          <input style={styles.textInput}
+            value={thePost.title} type="text" onChange={this._titleChange}/>
 
           <label style={{...styles.label, ...styles.block}}>Body</label>
-          <textarea style={styles.postText} onChange={this._bodyChange}></textarea>
+          <textarea style={styles.postText}
+            value={thePost.body} onChange={this._bodyChange}></textarea>
 
           <select id="publish_status" onChange={this._publishStatusChange} >
             <option value="draft">Draft</option>
@@ -80,11 +118,21 @@ export class Office extends Component {
           </select>
 
           <div style={styles.submitButton}>
-            <input type="button" value="Post It" onClick={this._handlePostSubmit}/>
+            {submit_button}
           </div>
         </form>
       </div>
     )
+  }
+  _postFormValues = () => {
+    // get either this.state (just edited), or single_post (orig post)
+    const { single_post } = this.props.state.post
+    return {
+      _id: this.state._id || single_post._id,
+      title : ('title' in this.state) ? this.state.title : single_post.title,
+      body : ('body' in this.state) ?  this.state.body : single_post.body,
+      publish_status : ('publish_status' in this.state) ? this.state.publish_status : single_post.publish_status
+    }
   }
   _titleChange = e => this.setState({'title':e.target.value})
   _bodyChange = e => this.setState({'body':e.target.value})
@@ -98,18 +146,30 @@ export class Office extends Component {
     // pull data from local state
     const { title, body, publish_status } = this.state || {}
     // insert mutation
-    const mutation = `mutation myMutation {
+    const mutation = `mutation myCreateMutation {
         create_post(
           post_form_data:{title:"${title}",body:"${body}",publish_status:"${publish_status}"}
-        ) {
-          post {
-            title
-          },
-          ok
-        }
+        )
+        { post {title}, ok }
     }`
     this.props.actions.graphqlMutation(
       mutation, types.POST_CREATE_SUCCESS, types.POST_CREATE_ERROR)
+  }
+  _handlePostEdit = (e) => {
+    e.preventDefault()
+    const thePost = this._postFormValues()
+    const mutation = `mutation myEditMutation {
+        update_post(
+          post_form_data:{
+            _id:"${thePost._id}",
+            title:"${thePost.title}",
+            body:"${thePost.body}",
+            publish_status:"${thePost.publish_status}"}
+        )
+        { post {title}, ok }
+    }`
+    this.props.actions.graphqlMutation(
+      mutation, types.POST_UPDATE_SUCCESS, types.POST_UPDATE_ERROR)
   }
 
   // ===========
@@ -159,11 +219,10 @@ export class Office extends Component {
     )
   }
   _editPost = (p) => {
-    console.log("edit post ", p)
-
+    window.location = `/office/posts/${p._id}`
   }
   _deletePost = (p) => {
-    const mutation = `mutation myMutation {
+    const mutation = `mutation myDeleteMutation {
       delete_post(_id:"${p._id}") {
         post_id,
         ok
@@ -189,14 +248,15 @@ export class Office extends Component {
 
   render = () => {
     // render main content based on login state, subsection
+
     // loading indicator
     if (this.props.state.app.loading) {
       return (<div style={styles.loading}><em>Loading...</em></div>)
     }
 
     // app is loaded, show login, post list, post form (new or edit)
-    let content, title, sub
-    sub = !this._isLoggedIn() ? 'login' : this.props.subsection
+    let content, title
+    const sub = !this._isLoggedIn() ? 'login' : this.props.subsection
     switch(sub) {
       case 'login':
         title = 'Login first!'
@@ -208,7 +268,7 @@ export class Office extends Component {
         break
       case 'post_edit':
         title = `Edit this post ${this.props.state.user.username}!`
-        content = this._postForm()
+        content = this._postForm(true);
         break
       case 'post_list':
         title = `Here are your posts ${this.props.state.user.username}!`

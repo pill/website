@@ -2,8 +2,9 @@ import logging
 from flask import current_app, g
 import graphene
 from graphene.types import datetime
+from pill.util import pluck_dict
 
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 """
 GraphQL Schema for Post objects
@@ -77,22 +78,19 @@ class UpdatePost(graphene.Mutation):
     post = graphene.Field(lambda: Post)
 
     def mutate(self, info, post_form_data=None):
+        log.info("mutate %s", post_form_data)
         # should already be authenticated
         user = getattr(g, 'user', None)
-        post_id = post_form_data['_id']
-        pid = current_app.S.post.update_post(user, post_id, post_form_data)
-        # get updated post
-        p_data = current_app.S.post.get_post(pid)
-        # data back to client
-        p = Post(
-            _id = p_data.get('_id'),
-            title = p_data.get('title'),
-            body = p_data.get('body'),
-            publish_status = p_data.get('publish_status'),
-            author = p_data.get('author')
-        )
+        # from PostInput to dict, do update
+        keys = ['_id', 'title', 'body', 'publish_status', 'author']
+        data_dict = pluck_dict(post_form_data, *keys)
+        pid = current_app.S.post.update_post(user, data_dict['_id'], data_dict)
+        # get newly updated post
+        updated_post = current_app.S.post.get_post(pid)
+        p_data = pluck_dict(updated_post, *keys)
+        p = Post(**p_data)
         ok = True
-        return CreatePost(post=p, ok=ok)
+        return UpdatePost(post=p, ok=ok)
 
 class DeletePost(graphene.Mutation):
     class Arguments:

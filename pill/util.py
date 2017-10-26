@@ -9,7 +9,7 @@ from flask import session, request, current_app, g, make_response
 
 from pill.exception import AuthException
 
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 def pluck(data, *keys):
@@ -18,6 +18,15 @@ def pluck(data, *keys):
     Good for multi assigning variables straight from a dict.
     """
     return [data.get(k) for k in keys]
+
+def pluck_dict(data, *keys):
+    """
+    Returns a smaller dict with just `keys`.
+    """
+    d = {}
+    for k in keys:
+        d[k] = data.get(k)
+    return d
 
 def gen_random_string(size=10, chars=string.ascii_letters + string.digits):
     return ''.join(random.choice(chars) for x in range(size))
@@ -36,18 +45,18 @@ class AttributeDict(dict):
 
 def authenticated(method):
     """
-    Checks header or session for user_token and checks if it's valid
-    Assigns that user to flask app context 'g'
+    Checks header or session for user_token and checks if it's valid.
+    Assigns that user to flask app context 'g'.
     """
     @functools.wraps(method)
     def wrapper(*args, **kwargs):
         user_token = request.headers.get('user_token') or session.get('user_token')
         if not user_token:
-            print ('Not Authenticated')
+            log.warning('Not Authenticated')
 
         user = current_app.S.user.get_user_by_token(user_token)
         if not user:
-            print ('Not Authenticated')
+            log.warning('Not Authenticated')
 
         # assign to app context
         if user:

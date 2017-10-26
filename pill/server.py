@@ -31,6 +31,7 @@ and for assets:
 
 NODE_ENV='development' npm run dev
 """
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(
     __name__,
@@ -50,7 +51,6 @@ app.S.user = user_service.UserService()
 #=============
 # Routes
 #=============
-
 import pill.routes.admin
 import pill.routes.api
 import pill.routes.sections

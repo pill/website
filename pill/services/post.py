@@ -31,6 +31,7 @@ class PostService(BaseService):
         return res
 
     def get_post(self, post_id):
+        log.info("getting post %s", post_id)
         res = conn()['posts'].find({'_id': ObjectId(post_id)})
         return self._clean_doc(res.next())
 
@@ -55,9 +56,13 @@ class PostService(BaseService):
     def update_post(self, user, post_id, post_form_data):
         if not user:
             raise Exception('Not logged in')
-
         post_data = post_form_data
+        object_id = ObjectId(post_id)
+        # post needs needs ObjectId to do an update
+        post_data['_id'] = object_id
         post_data['updated_on'] = datetime.datetime.now()
         if post_form_data['publish_status'] == 'published':
             post_data['published_on'] = datetime.datetime.now()
-        conn().posts.update({'_id': ObjectId('post_id')}, {'$set', post_data})
+        log.info('updating %s', post_data)
+        conn().posts.update({'_id': object_id}, post_data)
+        return post_id

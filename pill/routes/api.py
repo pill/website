@@ -20,31 +20,38 @@ def login():
     Checks username/password
     Logs user in and issues session token if successful
     """
-    status = 200
-    error = user_token = ''
     username, password = pluck(request.get_json(), 'username', 'password')
     # user, but did not verify username/password yet
     user = app.S.user.get_db_user({'username': username, 'password': password})
     if not user:
-        error = 'User not found'
-        status = 400
-    else:
-        # this issues a new session if successful
-        logged_in_user = app.S.user.login(user)
-        if not logged_in_user:
-            error = 'Bad username/password'
-            status = 400
-        else:
-            # success!
-            session['user_token'] = user_token = logged_in_user['user_token']
-            username = user['username']
+        resp = jsonify(dict(
+            user_token='',
+            username='',
+            error='User not found'
+        ))
+        resp.status = 400
+        return resp
 
-    resp = jsonify({
-        'user_token': user_token,
-        'username': username,
-        'error': error
-    })
-    resp.status_code = status
+    # this issues a new session if successful
+    logged_in_user = app.S.user.login(user)
+    if not logged_in_user:
+        resp = jsonify(dict(
+            user_token='',
+            username='',
+            error='Bad username/password'
+        ))
+        resp.status = 400
+        return resp
+
+    # success!
+    session['user_token'] = logged_in_user['user_token']
+    session['username'] = logged_in_user['username']
+    resp = jsonify(dict(
+        user_token=session['user_token'],
+        username=session['username'],
+        error=''
+    ))
+    resp.status_code = 200
     return resp
 
 @app.route('/api/v1/auth_check', methods=['GET'])

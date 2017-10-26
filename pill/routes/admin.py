@@ -7,7 +7,6 @@ from flask import (
 from pill import util
 from pill.server import app
 
-
 @app.route('/office', methods=['GET'])
 def office():
     context = {
@@ -40,7 +39,8 @@ def create_post():
 def edit_single_post(post_id=None):
     context = {
         'section': 'office',
-        'subsection': 'post_edit'
+        'subsection': 'post_edit',
+        'post_id': post_id
     }
     resp = render_template('index.html', **context)
     return resp

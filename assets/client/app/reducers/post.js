@@ -10,6 +10,7 @@ export default function posts(state=initialState.post, action) {
 
   const success = ''
   const error = ''
+  console.log("that gql_response ", gql_response)
 
   switch (action.type) {
 
