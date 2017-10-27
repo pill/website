@@ -2,7 +2,7 @@ import * as types from '../actions/action-types'
 import { initialState } from '../redux-store'
 
 export default function posts(state=initialState.post, action) {
-
+  console.log('post reducer ', action)
   const {
     post_form_data,
     gql_response,
@@ -14,27 +14,35 @@ export default function posts(state=initialState.post, action) {
 
   switch (action.type) {
 
-    case types.POST_CREATE_REQUESTED:
-    case types.POST_UPDATE_REQUESTED:
-    case types.POST_DELETE_REQUESTED:
-    case types.POSTS_GET_REQUESTED:
-    case types.POST_GET_REQUESTED:
-      return {
-        ...state,
-        success: '',
-        error: ''
-      }
+    // case types.POST_CREATE_REQUESTED:
+    // case types.POST_UPDATE_REQUESTED:
+    // case types.POST_DELETE_REQUESTED:
+    // case types.POSTS_GET_REQUESTED:
+    // case types.POST_GET_REQUESTED:
+    //   return {
+    //     ...state,
+    //     success: '',
+    //     error: ''
+    //   }
     case types.POST_CREATE_SUCCESS:
+      const created_post = gql_response.json.create_post.post
       return {
         ...state,
-        success: '',
+        single_post: null,
+        success: `Post created with id ${created_post._id}`,
         error: ''
       }
-    case types.POST_UPDATE_SUCCESS:
     case types.POST_GET_SUCCESS:
       return {
         ...state,
         single_post: gql_response.json.post
+      }
+    case types.POST_UPDATE_SUCCESS:
+      return {
+        ...state,
+        single_post: gql_response.json.update_post.post,
+        success: `Post updated!`,
+        error:''
       }
     case types.POST_DELETE_SUCCESS:
       const { post_id } = gql_response.json.delete_post

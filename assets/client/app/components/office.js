@@ -75,11 +75,17 @@ export class Office extends Component {
   // ===========
 
   _postForm = (isEdit=false) => {
+    console.log("rendering post form >> ", this.props)
     let message = ''
     const { error, success, single_post } = this.props.state.post
     let thePost
     if (!single_post) {
-      thePost = { title: '', body: '', publish_status: 'draft' }
+      const { title, body, publish_status} = this.state
+      thePost = {
+        title: title || '',
+        body: body || '',
+        publish_status: publish_status ||'draft'
+      }
     }
     else {
       // it is edit mode
@@ -150,7 +156,7 @@ export class Office extends Component {
         create_post(
           post_form_data:{title:"${title}",body:"${body}",publish_status:"${publish_status}"}
         )
-        { post {title}, ok }
+        { post {_id,title,body,publish_status}, ok }
     }`
     this.props.actions.graphqlMutation(
       mutation, types.POST_CREATE_SUCCESS, types.POST_CREATE_ERROR)
@@ -166,7 +172,7 @@ export class Office extends Component {
             body:"${thePost.body}",
             publish_status:"${thePost.publish_status}"}
         )
-        { post {title}, ok }
+        { post {_id,title,body,publish_status}, ok }
     }`
     this.props.actions.graphqlMutation(
       mutation, types.POST_UPDATE_SUCCESS, types.POST_UPDATE_ERROR)

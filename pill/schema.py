@@ -54,6 +54,7 @@ class CreatePost(graphene.Mutation):
     post = graphene.Field(lambda: Post)
 
     def mutate(self, info, post_form_data=None):
+        log.info("Create mutation %s", post_form_data)
         # should already be authenticated
         user = getattr(g, 'user', None)
         pid = current_app.S.post.create_post(user, post_form_data)
@@ -78,7 +79,7 @@ class UpdatePost(graphene.Mutation):
     post = graphene.Field(lambda: Post)
 
     def mutate(self, info, post_form_data=None):
-        log.info("mutate %s", post_form_data)
+        log.info("Update mutation %s", post_form_data)
         # should already be authenticated
         user = getattr(g, 'user', None)
         # from PostInput to dict, do update
@@ -87,6 +88,7 @@ class UpdatePost(graphene.Mutation):
         pid = current_app.S.post.update_post(user, data_dict['_id'], data_dict)
         # get newly updated post
         updated_post = current_app.S.post.get_post(pid)
+        print(" updated post >> ", updated_post)
         p_data = pluck_dict(updated_post, *keys)
         p = Post(**p_data)
         ok = True
@@ -100,6 +102,7 @@ class DeletePost(graphene.Mutation):
     ok = graphene.Boolean()
 
     def mutate(self, info, _id=None):
+        log.info("Delete mutation %s", _id)
         # should already be authenticated
         user = getattr(g, 'user', None)
         ok = True

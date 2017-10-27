@@ -9,7 +9,7 @@ from flask import (
     session,
     url_for
 )
-from pill.util import authenticated, pluck
+from pill.util import authenticated, pluck, pluck_dict
 from pill.schema import *
 from pill.server import app
 
@@ -20,9 +20,9 @@ def login():
     Checks username/password
     Logs user in and issues session token if successful
     """
-    username, password = pluck(request.get_json(), 'username', 'password')
+    user_info = pluck_dict(request.get_json(), 'username', 'password')
     # user, but did not verify username/password yet
-    user = app.S.user.get_db_user({'username': username, 'password': password})
+    user = app.S.user.get_db_user(user_info)
     if not user:
         resp = jsonify(dict(
             user_token='',
@@ -44,13 +44,10 @@ def login():
         return resp
 
     # success!
-    session['user_token'] = logged_in_user['user_token']
-    session['username'] = logged_in_user['username']
-    resp = jsonify(dict(
-        user_token=session['user_token'],
-        username=session['username'],
-        error=''
-    ))
+    user_token, username = pluck(logged_in_user, 'user_token', 'username')
+    session['user_token'] = user_token
+    session['username'] = username
+    resp = jsonify(dict(user_token=user_token, username=username, error=''))
     resp.status_code = 200
     return resp
 
@@ -94,7 +91,7 @@ def graphql_post_api():
     user = getattr(g, 'user', None)
     if not user:
         # not authenticated
-        res = jsonify({ 'errors' : 'Not Authenticated'})
+        res = jsonify({'errors' : 'Not Authenticated'})
         res.status = 401
         return res
 
