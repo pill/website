@@ -14,16 +14,6 @@ export default function posts(state=initialState.post, action) {
 
   switch (action.type) {
 
-    // case types.POST_CREATE_REQUESTED:
-    // case types.POST_UPDATE_REQUESTED:
-    // case types.POST_DELETE_REQUESTED:
-    // case types.POSTS_GET_REQUESTED:
-    // case types.POST_GET_REQUESTED:
-    //   return {
-    //     ...state,
-    //     success: '',
-    //     error: ''
-    //   }
     case types.POST_CREATE_SUCCESS:
       const created_post = gql_response.json.create_post.post
       return {
