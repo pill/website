@@ -42,10 +42,6 @@ workon phil
 python -m pill.server
 ```
 
-## Setup Flask/uWSGI on the ubuntu server
-follow this tutorial
-http://vladikk.com/2013/09/12/serving-flask-with-nginx-on-ubuntu/
-
 ## Build assets
 run this to build assets with webpack (in /website/pill)
 ```
@@ -90,6 +86,11 @@ npm test -- --watch
 1. build with: `NODE_ENV='production' npm run build`
 2. push to github
 3. git pull on the server
+
+## Setup Flask/uWSGI on the ubuntu server
+follow this tutorial
+[http://vladikk.com/2013/09/12/serving-flask-with-nginx-on-ubuntu/](http://vladikk.com/2013/09/12/serving-flask-with-nginx-on-ubuntu/
+)
 
 # TODO:
 - propTypes
