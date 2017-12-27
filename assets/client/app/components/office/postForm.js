@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { findGetParameter } from '../../lib/util'
+import { findGetParameter, gqlCleanQuery } from '../../lib/util'
 import * as types from '../../actions/action-types'
 import { styles } from './styles'
 
@@ -101,10 +101,12 @@ export class PostForm extends Component {
     }
     // pull data from local state
     const { title, body, publish_status } = this.state || {}
+    const clean_body = gqlCleanText(body)
+
     // insert mutation
     const mutation = `mutation myCreateMutation {
         create_post(
-          post_form_data:{title:"${title}",body:"${body}",publish_status:"${publish_status}"}
+          post_form_data:{title:"${title}",body:"${clean_body}",publish_status:"${publish_status}"}
         )
         { post {_id,title,body,publish_status}, ok }
     }`
@@ -115,12 +117,14 @@ export class PostForm extends Component {
   _handlePostEdit = (e) => {
     e.preventDefault()
     const thePost = this._postFormValues()
+    const clean_body = gqlCleanText(thePost.body)
+
     const mutation = `mutation myEditMutation {
         update_post(
           post_form_data:{
             _id:"${thePost._id}",
             title:"${thePost.title}",
-            body:"${thePost.body}",
+            body:"${clean_body}",
             publish_status:"${thePost.publish_status}"}
         )
         { post {_id,title,body,publish_status}, ok }

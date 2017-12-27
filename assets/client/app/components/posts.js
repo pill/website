@@ -13,7 +13,7 @@ export class PostsList extends React.Component {
     // paging
     this.setState({ page, rpp })
     // build graphQL query
-    const query = `{posts(page:${page},rpp:${rpp}){_id,title,body}}`
+    const query = `{posts(page:${page},rpp:${rpp}){_id,title}}`
     this.props.actions.graphqlQuery(
       query, types.POSTS_GET_SUCCESS, types.POSTS_GET_ERROR)
   }
@@ -49,7 +49,7 @@ export class Post extends React.Component {
     const pathArr = window.location.pathname.split("/")
     const _id = pathArr[pathArr.length-1]
     // build graphQL query
-    const query = `{post(_id:"${_id}"){title,body,body_html}}`
+    const query = `{post(_id:"${_id}"){title,body_html}}`
     this.props.actions.graphqlQuery(
       query, types.POST_GET_SUCCESS, types.POST_GET_ERROR)
   }
