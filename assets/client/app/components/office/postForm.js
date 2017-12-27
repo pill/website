@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { findGetParameter, gqlCleanQuery } from '../../lib/util'
+import { findGetParameter, gqlCleanText } from '../../lib/util'
 import * as types from '../../actions/action-types'
 import { styles } from './styles'
 
