@@ -49,7 +49,7 @@ export class Post extends React.Component {
     const pathArr = window.location.pathname.split("/")
     const _id = pathArr[pathArr.length-1]
     // build graphQL query
-    const query = `{post(_id:"${_id}"){title,body}}`
+    const query = `{post(_id:"${_id}"){title,body,body_html}}`
     this.props.actions.graphqlQuery(
       query, types.POST_GET_SUCCESS, types.POST_GET_ERROR)
   }
@@ -58,13 +58,13 @@ export class Post extends React.Component {
     const { single_post } = this.props.state.post
     if (!single_post) {
       return (
-        <div>chill out!</div>
+        <div>rendering...</div>
       )
     }
     return (
       <div>
         <h1>{single_post.title}</h1>
-        <div>{single_post.body}</div>
+        <div dangerouslySetInnerHTML={{__html:single_post.body_html}}></div>
       </div>
     )
   }

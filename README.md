@@ -93,6 +93,10 @@ follow this tutorial
 )
 
 # TODO:
+- markdown (also, tags break posting)
 - propTypes
+- image uploads
 - flexbox + style site
-- unitTests
+- more unitTests
+- upgrade to python 3
+- clean error handling

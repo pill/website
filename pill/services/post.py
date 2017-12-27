@@ -12,6 +12,8 @@ class PostService(BaseService):
     def _clean_doc(self, doc):
         if not doc:
             return None
+
+        # ObjectId -> string
         doc['_id'] = str(doc['_id'])
         return doc
 

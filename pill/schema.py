@@ -1,10 +1,13 @@
 import logging
 from flask import current_app, g
 import graphene
+import mistune
 from graphene.types import datetime
 from pill.util import pluck_dict
 
 log = logging.getLogger(__name__)
+renderer = mistune.Renderer(escape=True, hard_wrap=True)
+markdown = mistune.Markdown(renderer=renderer)
 
 """
 GraphQL Schema for Post objects
@@ -13,7 +16,8 @@ GraphQL Schema for Post objects
 class Post(graphene.ObjectType):
     _id = graphene.ID()
     title = graphene.String()
-    body = graphene.String()
+    body = graphene.String() # markdown
+    body_html = graphene.String()
     publish_status = graphene.String()
     author = graphene.String()
     created_on = datetime.DateTime()
@@ -29,11 +33,18 @@ class PostQuery(graphene.ObjectType):
 
     def resolve_post(self, info, _id=None):
         p_data = current_app.S.post.get_post(_id)
+
+        # check info that 'body_html' in fields
+        if 'body' in p_data:
+            body_html = markdown(p_data['body'])
+            p_data['body_html'] = body_html
+
         # make graphene object
         return Post(**p_data)
 
     def resolve_posts(self, info, page=None, rpp=None):
         posts = current_app.S.post.get_posts({}, page=page, rpp=rpp)
+        # body_html?
         return [Post(**p) for p in posts]
 
 # -----------------
@@ -65,6 +76,7 @@ class CreatePost(graphene.Mutation):
             _id = p_data.get('_id'),
             title = p_data.get('title'),
             body = p_data.get('body'),
+            # body_html?
             publish_status = p_data.get('publish_status'),
             author = p_data.get('author')
         )
