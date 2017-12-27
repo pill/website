@@ -83,6 +83,7 @@ Run tests continuously
 npm test -- --watch
 ```
 
+[JS testing overview](https://medium.com/powtoon-engineering/a-complete-guide-to-testing-javascript-in-2017-a217b4cd5a2a)
 [More recipies on testing React](https://redux.js.org/docs/recipes/WritingTests.html)
 
 # Super Sophisticated Deploy Process
