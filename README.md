@@ -84,8 +84,11 @@ npm test -- --watch
 
 # Super Sophisticated Deploy Process
 1. build with: `NODE_ENV='production' npm run build`
-2. push to github
+2. git push origin master
 3. git pull on the server
+4. pip install -r requirements.txt
+5. sudo service uwsgi restart
+6. sudo service nginx restart
 
 ## Setup Flask/uWSGI on the ubuntu server
 follow this tutorial
