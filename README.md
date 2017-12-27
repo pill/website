@@ -52,7 +52,12 @@ run this to build assets with webpack (in /website/pill)
 npm run dev
 ```
 
-# Run locally
+# Run Locally
+
+Run Mongo
+```
+sudo mongod
+```
 
 Run the dev server like this (from root dir, where pill module lives)
 ```
@@ -66,3 +71,26 @@ Build assets like this via root dir (where package.json lives). NODE_ENV='develo
 ```
 NODE_ENV='development' npm run dev
 ```
+
+# Run JS Tests
+Run Jest test suite (once)
+```
+npm test
+```
+
+Run tests continuously
+```
+npm test -- --watch
+```
+
+[More recipies on testing React](https://redux.js.org/docs/recipes/WritingTests.html)
+
+# Super Sophisticated Deploy Process
+1. build with: `NODE_ENV='production' npm run build`
+2. push to github
+3. git pull on the server
+
+# TODO:
+- propTypes
+- flexbox + style site
+- unitTests

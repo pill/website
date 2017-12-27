@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { findGetParameter } from '../../lib/util'
 import * as types from '../../actions/action-types'
 import { styles } from './styles'
@@ -6,7 +7,9 @@ import { PostForm } from './postForm'
 import { PostList } from './postList'
 import { LoginForm } from './login'
 
+
 class Office extends Component {
+
   constructor(props) {
     super(props)
     // default state
@@ -85,9 +88,19 @@ class Office extends Component {
   }
 }
 
+Office.propTypes = {
+  state: PropTypes.shape({
+
+  }),
+  actions: PropTypes.shape({
+
+  }),
+  subsection: PropTypes.string
+}
+
 export {
-    Office,
-    PostForm,
-    PostList,
-    LoginForm
+  Office,
+  PostForm,
+  PostList,
+  LoginForm
 }

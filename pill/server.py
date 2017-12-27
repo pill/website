@@ -22,9 +22,11 @@ from pill.services import (
 """
 Hi. Run the dev server like this:
 
+workon phil
 export ENV='development'
 export FLASK_APP=pill.server
 export FLASK_DEBUG=1
+
 flask run --host=0.0.0.0 --port=8080
 
 and for assets:

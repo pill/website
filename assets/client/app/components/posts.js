@@ -55,7 +55,6 @@ export class Post extends React.Component {
   }
 
   render() {
-    // latest graphql response is in state
     const { single_post } = this.props.state.post
     if (!single_post) {
       return (
