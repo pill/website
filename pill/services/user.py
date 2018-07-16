@@ -34,7 +34,7 @@ class UserService(BaseService):
 
     def get_db_user(self, userdata):
         """
-        Get use from db. `userdata` is a dict with user attrs
+        Get user from db. `userdata` is a dict with user attrs
         db_user returned with userdata overlaid
         """
         assert userdata

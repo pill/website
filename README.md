@@ -79,6 +79,11 @@ Run tests continuously
 npm test -- --watch
 ```
 
+# Run Python Tests
+```
+pytest -t tests
+```
+
 [JS testing overview](https://medium.com/powtoon-engineering/a-complete-guide-to-testing-javascript-in-2017-a217b4cd5a2a)
 [More recipies on testing React](https://redux.js.org/docs/recipes/WritingTests.html)
 

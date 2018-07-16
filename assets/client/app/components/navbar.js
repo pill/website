@@ -10,8 +10,6 @@ export class Navbar extends React.Component {
               <a href="/">Home</a>
               &nbsp;&middot;&nbsp;
               <a href="/blog">Blog</a>
-              &nbsp;&middot;&nbsp;
-              <a href="/work">Work</a>
             </div>)
   }
 

@@ -96,6 +96,6 @@ def graphql_post_api():
         return res
 
     mutation = request.data
-    res = post_schema.execute(mutation)
+    res = pill_schema.execute(mutation)
     res = jsonify(res.data)
     return res

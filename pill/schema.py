@@ -24,20 +24,27 @@ class Post(graphene.ObjectType):
     updated_on = datetime.DateTime()
     published_on = datetime.DateTime()
 
+class Image(graphene.ObjectType):
+    _id = graphene.ID()
+    path = graphene.String()
+    created_on = datetime.DateTime()
+
 # -----------------
 # Get query
 # -----------------
-class PostQuery(graphene.ObjectType):
+class Query(graphene.ObjectType):
     post = graphene.Field(Post, _id=graphene.ID())
     posts = graphene.List(Post, page=graphene.Int(), rpp=graphene.Int())
+
+    image = graphene.Field(Image, _id=graphene.ID())
+    images = graphene.List(Image, page=graphene.Int(), rpp=graphene.Int())
 
     def resolve_post(self, info, _id=None):
         p_data = current_app.S.post.get_post(_id)
 
         # check info that 'body_html' in fields
         if 'body' in p_data:
-            body_html = markdown(p_data['body'])
-            p_data['body_html'] = body_html
+            p_data['body_html'] = markdown(p_data['body'])
 
         # make graphene object
         return Post(**p_data)
@@ -47,8 +54,18 @@ class PostQuery(graphene.ObjectType):
         # body_html?
         return [Post(**p) for p in posts]
 
+    def resolve_image(self, info, _id=None):
+        pass
+
+    def resolve_images(self, info, page=None, rpp=None):
+        pass
+
 # -----------------
 # CRUD
+# -----------------
+
+# -----------------
+# Post
 # -----------------
 class PostInput(graphene.InputObjectType):
     _id = graphene.ID()
@@ -121,18 +138,20 @@ class DeletePost(graphene.Mutation):
         current_app.S.post.delete_post(user, _id)
         return DeletePost(post_id=_id, ok=ok)
 
-class PostMutations(graphene.ObjectType):
+class Mutations(graphene.ObjectType):
     create_post = CreatePost.Field()
     update_post = UpdatePost.Field()
     delete_post = DeletePost.Field()
+    # create_image = CreateImage.Field()
+    # delete_image = DeleteImage.Field()
 
 # -----------------
-# Final Schema
+# Final Post Schema
 # -----------------
 post_schema = graphene.Schema(
-    query=PostQuery,
-    types=[Post,],
-    mutation=PostMutations,
+    query=Query,
+    types=[Post,Image],
+    mutation=Mutations,
     auto_camelcase=False
 )
 
