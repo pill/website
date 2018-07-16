@@ -100,7 +100,6 @@ follow this tutorial
 )
 
 # TODO:
-- markdown (also, tags break posting)
 - propTypes
 - image uploads
 - flexbox + style site
